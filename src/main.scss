@@ -1,0 +1,18 @@
+/* Estilos principales de PopFix */
+$color-bg: #ffffff;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, #root {
+  background-color: $color-bg;
+  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  color: #333;
+}

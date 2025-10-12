@@ -1,0 +1,141 @@
+$color-bg: #ffffff;
+$color-box: #e7e7e7;
+$color-input: #d9d9d9;
+$color-button: #000000;
+
+.app-container {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+  color: #000;
+  padding: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.left-section {
+  flex: 1;
+  text-align: center;
+
+  .title-logo {
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: 2px;
+  }
+
+  .icon {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 0.2rem;
+  }
+
+  @media (max-width: 768px) {
+    margin-bottom: 1rem;
+  }
+}
+
+.right-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.login-box {
+  background-color: $color-box;
+  border-radius: 20px;
+  padding: 2rem 2rem;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #333;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+
+  label {
+    font-weight: 600;
+    margin-top: 0.5rem;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+  }
+
+  .input {
+    background-color: $color-input;
+    border: none;
+    border-radius: 10px;
+    padding: 0.8rem;
+    font-size: 0.9rem;
+    outline: none;
+    margin-bottom: 1rem;
+  }
+
+  .button {
+    background-color: $color-button;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #333;
+    }
+  }
+}
+
+.forgot {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: #000;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.register-text {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+
+  .register-link {
+    font-weight: 600;
+    text-decoration: none;
+    color: #000;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .login-box {
+    width: 95%;
+    padding: 1.5rem;
+  }
+}
