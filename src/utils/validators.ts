@@ -1,3 +1,12 @@
+// Validar edad
+export const validateAge = (age: string | number) => {
+  if (age === undefined || age === null || age === '') return 'La edad es requerida';
+  const num = typeof age === 'number' ? age : Number(age);
+  if (isNaN(num)) return 'La edad debe ser un número válido';
+  if (num < 13) return 'Debes tener al menos 13 años';
+  if (num > 120) return 'La edad no puede ser mayor a 120';
+  return null;
+}
 // Funciones de validación para formularios
 
 // Validar email
@@ -87,27 +96,31 @@ export const validateLoginForm = (formData: LoginFormData) => {
 type RegisterFormData = {
   name: string;
   email: string;
+  age: string;
   password: string;
   confirmPassword: string;
 };
 
 export const validateRegisterForm = (formData: RegisterFormData) => {
   const errors: { [key: string]: string } = {};
-  
+
   const nameError = validateName(formData.name);
   if (nameError) errors.name = nameError;
-  
-  const emailError = validateEmail(formData.email)
-  if (emailError) errors.email = emailError
-  
-  const passwordError = validatePassword(formData.password)
-  if (passwordError) errors.password = passwordError
-  
-  const confirmPasswordError = validatePasswordConfirmation(formData.password, formData.confirmPassword)
-  if (confirmPasswordError) errors.confirmPassword = confirmPasswordError
-  
+
+  const ageError = validateAge(formData.age);
+  if (ageError) errors.age = ageError;
+
+  const emailError = validateEmail(formData.email);
+  if (emailError) errors.email = emailError;
+
+  const passwordError = validatePassword(formData.password);
+  if (passwordError) errors.password = passwordError;
+
+  const confirmPasswordError = validatePasswordConfirmation(formData.password, formData.confirmPassword);
+  if (confirmPasswordError) errors.confirmPassword = confirmPasswordError;
+
   return {
     isValid: Object.keys(errors).length === 0,
     errors
-  }
+  };
 }
