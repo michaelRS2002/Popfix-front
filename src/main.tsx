@@ -8,16 +8,18 @@ import './main.scss'
 // VIEWS
 import { Home } from './views/Home'
 import Login from './views/Auth/Login/Login'
+import Register from './views/Auth/Register/Register'
 import { NotFound } from './views/NotFound'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-      
+
 
         {/* Routes Public */}
-        <Route path="/login" element={<Login />} />
+  <Route path="/login" element={<Login />} />
+  <Route path="/register" element={<Register />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

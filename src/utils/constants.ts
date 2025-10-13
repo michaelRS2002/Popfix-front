@@ -1,14 +1,14 @@
 // Configuración y constantes de la aplicación PopFix
 
 // URL base del API (cambia por la URL de tu backend)
-export const API_BASE_URL = 'http://localhost:3000/api'
+export const API_BASE_URL = 'http://localhost:5100/api'
 
 // Endpoints del API
 export const API_ENDPOINTS = {
   // Autenticación
-  LOGIN: '/auth/login',
-  REGISTER: '/auth/register',
-  LOGOUT: '/auth/logout',
+  LOGIN: '/login',
+  REGISTER: '/users/register',
+  LOGOUT: '/logout',
   
   // Películas
   MOVIES: '/movies',
