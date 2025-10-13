@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Login.scss";
 import NavBar from '../../../components/NavBar';
+import { Link } from 'react-router-dom';
 import { validateLoginForm } from '../../../utils/validators';
 import { loginUser } from '../../../utils/authApi';
 
@@ -28,8 +29,10 @@ const Login: React.FC = () => {
     setLoading(true);
     try {
       await loginUser(formData);
-      // Redirigir o mostrar éxito aquí
-      // window.location.href = '/home';
+      showSuccess('¡Inicio de sesión exitoso! Redirigiendo...');
+      setTimeout(() => {
+        window.location.href = '/'; // o usa navigate('/home') si usas useNavigate
+      }, 1500);
     } catch (error: any) {
       setFormError(error.message || 'Error al iniciar sesión');
     } finally {
@@ -37,11 +40,30 @@ const Login: React.FC = () => {
     }
   };
 
+  const showSuccess = (message: string) => {
+    let popup = document.getElementById('popup-message');
+    if (!popup) {
+      popup = document.createElement('div');
+      popup.id = 'popup-message';
+      document.body.appendChild(popup);
+    }
+    popup.className = 'popup-message popup-success popup-show';
+    popup.textContent = message;
+    // Remove after 3s
+    // @ts-ignore
+    clearTimeout((popup as any)._timeout);
+    // @ts-ignore
+    (popup as any)._timeout = setTimeout(() => {
+      popup?.classList.remove('popup-show');
+    }, 3000);
+  };
+
   return (
     <>
       <NavBar />
       <div className="app-container">
         <div className="left-section">
+          <Link to="/" className="back-arrow-login" aria-label="Volver al inicio">←</Link>
           <h1 className="title-logo">PopFix</h1>
           <img src="/static/img/film-icon.jpg" alt="PopFix logo" className="icon" />
         </div>
@@ -82,13 +104,13 @@ const Login: React.FC = () => {
               {formError && <div className="error-message" style={{ marginTop: 8 }}>{formError}</div>}
             </form>
 
-            <a href="#" className="forgot">
+            <a href="/forgot-password" className="forgot">
               ¿Olvidaste tu contraseña?
             </a>
 
             <p className="register-text">
               ¿No tienes cuenta?{" "}
-              <a href="#" className="register-link">
+              <a href="/register" className="register-link">
                 Regístrate aquí
               </a>
             </p>

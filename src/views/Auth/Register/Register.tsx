@@ -67,7 +67,8 @@ const Register: React.FC = () => {
         navigate('/login');
       }, 1500);
     } catch (error: any) {
-      setFormError(error.message || 'Error al registrar usuario');
+      const backendMsg = error?.data?.message || error?.message;
+      setFormError(backendMsg || 'Error al registrar usuario');
     } finally {
       setLoading(false);
     }
@@ -157,7 +158,7 @@ const Register: React.FC = () => {
               </form>
               <label className="login-redirect">
                 ¿Ya tienes cuenta?{' '}
-                <a href="/auth/login" className="login-link">Inicia sesión aquí</a>
+                <a href="/login" className="login-link">Inicia sesión aquí</a>
               </label>
             </div>
           </div>

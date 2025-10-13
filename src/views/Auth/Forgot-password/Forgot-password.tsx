@@ -1,0 +1,108 @@
+import React, { useState } from "react";
+import "./Forgot-password.scss";
+import NavBar from '../../../components/NavBar';
+import { Link } from 'react-router-dom';
+import { validateEmail } from '../../../utils/validators';
+import { forgotPassword } from '../../../utils/authApi';
+
+// Popup logic solo para success
+function showSuccess(message: string) {
+  let popup = document.getElementById('popup-message');
+  if (!popup) {
+    popup = document.createElement('div');
+    popup.id = 'popup-message';
+    document.body.appendChild(popup);
+  }
+  popup.className = 'popup-message popup-success popup-show';
+  popup.textContent = message;
+  // Remove after 3s
+  // @ts-ignore
+  clearTimeout((popup as any)._timeout);
+  // @ts-ignore
+  (popup as any)._timeout = setTimeout(() => {
+    popup?.classList.remove('popup-show');
+  }, 3000);
+}
+
+const ForgotPassword: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    setEmailError(null);
+    setFormError(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError(null);
+    
+    const emailValidationError = validateEmail(email);
+    if (emailValidationError) {
+      setEmailError(emailValidationError);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await forgotPassword({ email });
+      showSuccess('¡Enlace de recuperación enviado! Revisa tu correo electrónico.');
+      setTimeout(() => {
+        // Reset form or redirect
+        setEmail('');
+      }, 2000);
+    } catch (error: any) {
+      setFormError(error.message || 'Error al enviar el correo de recuperación');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <NavBar />
+      <div className="app-container-forgot">
+        <div className="main-content-forgot">
+          <div className="forgot-box">
+            <Link to="/login" className="back-arrow-forgot" aria-label="Volver al login">←</Link>
+            <img src="/static/img/film-icon.jpg" alt="PopFix logo" className="icon" />
+            <h2>Recuperar contraseña</h2>
+            <p>Ingresa el correo para recuperar tu contraseña</p>
+            
+            <form className="form" onSubmit={handleSubmit} noValidate>
+              <label htmlFor="email">Correo Electrónico</label>
+              <input
+                type="email"
+                id="email"
+                placeholder="tu@gmail.com"
+                className="input"
+                value={email}
+                onChange={handleChange}
+                disabled={loading}
+              />
+              {emailError && <span className="error-message">{emailError}</span>}
+
+              <button type="submit" className="button" disabled={loading}>
+                {loading ? 'Enviando...' : 'Enviar enlace de recuperación'}
+              </button>
+              {formError && <div className="error-message" style={{ marginTop: 8 }}>{formError}</div>}
+            </form>
+            <label className="login-redirect">
+              ¿Recordaste tu contraseña?{' '}
+              <Link to="/login" className="login-link">Volver al Inicio de Sesión</Link>
+            </label>
+            <label className="login-redirect">
+              ¿Aún no tienes cuenta? {' '}
+              <Link to="/register" className="login-link">Registrarse</Link>
+            </label>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default ForgotPassword;
