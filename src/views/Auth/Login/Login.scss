@@ -1,3 +1,28 @@
+.back-arrow-login {
+  display: inline-block;
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  font-size: 2.5rem;
+  color: #000;
+  background: #fff;
+  border-radius: 50%;
+  width: 3.8rem;
+  height: 3.8rem;
+  line-height: 3rem;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  z-index: 10;
+
+  &:hover {
+    background: #e7e7e7;
+    color: #333;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+    text-decoration: none;
+  }
+}
 $color-bg: #ffffff;
 $color-box: #e7e7e7;
 $color-input: #d9d9d9;

@@ -6,7 +6,7 @@ export const API_BASE_URL = 'http://localhost:5100/api'
 // Endpoints del API
 export const API_ENDPOINTS = {
   // Autenticación
-  LOGIN: '/login',
+  LOGIN: '/users/login',
   REGISTER: '/users/register',
   LOGOUT: '/logout',
   
