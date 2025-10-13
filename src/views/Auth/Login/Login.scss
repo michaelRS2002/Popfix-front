@@ -1,3 +1,7 @@
+$color-bg: #ffffff;
+$color-box: #e7e7e7;
+$color-input: #d9d9d9;
+$color-button: #000000;
 .back-arrow-login {
   display: inline-block;
   position: absolute;
@@ -23,10 +27,6 @@
     text-decoration: none;
   }
 }
-$color-bg: #ffffff;
-$color-box: #e7e7e7;
-$color-input: #d9d9d9;
-$color-button: #000000;
 
 .app-container {
   flex: 1 1 auto;

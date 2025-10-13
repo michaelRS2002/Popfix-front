@@ -8,6 +8,7 @@ export const API_ENDPOINTS = {
   // Autenticación
   LOGIN: '/users/login',
   REGISTER: '/users/register',
+  FORGOT_PASSWORD: '/auth/forgot-password',
   LOGOUT: '/logout',
   
   // Películas

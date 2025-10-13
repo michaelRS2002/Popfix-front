@@ -104,7 +104,7 @@ const Login: React.FC = () => {
               {formError && <div className="error-message" style={{ marginTop: 8 }}>{formError}</div>}
             </form>
 
-            <a href="#" className="forgot">
+            <a href="/forgot-password" className="forgot">
               ¿Olvidaste tu contraseña?
             </a>
 

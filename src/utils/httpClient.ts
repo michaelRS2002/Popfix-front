@@ -27,10 +27,37 @@ import { API_BASE_URL } from './constants'
   
       try {
         const response = await fetch(url, config);
+        const contentType = response.headers.get('content-type') || '';
+
         if (!response.ok) {
-          throw new Error(`HTTP Error: ${response.status}`);
+          let backendMessage = '';
+          let data: any = undefined;
+          try {
+            if (contentType.includes('application/json')) {
+              data = await response.json();
+              backendMessage =
+                (data && (data.message || data.error || (Array.isArray(data.errors) ? data.errors[0]?.msg : ''))) || '';
+            } else {
+              backendMessage = await response.text();
+            }
+          } catch (_) {
+            // ignore parse errors
+          }
+          const err: any = new Error(backendMessage || `HTTP Error: ${response.status}`);
+          err.status = response.status;
+          if (data !== undefined) err.data = data;
+          throw err;
         }
-        return await response.json();
+
+        // 204 No Content
+        if (response.status === 204) {
+          return null;
+        }
+
+        if (contentType.includes('application/json')) {
+          return await response.json();
+        }
+        return await response.text();
       } catch (error) {
         console.error('Error en petición HTTP:', error);
         throw error;

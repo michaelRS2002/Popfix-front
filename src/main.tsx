@@ -9,6 +9,8 @@ import './main.scss'
 import { Home } from './views/Home'
 import Login from './views/Auth/Login/Login'
 import Register from './views/Auth/Register/Register'
+import ForgotPassword from './views/Auth/Forgot-password/Forgot-password'
+import ResetPassword from './views/Auth/Reset-password/Reset-password'
 import { NotFound } from './views/NotFound'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
@@ -20,6 +22,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         {/* Routes Public */}
   <Route path="/login" element={<Login />} />
   <Route path="/register" element={<Register />} />
+  <Route path="/forgot-password" element={<ForgotPassword />} />
+  <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
