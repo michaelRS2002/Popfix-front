@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NavBar from '../../../components/NavBar/NavBar';
+import { getCurrentUser, deleteUserById } from '../../../utils/authApi';
 import './Delete-user.scss';
 
 // Popup functions
@@ -82,29 +83,24 @@ const DeleteUser: React.FC = () => {
     setLoading(true);
     let cancelled = false;
 
-    // Mostrar popup con contador y opción de deshacer
     showUndoPopup('Cuenta será eliminada en', () => {
       cancelled = true;
       showPopup('Eliminación cancelada.', 'success');
       setLoading(false);
     }, 10);
 
-    // Esperar 10 segundos antes de proceder
     setTimeout(async () => {
       if (cancelled) return;
-
       try {
-        // Aquí iría la llamada al backend para eliminar
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simular API call
-        
+        const currentUser = getCurrentUser();
+        if (!currentUser || !currentUser.id) throw new Error('Usuario no encontrado');
+        await deleteUserById(currentUser.id);
         showPopup('Cuenta eliminada correctamente.', 'success');
         setTimeout(() => {
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('user');
           navigate('/login');
         }, 2000);
       } catch (err: any) {
-        setError(err?.data?.message || err?.message || 'Error al eliminar la cuenta.');
+        setError(err?.message || 'Error al eliminar la cuenta.');
       } finally {
         setLoading(false);
       }

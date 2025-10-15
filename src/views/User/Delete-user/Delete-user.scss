@@ -13,6 +13,7 @@ $color-danger: #dc3545;
   color: #000;
   min-height: 100vh;
   background-color: $color-bg;
+  padding-top: 125px; // Espacio para el NavBar
 }
 
 .main-content-delete {
@@ -22,7 +23,10 @@ $color-danger: #dc3545;
   width: 100%;
   max-width: 550px;
   padding: 2rem;
+  position: relative;
+  z-index: 1; // Menor que el NavBar (1000)
 }
+
 
 .delete-box {
   position: relative;
@@ -32,6 +36,7 @@ $color-danger: #dc3545;
   width: 100%;
   text-align: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  z-index: 1; // Menor que el NavBar (1000)
 
   .icon {
     width: 120px;
@@ -245,9 +250,11 @@ $color-danger: #dc3545;
 }
 
 // Responsive
+
 @media (max-width: 768px) {
   .app-container-delete {
     padding: 1rem;
+    padding-top: 80px; // Mantener espacio para NavBar en móvil
   }
 
   .main-content-delete {
