@@ -165,15 +165,18 @@ export function MovieScreen() {
               onChange={(e) => setComment(e.target.value)}
               rows={3}
             />
-            <button 
-              className="comment-submit-btn"
-              onClick={handleCommentSubmit}
-              disabled={!comment.trim()}
-            >
-              <FaPaperPlane />
-              Comentar
-            </button>
           </div>
+          
+          <button 
+            className="comment-submit-btn"
+            onClick={handleCommentSubmit}
+            disabled={!comment.trim()}
+          >
+            <FaPaperPlane />
+            Comentar
+          </button>
+
+          <div className="comment-separator"></div>
 
           <div className="comments-list">
             {comments.map((comm) => (
