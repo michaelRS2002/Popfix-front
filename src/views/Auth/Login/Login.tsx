@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Login.scss";
-import NavBar from '../../../components/NavBar';
+import NavBar from '../../../components/NavBar/NavBar';
 import { Link } from 'react-router-dom';
 import { validateLoginForm } from '../../../utils/validators';
 import { loginUser } from '../../../utils/authApi';
