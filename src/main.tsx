@@ -15,6 +15,7 @@ import User from './views/User/User'
 import EditUser from './views/User/Edit-user/Edit-user'
 import DeleteUser from './views/User/Delete-user'
 import ChangePassword from './views/User/Change-password/Change-password'
+import SiteMap from './views/SiteMap/SiteMap'
 import { NotFound } from './views/NotFound'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
@@ -33,6 +34,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <Route path="/edit-user" element={<EditUser />} />
         <Route path="/delete-user" element={<DeleteUser />} />
         <Route path="/change-password" element={<ChangePassword />} />
+        
+        {/* Other Routes */}
+        <Route path="/mapa-del-sitio" element={<SiteMap />} />
   
         <Route path="*" element={<NotFound />} />
       </Routes>
