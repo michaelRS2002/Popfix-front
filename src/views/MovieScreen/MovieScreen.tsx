@@ -9,7 +9,8 @@ import {
   FaCog, 
   FaClosedCaptioning, 
   FaExpand,
-  FaPaperPlane 
+  FaPaperPlane,
+  FaComment
 } from 'react-icons/fa';
 
 interface Comment {
@@ -34,16 +35,16 @@ export function MovieScreen() {
     }
   ]);
 
-  // Datos de ejemplo de la película
+  // Example Data
   const movie = {
-    title: 'Aventura Épica',
+    title: 'Aventura Épicamente Épica!',
     year: '2024',
     duration: '2h 14m',
     rating: 8.5,
     genre: 'Acción',
     director: 'Alex Johnson',
     description: 'Una emocionante aventura llena de acción y efectos espectaculares que te mantendrá al borde del asiento desde el primer minuto.',
-    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4'
+    videoUrl: ''
   };
 
   const handleRatingClick = (rate: number) => {
@@ -78,14 +79,13 @@ export function MovieScreen() {
                 Tu navegador no soporta el elemento de video.
               </video>
               
-              {/* Controles personalizados overlay */}
+              {/* Personalized Overlay Controls */}
               <div className="video-controls-overlay">
                 <button className="play-button-overlay" aria-label="Reproducir">
                   <FaPlay size={60} />
                 </button>
               </div>
               
-              {/* Controles inferiores */}
               <div className="video-controls">
                 <button className="control-btn" aria-label="Volumen">
                   <FaVolumeUp />
@@ -153,9 +153,7 @@ export function MovieScreen() {
         <div className="comments-section">
           <div className="comments-header">
             <h2>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-              </svg>
+              <FaComment />
               Comentarios
             </h2>
           </div>

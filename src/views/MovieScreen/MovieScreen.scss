@@ -9,13 +9,23 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
-}
-
-.movie-content {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   gap: 2rem;
-  margin-bottom: 2rem;
+}
+
+.movie-content {
+  display: contents; // Permite que los hijos se posicionen en el grid del padre
+}
+
+// Comments Section
+.comments-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid #e5e7eb;
+  grid-column: 1; // Alinear con la columna del video
+  grid-row: 2;
 }
 
 // Video Section
@@ -24,6 +34,8 @@
   border-radius: 16px;
   overflow: hidden;
   position: relative;
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .video-player {
@@ -123,6 +135,8 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .movie-header {
@@ -143,8 +157,7 @@
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  background: #fef3c7;
-  color: #92400e;
+  color: #111827;
   padding: 0.5rem 0.875rem;
   border-radius: 8px;
   font-weight: 700;
@@ -365,12 +378,23 @@
 
 // Responsive
 @media (max-width: 1024px) {
-  .movie-content {
+  .movie-container {
     grid-template-columns: 1fr;
   }
 
+  .video-section {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
   .movie-info-section {
-    order: 2;
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .comments-section {
+    grid-column: 1;
+    grid-row: 3;
   }
 }
 
