@@ -3,6 +3,7 @@ $color-box: #e7e7e7;
 $color-input: #d9d9d9;
 $color-button: #000000;
 
+
 .app-container-edit {
   flex: 1 1 auto;
   display: flex;
@@ -12,6 +13,7 @@ $color-button: #000000;
   color: #000;
   min-height: 100vh;
   background-color: $color-bg;
+  padding-top: 80px; // Espacio para el NavBar
 }
 
 .main-content-edit {
@@ -21,7 +23,10 @@ $color-button: #000000;
   width: 100%;
   max-width: 500px;
   padding: 2rem;
+  position: relative;
+  z-index: 1; // Menor que el NavBar (1000)
 }
+
 
 .edit-box {
   position: relative;
@@ -31,6 +36,7 @@ $color-button: #000000;
   width: 100%;
   text-align: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  z-index: 1; // Menor que el NavBar (1000)
 
   .icon {
     width: 120px;
@@ -211,9 +217,11 @@ $color-button: #000000;
 }
 
 // Responsive
+
 @media (max-width: 768px) {
   .app-container-edit {
     padding: 1rem;
+    padding-top: 80px; // Mantener espacio para NavBar en móvil
   }
 
   .main-content-edit {
