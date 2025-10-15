@@ -1,11 +1,19 @@
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FaQuestion } from 'react-icons/fa';
 import './HelpButton.scss';
 
 const HelpButton: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // No mostrar el botón en la página del mapa del sitio
+  if (location.pathname === '/mapa-del-sitio') {
+    return null;
+  }
+
   const handleClick = () => {
-    // Navegar a la página del mapa del sitio
-    window.location.href = '/mapa-del-sitio';
+    navigate('/mapa-del-sitio');
   };
 
   return (
