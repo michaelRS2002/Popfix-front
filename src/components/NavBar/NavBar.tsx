@@ -23,7 +23,7 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Cerrar el menú al hacer click fuera
+  // Close the menu when user click outside of it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -49,7 +49,7 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
       </ul>
       
       <div className="navbar_right">
-        {/* Barra de búsqueda */}
+        {/* Search Bar */}
         <form onSubmit={handleSubmit} className="navbar_search">
         <button type="submit" className="navbar_search-icon" aria-label="Buscar">
           <FaSearch />
