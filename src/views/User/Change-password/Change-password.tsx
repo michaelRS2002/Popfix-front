@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import NavBar from '../../../components/NavBar';
+import NavBar from '../../../components/NavBar/NavBar';
 import './Change-password.scss';
 
 // Popup logic para success y error

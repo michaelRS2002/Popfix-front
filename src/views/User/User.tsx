@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import NavBar from '../../components/NavBar';
+import NavBar from '../../components/NavBar/NavBar';
 import { getCurrentUser } from '../../utils/authApi';
 import './User.scss';
 
