@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './Home.scss'
 import NavBar from '../../components/NavBar/NavBar'
 import HelpButton from '../../components/HelpButton/HelpButton'
@@ -16,6 +17,7 @@ interface Movie {
 }
 
 export function Home() {
+  const navigate = useNavigate()
   const [movies, setMovies] = useState<Movie[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('Películas')
@@ -125,7 +127,18 @@ export function Home() {
               <p>Cargando películas...</p>
             ) : (
               movies.map((movie) => (
-                <div key={movie.id} className="movie-card">
+                <div 
+                  key={movie.id} 
+                  className="movie-card"
+                  onClick={() => navigate(`/movie/${movie.id}`)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      navigate(`/movie/${movie.id}`)
+                    }
+                  }}
+                >
                   <div className="movie-poster">
                     <img
                       src={movie.poster}
