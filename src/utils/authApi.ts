@@ -55,7 +55,6 @@ export const forgotPassword = async (payload: { email: string }): Promise<any> =
 	}
 };
 
-
 // Función para restablecer contraseña
 export const resetPassword = async (payload: { token: string; newPassword: string }): Promise<any> => {
 	try {
@@ -67,12 +66,12 @@ export const resetPassword = async (payload: { token: string; newPassword: strin
 };
 
 // Función para hacer logout
-export const logoutUser = async (): Promise<boolean> => {
+export const logoutUser = async (): Promise<any> => {
 	try {
-		await httpClient.post(API_ENDPOINTS.LOGOUT, {});
+		const response = await httpClient.post('/users/logout', {});
 		localStorage.removeItem('authToken');
 		localStorage.removeItem('user');
-		return true;
+		return response;
 	} catch (error: any) {
 		// Aún si falla el logout en el server, limpiamos local
 		localStorage.removeItem('authToken');
@@ -137,5 +136,15 @@ export const deleteUserById = async (userId: string): Promise<void> => {
 		}
 	} catch (error: any) {
 		throw new Error('Error al eliminar usuario: ' + (error.message || ''));
+	}
+};
+
+// Función para cambiar contraseña
+export const changePassword = async (payload: { currentPassword: string; newPassword: string }): Promise<any> => {
+	try {
+		const response = await httpClient.post('/users/change-password', payload);
+		return response;
+	} catch (error: any) {
+		throw new Error(error.message || 'Error al cambiar la contraseña');
 	}
 };

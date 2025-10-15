@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NavBar from '../../../components/NavBar/NavBar';
+import { changePassword } from '../../../utils/authApi';
 import './Change-password.scss';
 
 // Popup logic para success y error
@@ -77,13 +78,11 @@ const ChangePassword: React.FC = () => {
 
     setLoading(true);
     try {
-      // Simular cambio de contraseña (aquí irías al backend)
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await changePassword({ currentPassword, newPassword });
       showSuccess('¡Contraseña cambiada correctamente!');
       setTimeout(() => navigate('/user'), 2000);
     } catch (err: any) {
-      showError(err?.data?.message || err?.message || 'Error al cambiar la contraseña.');
+      showError(err?.message || 'Error al cambiar la contraseña.');
     } finally {
       setLoading(false);
     }
