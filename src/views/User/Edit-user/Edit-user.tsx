@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NavBar from '../../../components/NavBar/NavBar';
-import { getCurrentUser } from '../../../utils/authApi';
+import { getCurrentUser, getUserById, updateUserById } from '../../../utils/authApi';
 import './Edit-user.scss';
 
 // Popup logic para success
@@ -25,35 +25,44 @@ function showSuccess(message: string) {
 const EditUser: React.FC = () => {
   const navigate = useNavigate();
   const [nombres, setNombres] = useState('');
-  const [apellidos, setApellidos] = useState('');
   const [edad, setEdad] = useState('');
   const [correo, setCorreo] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const userData = getCurrentUser();
-    if (userData) {
-      setNombres(userData.nombres || '');
-      setApellidos(userData.apellidos || '');
-      setEdad(userData.edad || '');
-      setCorreo(userData.email || '');
-    }
+    const fetchUser = async () => {
+      const localUser = getCurrentUser();
+      if (localUser && localUser.id) {
+        try {
+          const freshUser = await getUserById(localUser.id);
+          setNombres(freshUser.name || freshUser.nombres || '');
+          setEdad(freshUser.age || freshUser.edad || '');
+          setCorreo(freshUser.email || '');
+        } catch (err: any) {
+          setError('No se pudo cargar el usuario');
+        }
+      }
+    };
+    fetchUser();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
     setLoading(true);
     try {
-      // Simular actualización (aquí irías al backend)
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const localUser = getCurrentUser();
+      if (!localUser || !localUser.id) throw new Error('Usuario no encontrado');
+      await updateUserById(localUser.id, {
+        name: nombres,
+        age: Number(edad),
+        email: correo
+      });
       showSuccess('¡Perfil actualizado correctamente!');
       setTimeout(() => navigate('/user'), 2000);
     } catch (err: any) {
-      setError(err?.data?.message || err?.message || 'Error al actualizar el perfil.');
+      setError(err?.message || 'Error al actualizar el perfil.');
     } finally {
       setLoading(false);
     }
@@ -71,23 +80,13 @@ const EditUser: React.FC = () => {
             <p>Actualiza tu información personal</p>
             
             <form className="edit-form" onSubmit={handleSubmit} noValidate>
-              <label htmlFor="nombres">Nombres</label>
+              <label htmlFor="nombres">Nombre</label>
               <input
                 id="nombres"
                 type="text"
                 className="input"
                 value={nombres}
                 onChange={e => setNombres(e.target.value)}
-                required
-              />
-
-              <label htmlFor="apellidos">Apellidos</label>
-              <input
-                id="apellidos"
-                type="text"
-                className="input"
-                value={apellidos}
-                onChange={e => setApellidos(e.target.value)}
                 required
               />
 

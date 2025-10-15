@@ -55,7 +55,6 @@ export const forgotPassword = async (payload: { email: string }): Promise<any> =
 	}
 };
 
-
 // Función para restablecer contraseña
 export const resetPassword = async (payload: { token: string; newPassword: string }): Promise<any> => {
 	try {
@@ -67,18 +66,18 @@ export const resetPassword = async (payload: { token: string; newPassword: strin
 };
 
 // Función para hacer logout
-export const logoutUser = async (): Promise<boolean> => {
-		try {
-				await httpClient.post(API_ENDPOINTS.LOGOUT, {});
-				localStorage.removeItem('authToken');
-				localStorage.removeItem('user');
-				return true;
-		} catch (error: any) {
-				// Aún si falla el logout en el server, limpiamos local
-				localStorage.removeItem('authToken');
-				localStorage.removeItem('user');
-				throw new Error('Error al cerrar sesión: ' + (error.message || ''));
-		}
+export const logoutUser = async (): Promise<any> => {
+	try {
+		const response = await httpClient.post('/users/logout', {});
+		localStorage.removeItem('authToken');
+		localStorage.removeItem('user');
+		return response;
+	} catch (error: any) {
+		// Aún si falla el logout en el server, limpiamos local
+		localStorage.removeItem('authToken');
+		localStorage.removeItem('user');
+		throw new Error('Error al cerrar sesión: ' + (error.message || ''));
+	}
 };
 
 // Verificar si el usuario está autenticado
@@ -107,5 +106,45 @@ export const getUserById = async (userId: string): Promise<User> => {
 		return response;
 	} catch (error: any) {
 		throw new Error('Error al obtener usuario: ' + (error.message || ''));
+	}
+};
+
+// Función para actualizar usuario por ID
+export const updateUserById = async (userId: string, updates: any): Promise<User> => {
+	try {
+		const response = await httpClient.put(`/users/${userId}`, updates);
+		// Actualiza localStorage si es el usuario actual
+		const currentUser = getCurrentUser();
+		if (currentUser && currentUser.id === userId) {
+			localStorage.setItem('user', JSON.stringify(response));
+		}
+		return response;
+	} catch (error: any) {
+		throw new Error('Error al actualizar usuario: ' + (error.message || ''));
+	}
+};
+
+// Función para eliminar usuario por ID
+export const deleteUserById = async (userId: string): Promise<void> => {
+	try {
+		await httpClient.delete(`/users/${userId}`);
+		// Limpia localStorage si el usuario eliminado es el actual
+		const currentUser = getCurrentUser();
+		if (currentUser && currentUser.id === userId) {
+			localStorage.removeItem('authToken');
+			localStorage.removeItem('user');
+		}
+	} catch (error: any) {
+		throw new Error('Error al eliminar usuario: ' + (error.message || ''));
+	}
+};
+
+// Función para cambiar contraseña
+export const changePassword = async (payload: { currentPassword: string; newPassword: string }): Promise<any> => {
+	try {
+		const response = await httpClient.post('/users/change-password', payload);
+		return response;
+	} catch (error: any) {
+		throw new Error(error.message || 'Error al cambiar la contraseña');
 	}
 };

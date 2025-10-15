@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./NavBar.scss";
 import { FaUserCircle, FaUser, FaHeart, FaEdit, FaSignOutAlt, FaSearch } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
+import { logoutUser } from '../../utils/authApi';
 
 interface NavBarProps {
   searchQuery?: string;
@@ -11,6 +13,7 @@ interface NavBarProps {
 const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSearchSubmit }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +24,24 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      const res = await logoutUser();
+      if (res && res.message) {
+        alert(res.message);
+      } else {
+        alert('Sesión cerrada correctamente');
+      }
+    } catch (err: any) {
+      alert(err?.message || 'Sesión cerrada localmente');
+    } finally {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      navigate('/login');
+    }
   };
 
   // Close the menu when user click outside of it
@@ -86,7 +107,7 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
                 <FaEdit />
                 <span>Editar perfil</span>
               </a>
-              <a href="/logout" className="user-menu-item">
+              <a href="/logout" className="user-menu-item" onClick={handleLogout}>
                 <FaSignOutAlt />
                 <span>Cerrar sesión</span>
               </a>
