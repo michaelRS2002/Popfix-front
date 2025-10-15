@@ -92,3 +92,20 @@ export const getCurrentUser = (): User | null => {
 	const user = localStorage.getItem('user');
 	return user ? JSON.parse(user) : null;
 };
+
+// Función para obtener usuario por ID desde el backend
+export const getUserById = async (userId: string): Promise<User> => {
+	try {
+		const response = await httpClient.get(`/users/${userId}`);
+		// Actualizar localStorage con datos frescos
+		if (response) {
+			const currentUser = getCurrentUser();
+			if (currentUser && currentUser.id === userId) {
+				localStorage.setItem('user', JSON.stringify(response));
+			}
+		}
+		return response;
+	} catch (error: any) {
+		throw new Error('Error al obtener usuario: ' + (error.message || ''));
+	}
+};

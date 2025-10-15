@@ -31,8 +31,8 @@ const SiteMap: React.FC = () => {
               <li><a href="/register">Registrarse</a></li>
               <li><a href="/user">Mi Perfil</a></li>
               <li><a href="/edit-user">Editar Perfil</a></li>
-              <li><a href="/change-password">Cambiar Contraseña</a></li>
-              <li><a href="/delete-user">Eliminar Cuenta</a></li>
+              <li><a href="">Cambiar Contraseña</a></li>
+              <li><a href="">Eliminar Cuenta</a></li>
             </ul>
           </div>
 
@@ -40,7 +40,7 @@ const SiteMap: React.FC = () => {
             <h2>Recuperación</h2>
             <ul>
               <li><a href="/forgot-password">Olvidé mi Contraseña</a></li>
-              <li><a href="/reset-password">Restablecer Contraseña</a></li>
+              <li><a href="">Restablecer Contraseña</a></li>
             </ul>
           </div>
         </div>
