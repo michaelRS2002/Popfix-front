@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Forgot-password.scss";
-import NavBar from '../../../components/NavBar';
+import NavBar from '../../../components/NavBar/NavBar';
 import { Link } from 'react-router-dom';
 import { validateEmail } from '../../../utils/validators';
 import { forgotPassword } from '../../../utils/authApi';
