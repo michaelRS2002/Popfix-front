@@ -64,7 +64,7 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
       
       <ul className="navbar_links">
         <li><a href="/">Inicio</a></li>
-        <li><a href="/peliculas">Películas</a></li>
+        <li><a href="/login">Iniciar Sesión</a></li>
         <li><a href="/favoritos">Favoritos</a></li>
         <li><a href="/perfil">Perfil</a></li>
       </ul>
