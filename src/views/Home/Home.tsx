@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import './Home.scss'
-import NavBar from '../../components/NavBar'
+import NavBar from '../../components/NavBar/NavBar'
+import HelpButton from '../../components/HelpButton/HelpButton'
 import { getAllMovies, searchMovies } from '../../utils/moviesApi'
+import { AiFillStar } from 'react-icons/ai'
 
 interface Movie {
   id: number
@@ -90,42 +92,13 @@ export function Home() {
 
   return (
     <div className="Home">
-      <NavBar />
+      <NavBar 
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onSearchSubmit={handleSearch}
+      />
       
       <div className="home-container">
-        {/* Sección de búsqueda */}
-        <div className="search-section">
-          <form onSubmit={handleSearch} className="search-bar">
-            <input
-              type="text"
-              placeholder="Buscar Películas"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
-            <button type="submit" className="search-icon" aria-label="Buscar">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          </form>
-          <button className="user-icon" aria-label="Perfil de usuario">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-
         {/* Sección de catálogo */}
         <div className="catalog-section">
           <div className="catalog-header">
@@ -176,8 +149,7 @@ export function Home() {
                     <div className="movie-header">
                       <h3>{movie.title}</h3>
                       <div className="movie-rating">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        </svg>
+                        <AiFillStar />
                         <span>{movie.rating}</span>
                       </div>
                     </div>
@@ -192,6 +164,9 @@ export function Home() {
           </div>
         </div>
       </div>
+      
+      {/* Botón de ayuda flotante */}
+      <HelpButton />
     </div>
   )
 }

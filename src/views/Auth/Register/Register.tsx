@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import "./Register.scss";
-import NavBar from '../../../components/NavBar';
+import NavBar from '../../../components/NavBar/NavBar';
 import { Link } from 'react-router-dom';
 import { validateRegisterForm } from '../../../utils/validators';
 import { registerUser } from '../../../utils/authApi';

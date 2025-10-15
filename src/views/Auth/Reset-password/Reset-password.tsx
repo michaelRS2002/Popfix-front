@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { resetPassword } from '../../../utils/authApi';
-import NavBar from '../../../components/NavBar';
+import NavBar from '../../../components/NavBar/NavBar';
 import './Reset-password.scss';
 
 // Popup logic solo para success
