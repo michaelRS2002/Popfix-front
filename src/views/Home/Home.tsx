@@ -38,7 +38,7 @@ export function Home() {
   const loadMovies = async () => {
     setLoading(true)
     try {
-      // Conectar con la API -- Back
+      // Connect with API -- Back
       const response = await getAllMovies(1)
       const mockMovies: Movie[] = Array.from({ length: 8 }, (_, i) => ({
         id: i + 1,
@@ -52,7 +52,7 @@ export function Home() {
       setMovies(mockMovies)
     } catch (error) {
       console.error('Error loading movies:', error)
-      // Datos de Ejemplo
+      // Example Data
       const mockMovies: Movie[] = Array.from({ length: 8 }, (_, i) => ({
         id: i + 1,
         title: `Película ${i + 1}`,
@@ -99,14 +99,14 @@ export function Home() {
       />
       
       <div className="home-container">
-        {/* Sección de catálogo */}
+        {/* Catalog Section */}
         <div className="catalog-section">
           <div className="catalog-header">
             <h2>Explora Nuestro Catálogo</h2>
             <p>Descubre miles de películas y series en alta definición</p>
           </div>
 
-          {/* Filtros de categoría */}
+          {/* Category Filters */}
           <div className="category-filters">
             {categories.map((category) => (
               <button
@@ -119,7 +119,7 @@ export function Home() {
             ))}
           </div>
 
-          {/* Cuadrícula de películas */}
+          {/* Movie Grid */}
           <div className="movies-grid">
             {loading ? (
               <p>Cargando películas...</p>
@@ -165,7 +165,7 @@ export function Home() {
         </div>
       </div>
       
-      {/* Botón de ayuda flotante */}
+      {/* Help Button */}
       <HelpButton />
     </div>
   )

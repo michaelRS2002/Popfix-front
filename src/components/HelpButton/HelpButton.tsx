@@ -7,7 +7,7 @@ const HelpButton: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // No mostrar el botón en la página del mapa del sitio
+  // Don't show the button only on SiteMap
   if (location.pathname === '/mapa-del-sitio') {
     return null;
   }
