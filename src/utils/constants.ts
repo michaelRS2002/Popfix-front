@@ -1,7 +1,7 @@
 // Configuración y constantes de la aplicación PopFix
 
 // URL base del API (cambia por la URL de tu backend)
-export const API_BASE_URL = 'http://localhost:5100/api'
+export const API_BASE_URL = 'https://popfix-back.onrender.com/api'
 
 // Endpoints del API
 export const API_ENDPOINTS = {
