@@ -7,13 +7,14 @@ import './main.scss'
 
 // VIEWS
 import { Home } from './views/Home/Home'
+import MovieScreen from './views/MovieScreen/MovieScreen'
 import Login from './views/Auth/Login/Login'
 import Register from './views/Auth/Register/Register'
 import ForgotPassword from './views/Auth/Forgot-password/Forgot-password'
 import ResetPassword from './views/Auth/Reset-password/Reset-password'
 import User from './views/User/User'
 import EditUser from './views/User/Edit-user/Edit-user'
-import DeleteUser from './views/User/Delete-user'
+import DeleteUser from './views/User/Delete-user/Delete-user'
 import ChangePassword from './views/User/Change-password/Change-password'
 import SiteMap from './views/SiteMap/SiteMap'
 import { NotFound } from './views/NotFound'
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <Routes>
         {/* Routes Public */}
         <Route path="/" element={<Home />} />
+        <Route path="/movie/:id" element={<MovieScreen />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
