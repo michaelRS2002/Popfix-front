@@ -1,45 +1,79 @@
 import React, { useState } from "react";
 import "./Forgot-password.scss";
-import NavBar from '../../../components/NavBar/NavBar';
-import { Link } from 'react-router-dom';
-import { validateEmail } from '../../../utils/validators';
-import { forgotPassword } from '../../../utils/authApi';
+import NavBar from "../../../components/NavBar/NavBar";
+import { Link } from "react-router-dom";
+import { validateEmail } from "../../../utils/validators";
+import { forgotPassword } from "../../../utils/authApi";
 
-// Popup logic solo para success
-function showSuccess(message: string) {
-  let popup = document.getElementById('popup-message');
+/**
+ * Displays a temporary success popup message.
+ *
+ * @param {string} message - The success message to display in the popup.
+ * @returns {void}
+ */
+function showSuccess(message: string): void {
+  let popup = document.getElementById("popup-message");
   if (!popup) {
-    popup = document.createElement('div');
-    popup.id = 'popup-message';
+    popup = document.createElement("div");
+    popup.id = "popup-message";
     document.body.appendChild(popup);
   }
-  popup.className = 'popup-message popup-success popup-show';
+  popup.className = "popup-message popup-success popup-show";
   popup.textContent = message;
-  // Remove after 3s
+
+  // Remove previous timeout if any
   // @ts-ignore
   clearTimeout((popup as any)._timeout);
+
+  // Hide the popup after 3 seconds
   // @ts-ignore
   (popup as any)._timeout = setTimeout(() => {
-    popup?.classList.remove('popup-show');
+    popup?.classList.remove("popup-show");
   }, 3000);
 }
 
-const ForgotPassword: React.FC = () => {
-  const [email, setEmail] = useState('');
+/**
+ * ForgotPassword component.
+ *
+ * This component provides a form where users can request a password recovery email.
+ * It includes validation for the email field and displays feedback messages for success or error.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Forgot Password page.
+ */
+const ForgotPassword: React.FC = (): JSX.Element => {
+  /** User email input state */
+  const [email, setEmail] = useState("");
+  /** Validation error for the email field */
   const [emailError, setEmailError] = useState<string | null>(null);
+  /** General form error message */
   const [formError, setFormError] = useState<string | null>(null);
+  /** Indicates whether the form submission is in progress */
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  /**
+   * Handles changes in the email input field.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
+   * @returns {void}
+   */
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setEmail(e.target.value);
     setEmailError(null);
     setFormError(null);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  /**
+   * Handles the form submission to request a password reset email.
+   *
+   * @async
+   * @param {React.FormEvent} e - The form submission event.
+   * @returns {Promise<void>}
+   */
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setFormError(null);
-    
+
     const emailValidationError = validateEmail(email);
     if (emailValidationError) {
       setEmailError(emailValidationError);
@@ -49,13 +83,18 @@ const ForgotPassword: React.FC = () => {
     setLoading(true);
     try {
       await forgotPassword({ email });
-      showSuccess('¡Enlace de recuperación enviado! Revisa tu correo electrónico.');
+      showSuccess(
+        "¡Enlace de recuperación enviado! Revisa tu correo electrónico."
+      );
+
+      // Reset form after short delay
       setTimeout(() => {
-        // Reset form or redirect
-        setEmail('');
+        setEmail("");
       }, 2000);
     } catch (error: any) {
-      setFormError(error.message || 'Error al enviar el correo de recuperación');
+      setFormError(
+        error.message || "Error al enviar el correo de recuperación"
+      );
     } finally {
       setLoading(false);
     }
@@ -67,11 +106,21 @@ const ForgotPassword: React.FC = () => {
       <div className="app-container-forgot">
         <div className="main-content-forgot">
           <div className="forgot-box">
-            <Link to="/login" className="back-arrow-forgot" aria-label="Volver al login">←</Link>
-            <img src="/static/img/film-icon.jpg" alt="PopFix logo" className="icon" />
+            <Link
+              to="/login"
+              className="back-arrow-forgot"
+              aria-label="Volver al login"
+            >
+              ←
+            </Link>
+            <img
+              src="/static/img/film-icon.jpg"
+              alt="PopFix logo"
+              className="icon"
+            />
             <h2>Recuperar contraseña</h2>
             <p>Ingresa el correo para recuperar tu contraseña</p>
-            
+
             <form className="form" onSubmit={handleSubmit} noValidate>
               <label htmlFor="email">Correo Electrónico</label>
               <input
@@ -83,20 +132,33 @@ const ForgotPassword: React.FC = () => {
                 onChange={handleChange}
                 disabled={loading}
               />
-              {emailError && <span className="error-message">{emailError}</span>}
+              {emailError && (
+                <span className="error-message">{emailError}</span>
+              )}
 
               <button type="submit" className="button" disabled={loading}>
-                {loading ? 'Enviando...' : 'Enviar enlace de recuperación'}
+                {loading ? "Enviando..." : "Enviar enlace de recuperación"}
               </button>
-              {formError && <div className="error-message" style={{ marginTop: 8 }}>{formError}</div>}
+
+              {formError && (
+                <div className="error-message" style={{ marginTop: 8 }}>
+                  {formError}
+                </div>
+              )}
             </form>
+
             <label className="login-redirect">
-              ¿Recordaste tu contraseña?{' '}
-              <Link to="/login" className="login-link">Volver al Inicio de Sesión</Link>
+              ¿Recordaste tu contraseña?{" "}
+              <Link to="/login" className="login-link">
+                Volver al Inicio de Sesión
+              </Link>
             </label>
+
             <label className="login-redirect">
-              ¿Aún no tienes cuenta? {' '}
-              <Link to="/register" className="login-link">Registrarse</Link>
+              ¿Aún no tienes cuenta?{" "}
+              <Link to="/register" className="login-link">
+                Registrarse
+              </Link>
             </label>
           </div>
         </div>
