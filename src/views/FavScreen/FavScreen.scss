@@ -87,6 +87,9 @@ $red: #FF0000;
       gap: 1rem;
       margin-bottom: 2rem;
       flex-wrap: wrap;
+      border: 1px solid $dark;
+      border-radius: 12px;
+      padding: 1rem;
 
       .search-box {
         flex: 1;
