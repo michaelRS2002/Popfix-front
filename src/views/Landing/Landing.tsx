@@ -18,7 +18,7 @@ const Landing: React.FC = () => {
       <section className="hero-section">
         <div className="hero-content">
           <div className="hero-text">
-            <h1 className="hero-title">Popflix</h1>
+            <h1 className="hero-title">Popfix</h1>
             <p className="hero-subtitle">Tu plataforma de películas en línea</p>
             <p className="hero-description">
               Descubre miles de películas y series. Crea tu lista de favoritos, 
@@ -51,7 +51,7 @@ const Landing: React.FC = () => {
 
       {/* Features Section */}
       <section className="features-section">
-        <h2>¿Por qué elegir Popflix?</h2>
+        <h2>¿Por qué elegir Popfix?</h2>
         <div className="features-grid">
           <div className="feature-card">
             <div className="feature-icon">🎬</div>
@@ -79,10 +79,10 @@ const Landing: React.FC = () => {
       {/* About Section */}
       <section id="about-section" className="about-section">
         <div className="about-content">
-          <h2>Acerca de Popflix</h2>
+          <h2>Acerca de Popfix</h2>
           <div className="about-text">
             <p>
-              Popflix es tu destino definitivo para el entretenimiento en línea. 
+              Popfix es tu destino definitivo para el entretenimiento en línea. 
               Diseñada con los cinéfilos en mente, nuestra plataforma ofrece una 
               experiencia inmersiva para descubrir, ver y disfrutar de tus películas favoritas.
             </p>
@@ -131,11 +131,6 @@ const Landing: React.FC = () => {
       <footer className="landing-footer">
         <div className="footer-content">
           <p>&copy; 2025 Popflix. Todos los derechos reservados.</p>
-          <div className="footer-links">
-            <a href="#privacy">Privacidad</a>
-            <a href="#terms">Términos</a>
-            <a href="#contact">Contacto</a>
-          </div>
         </div>
       </footer>
     </div>
