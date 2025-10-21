@@ -143,18 +143,27 @@ const NavBar: React.FC<NavBarProps> = ({
             
             {isMenuOpen && (
               <div className="user-menu">
-                <a href="/perfil" className="user-menu-item">
+                <button 
+                  className="user-menu-item"
+                  onClick={() => handleNavigate('/perfil')}
+                >
                   <FaUser />
                   <span>Mi perfil</span>
-                </a>
-                <a href="/edit-user" className="user-menu-item">
+                </button>
+                <button 
+                  className="user-menu-item"
+                  onClick={() => handleNavigate('/edit-user')}
+                >
                   <FaEdit />
                   <span>Editar perfil</span>
-                </a>
-                <a href="/logout" className="user-menu-item logout-item" onClick={handleLogout}>
+                </button>
+                <button 
+                  className="user-menu-item logout-item"
+                  onClick={handleLogout}
+                >
                   <FaSignOutAlt />
                   <span>Cerrar sesión</span>
-                </a>
+                </button>
               </div>
             )}
           </div>
@@ -212,18 +221,27 @@ const NavBar: React.FC<NavBarProps> = ({
 
           {/* Mobile Profile Menu */}
           <div className="mobile-profile">
-            <a href="/perfil" className="mobile-profile-item">
+            <button 
+              className="mobile-profile-item"
+              onClick={() => handleNavigate('/perfil')}
+            >
               <FaUser />
               <span>Mi perfil</span>
-            </a>
-            <a href="/edit-user" className="mobile-profile-item">
+            </button>
+            <button 
+              className="mobile-profile-item"
+              onClick={() => handleNavigate('/edit-user')}
+            >
               <FaEdit />
               <span>Editar perfil</span>
-            </a>
-            <a href="/logout" className="mobile-profile-item logout-item" onClick={handleLogout}>
+            </button>
+            <button 
+              className="mobile-profile-item logout-item"
+              onClick={handleLogout}
+            >
               <FaSignOutAlt />
               <span>Cerrar sesión</span>
-            </a>
+            </button>
           </div>
         </div>
       )}
