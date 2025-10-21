@@ -1,17 +1,20 @@
 /* Estilos principales de PopFix */
 $color-bg: #ffffff;
+$bg-image: "/static/img/wallpaper.jpeg";
 * {
   margin: 0;
   padding: 0;
 }
 
-body, #root {
+body,
+#root {
   background-color: $color-bg;
+  background-image: url(#{$bg-image});
   min-height: 100vh;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   line-height: 1.6;
   color: #333;
 }
