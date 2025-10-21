@@ -12,6 +12,7 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSearchSubmit }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -40,9 +41,17 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
     } finally {
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
+      setIsLoggedIn(false);
+      setIsMenuOpen(false);
       navigate('/login');
     }
   };
+
+  // Check if user is logged in on component mount
+  useEffect(() => {
+    const authToken = localStorage.getItem('authToken');
+    setIsLoggedIn(!!authToken);
+  }, []);
 
   // Close the menu when user click outside of it
   useEffect(() => {
@@ -64,7 +73,7 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
       
       <ul className="navbar_links">
         <li><a href="/">Inicio</a></li>
-        <li><a href="/login">Iniciar Sesión</a></li>
+        <li><a href="/peliculas">Peliculas</a></li>
         <li><a href="/favoritos">Favoritos</a></li>
       </ul>
       
@@ -86,7 +95,7 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
         <div className="navbar_actions" ref={menuRef}>
           <button 
             className="navbar_user-icon" 
-            aria-label="Perfil de usuario"
+            aria-label={isLoggedIn ? "Perfil de usuario" : "Iniciar sesión"}
             onClick={toggleMenu}
           >
             <FaUserCircle size={24} />
@@ -94,22 +103,31 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
           
           {isMenuOpen && (
             <div className="user-menu">
-              <a href="/perfil" className="user-menu-item">
-                <FaUser />
-                <span>Mi perfil</span>
-              </a>
-              <a href="/favoritos" className="user-menu-item">
-                <FaHeart />
-                <span>Lista de favoritos</span>
-              </a>
-              <a href="/edit-user" className="user-menu-item">
-                <FaEdit />
-                <span>Editar perfil</span>
-              </a>
-              <a href="/logout" className="user-menu-item" onClick={handleLogout}>
-                <FaSignOutAlt />
-                <span>Cerrar sesión</span>
-              </a>
+              {!isLoggedIn ? (
+                <a href="/login" className="user-menu-item">
+                  <FaUser />
+                  <span>Iniciar Sesión</span>
+                </a>
+              ) : (
+                <>
+                  <a href="/perfil" className="user-menu-item">
+                    <FaUser />
+                    <span>Mi perfil</span>
+                  </a>
+                  <a href="/favoritos" className="user-menu-item">
+                    <FaHeart />
+                    <span>Lista de favoritos</span>
+                  </a>
+                  <a href="/edit-user" className="user-menu-item">
+                    <FaEdit />
+                    <span>Editar perfil</span>
+                  </a>
+                  <a href="/logout" className="user-menu-item" onClick={handleLogout}>
+                    <FaSignOutAlt />
+                    <span>Cerrar sesión</span>
+                  </a>
+                </>
+              )}
             </div>
           )}
         </div>
