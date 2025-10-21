@@ -143,16 +143,28 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    background: #222130;
+    padding: 0.875rem 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
 
     svg {
-      width: 80px;
-      height: 80px;
+      width: 24px;
+      height: 24px;
       color: #ffffff;
-      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+
+    span {
+      color: #ffffff;
     }
 
     &:hover {
-      transform: translate(-50%, -50%) scale(1.1);
+      transform: translate(-50%, -50%) scale(1.05);
+      background: #2d2b3d;
     }
   }
 
