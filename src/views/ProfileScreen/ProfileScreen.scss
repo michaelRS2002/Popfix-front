@@ -565,3 +565,17 @@
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 }
+
+button:focus-visible,
+.tab-button:focus-visible,
+.movie-card:focus-visible {
+  outline: 3px solid #222130;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(34, 33, 48, 0.1);
+}
+
+.back-button:focus-visible,
+.edit-button:focus-visible {
+  outline: 3px solid #222130;
+  outline-offset: 2px;
+}

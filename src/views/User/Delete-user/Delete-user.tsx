@@ -52,7 +52,7 @@ function showUndoPopup(
   let timeLeft = seconds;
 
   const updateMessage = () => {
-    popup!.innerHTML = `${message} (${timeLeft}s) <button id="undo-btn" style="margin-left:1rem;background:#3b82f6;color:#fff;border:none;padding:0.5rem 1rem;border-radius:6px;cursor:pointer;">Deshacer</button>`;
+    popup!.innerHTML = `${message} (${timeLeft}s) <button id="undo-btn" aria-label="Cancell account deletion" style="margin-left:1rem;background:#3b82f6;color:#fff;border:none;padding:0.5rem 1rem;border-radius:6px;cursor:pointer;">Deshacer</button>`;
     const undoBtn = document.getElementById("undo-btn");
     if (undoBtn) {
       undoBtn.onclick = () => {

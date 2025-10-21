@@ -92,11 +92,19 @@ export function ProfileScreen() {
       <div className="profile-container">
         {/* Header */}
         <div className="profile-header">
-          <button className="back-button" onClick={handleBackToCatalog}>
+          <button
+            className="back-button"
+            onClick={handleBackToCatalog}
+            aria-label="Return to catalog"
+          >
             <IoArrowBack />
             <span>Volver al Catálogo</span>
           </button>
-          <button className="edit-button" onClick={handleEditProfile}>
+          <button
+            className="edit-button"
+            onClick={handleEditProfile}
+            aria-label="Edit profile"
+          >
             <AiFillSetting />
             <span>Editar Perfil</span>
           </button>
@@ -119,7 +127,10 @@ export function ProfileScreen() {
                 <div className="stat-item">
                   <PiFilmSlate />
                   <div className="stat-content">
-                    <span className="stat-number">
+                    <span
+                      className="stat-number"
+                      aria-label="All the watched Movies"
+                    >
                       {userData.stats.moviesWatched}
                     </span>
                     <span className="stat-label">Películas vistas</span>
@@ -129,7 +140,10 @@ export function ProfileScreen() {
                 <div className="stat-item">
                   <AiFillClockCircle />
                   <div className="stat-content">
-                    <span className="stat-number">
+                    <span
+                      className="stat-number"
+                      aria-label="Hours of watched movies"
+                    >
                       {userData.stats.hoursWatched}
                     </span>
                     <span className="stat-label">Horas vistas</span>
@@ -139,7 +153,10 @@ export function ProfileScreen() {
                 <div className="stat-item stat-rating">
                   <CiStar />
                   <div className="stat-content">
-                    <span className="stat-number">
+                    <span
+                      className="stat-number"
+                      aria-label="Average rating of watched movies"
+                    >
                       {userData.stats.averageRating}
                     </span>
                     <span className="stat-label">Rating promedio</span>
@@ -149,7 +166,12 @@ export function ProfileScreen() {
                 <div className="stat-item stat-favorites">
                   <CiHeart />
                   <div className="stat-content">
-                    <span className="stat-number">{favoriteMovies.length}</span>
+                    <span
+                      className="stat-number"
+                      aria-label="Number of favorite movies"
+                    >
+                      {favoriteMovies.length}
+                    </span>
                     <span className="stat-label">Favoritos</span>
                   </div>
                 </div>
@@ -157,7 +179,10 @@ export function ProfileScreen() {
                 <div className="stat-item favorite-genre">
                   <AiFillTrophy />
                   <div className="stat-content">
-                    <span className="stat-number">
+                    <span
+                      className="stat-number"
+                      aria-label="Favorite genre of movies"
+                    >
                       {userData.stats.favoriteGenre}
                     </span>
                     <span className="stat-label">Género Favorito</span>
