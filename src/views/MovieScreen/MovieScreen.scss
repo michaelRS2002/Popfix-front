@@ -1,7 +1,7 @@
 .MovieScreen {
   min-height: 100vh;
-  background: #f5f7fb;
-  color: #111827;
+  background: #F4F4F4;
+  color: #222130;
   padding-bottom: 2rem;
 }
 
@@ -20,12 +20,13 @@
 
 // Comments Section
 .comments-section {
-  background: #ffffff;
+  background: #FEFEFE;
   border-radius: 16px;
   padding: 2rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #D9D9D9;
   grid-column: 1; // Alinear con la columna del video
   grid-row: 2;
+  box-shadow: 0 2px 8px rgba(34, 33, 48, 0.06);
 }
 
 // Video Section
@@ -75,7 +76,7 @@
 }
 
 .play-button-overlay {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(254, 254, 254, 0.9);
   border: none;
   border-radius: 50%;
   width: 100px;
@@ -83,12 +84,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #111827;
+  color: #222130;
   cursor: pointer;
   transition: all 0.3s;
 
   &:hover {
-    background: #ffffff;
+    background: #FEFEFE;
     transform: scale(1.1);
   }
 }
@@ -128,15 +129,16 @@
 
 // Movie Info Section
 .movie-info-section {
-  background: #ffffff;
+  background: #FEFEFE;
   border-radius: 16px;
   padding: 2rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #D9D9D9;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
   grid-column: 2;
-  grid-row: 1;
+  grid-row: 1 / span 2;
+  box-shadow: 0 2px 8px rgba(34, 33, 48, 0.06);
 }
 
 .movie-header {
@@ -157,7 +159,7 @@
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  color: #111827;
+  color: #222130;
   padding: 0.5rem 0.875rem;
   border-radius: 8px;
   font-weight: 700;
@@ -165,14 +167,15 @@
   flex-shrink: 0;
 
   svg {
-    color: #f59e0b;
+    color: #FFD700;
   }
 }
 
 .movie-meta {
   display: flex;
   gap: 1.5rem;
-  color: #6b7280;
+  color: #222130;
+  opacity: 0.6;
   font-size: 0.95rem;
 
   span {
@@ -185,37 +188,39 @@
   .genre-badge {
     display: inline-block;
     padding: 0.5rem 1rem;
-    background: #f3f4f6;
+    background: #F4F4F4;
     border-radius: 20px;
     font-size: 0.875rem;
-    color: #111827;
-    border: 1px solid #e5e7eb;
+    color: #222130;
+    border: 1px solid #D9D9D9;
     font-weight: 500;
   }
 }
 
 .movie-director {
-  color: #4b5563;
+  color: #222130;
+  opacity: 0.7;
   font-size: 0.95rem;
   font-weight: 500;
 }
 
 .movie-description {
-  color: #4b5563;
+  color: #222130;
+  opacity: 0.7;
   line-height: 1.6;
   margin: 0;
 }
 
 // User Rating
 .user-rating {
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid #D9D9D9;
   padding-top: 1.5rem;
 
   label {
     display: block;
     font-weight: 600;
     margin-bottom: 0.75rem;
-    color: #111827;
+    color: #222130;
   }
 }
 
@@ -229,14 +234,14 @@
     cursor: pointer;
     padding: 0.25rem;
     transition: all 0.2s;
-    color: #d1d5db;
+    color: #D9D9D9;
 
     svg {
       font-size: 1.75rem;
     }
 
     &.active {
-      color: #f59e0b;
+      color: #FFD700;
     }
 
     &:hover {
@@ -263,19 +268,21 @@
     font-size: 1.5rem;
     font-weight: 700;
     margin: 0;
+    color: #222130;
 
     svg {
-      color: #6b7280;
+      color: #222130;
+      opacity: 0.6;
     }
   }
 }
 
 .comment-input-box {
-  background: #f9fafb;
+  background: #F4F4F4;
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #D9D9D9;
 
   textarea {
     width: 100%;
@@ -285,17 +292,18 @@
     resize: none;
     font-family: inherit;
     font-size: 0.95rem;
-    color: #111827;
+    color: #222130;
 
     &::placeholder {
-      color: #9ca3af;
+      color: #222130;
+      opacity: 0.5;
     }
   }
 }
 
 .comment-submit-btn {
-  background: #111827;
-  color: #ffffff;
+  background: #222130;
+  color: #FEFEFE;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -304,14 +312,14 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.2s;
+  transition: all 0.3s;
   margin-bottom: 1.5rem;
   margin-left: auto;
 
   &:hover:not(:disabled) {
-    background: #1f2937;
+    background: #FF0000;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(34, 33, 48, 0.2);
   }
 
   &:disabled {
@@ -323,7 +331,7 @@
 .comment-separator {
   width: 100%;
   height: 1px;
-  background: #111827;
+  background: #D9D9D9;
   margin-bottom: 1.5rem;
 }
 
@@ -337,17 +345,17 @@
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  background: #f9fafb;
+  background: #F4F4F4;
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #D9D9D9;
 }
 
 .comment-avatar {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #111827;
-  color: #ffffff;
+  background: #222130;
+  color: #FEFEFE;
   display: flex;
   align-items: center;
   justify-content: center;
