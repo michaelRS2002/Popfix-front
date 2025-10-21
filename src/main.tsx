@@ -8,6 +8,7 @@ import './main.scss'
 // VIEWS
 import { Home } from './views/Home/Home'
 import MovieScreen from './views/MovieScreen/MovieScreen'
+import { ProfileScreen } from './views/ProfileScreen/ProfileScreen'
 import Login from './views/Auth/Login/Login'
 import Register from './views/Auth/Register/Register'
 import ForgotPassword from './views/Auth/Forgot-password/Forgot-password'
@@ -26,6 +27,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         {/* Routes Public */}
         <Route path="/" element={<Home />} />
         <Route path="/movie/:id" element={<MovieScreen />} />
+        <Route path="/perfil" element={<ProfileScreen />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
