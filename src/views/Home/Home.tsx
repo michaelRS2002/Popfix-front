@@ -175,6 +175,7 @@ export function Home() {
                         aria-label="Reproducir película"
                       >
                         <AiFillPlayCircle />
+                        <span>Reproducir</span>
                       </button>
                       <button 
                         className="favorite-button"
