@@ -4,12 +4,13 @@ import './ProfileScreen.scss'
 import { 
   AiFillClockCircle,
   AiFillTrophy,
-  AiFillVideoCamera,
   AiFillSetting
 } from 'react-icons/ai'
 import { CiHeart, CiStar } from 'react-icons/ci'
 import { IoArrowBack } from 'react-icons/io5'
-import { LuUser } from 'react-icons/lu'
+import { FaFilm } from "react-icons/fa6";
+import { PiFilmSlate } from "react-icons/pi";
+
 
 interface Movie {
   id: number
@@ -105,7 +106,7 @@ export function ProfileScreen() {
           {/* Profile Info Card */}
           <div className="profile-info-card">
             <div className="profile-avatar">
-              <LuUser />
+              <FaFilm />
             </div>
             
             <div className="profile-details">
@@ -115,7 +116,7 @@ export function ProfileScreen() {
               {/* Stats - Horizontal Row */}
               <div className="profile-stats">
                 <div className="stat-item">
-                  <AiFillVideoCamera />
+                  <PiFilmSlate />
                   <div className="stat-content">
                     <span className="stat-number">{userData.stats.moviesWatched}</span>
                     <span className="stat-label">Películas vistas</span>
