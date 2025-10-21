@@ -18,6 +18,7 @@ import EditUser from './views/User/Edit-user/Edit-user'
 import DeleteUser from './views/User/Delete-user/Delete-user'
 import ChangePassword from './views/User/Change-password/Change-password'
 import SiteMap from './views/SiteMap/SiteMap'
+import FavScreen from './views/FavScreen/FavScreen'
 import { NotFound } from './views/NotFound'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
@@ -41,6 +42,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         
         {/* Other Routes */}
         <Route path="/mapa-del-sitio" element={<SiteMap />} />
+        <Route path="/favoritos" element={<FavScreen />}></Route>
   
         <Route path="*" element={<NotFound />} />
       </Routes>

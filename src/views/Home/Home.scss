@@ -176,16 +176,30 @@
     height: 40px;
     border-radius: 50%;
     background: #000000;
+    transition: all 0.3s ease;
     
     svg {
       width: 24px;
       height: 24px;
       color: #ffffff;
+      transition: color 0.3s ease;
     }
 
     &:hover {
       background: #1f1f1f;
       transform: scale(1.1);
+    }
+
+    &.is-favorite {
+      background: #FF0000;
+
+      svg {
+        color: #ffffff;
+      }
+
+      &:hover {
+        background: #cc0000;
+      }
     }
   }
 }

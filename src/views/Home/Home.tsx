@@ -4,7 +4,7 @@ import './Home.scss'
 import NavBar from '../../components/NavBar/NavBar'
 import HelpButton from '../../components/HelpButton/HelpButton'
 import { getAllMovies, searchMovies } from '../../utils/moviesApi'
-import { AiFillStar, AiFillPlayCircle, AiOutlinePlus } from 'react-icons/ai'
+import { AiFillStar, AiFillPlayCircle, AiOutlinePlus, AiFillHeart } from 'react-icons/ai'
 
 interface Movie {
   id: number
@@ -14,6 +14,7 @@ interface Movie {
   genre: string
   description: string
   poster: string
+  isFavorite?: boolean
 }
 
 export function Home() {
@@ -45,7 +46,7 @@ export function Home() {
       const mockMovies: Movie[] = Array.from({ length: 8 }, (_, i) => ({
         id: i + 1,
         title: `Película ${i + 1}`,
-        rating: 8.5,
+        rating: 4.5,
         duration: '2h 14m',
         genre: 'Acción',
         description: 'Una emocionante aventura llena de acción y efectos espectaculares.',
@@ -58,7 +59,7 @@ export function Home() {
       const mockMovies: Movie[] = Array.from({ length: 8 }, (_, i) => ({
         id: i + 1,
         title: `Película ${i + 1}`,
-        rating: 8.5,
+        rating: 4.5,
         duration: '2h 14m',
         genre: 'Acción',
         description: 'Una emocionante aventura llena de acción y efectos espectaculares.',
@@ -92,10 +93,35 @@ export function Home() {
     setSelectedCategory(category)
   }
 
-  const handleAddToFavorites = (e: React.MouseEvent, movieId: number) => {
+  const handleAddToFavorites = async (e: React.MouseEvent, movieId: number) => {
     e.stopPropagation()
-    console.log('Añadir a favoritos:', movieId)
-    // Aquí se implementará la lógica para añadir a favoritos
+    
+    // Find movie
+    const movie = movies.find(m => m.id === movieId)
+    if (!movie) return
+
+    const isCurrentlyFavorite = movie.isFavorite || false
+    
+    try {
+      // Modify this for add movies to favorites
+      // Uopdate local state
+      setMovies(prevMovies => 
+        prevMovies.map(m => 
+          m.id === movieId 
+            ? { ...m, isFavorite: !isCurrentlyFavorite }
+            : m
+        )
+      )
+
+      const message = isCurrentlyFavorite 
+        ? `"${movie.title}" eliminada de favoritos` 
+        : `"${movie.title}" añadida a favoritos`
+      console.log(message)
+      
+    } catch (error) {
+      console.error('Error al modificar favoritos:', error)
+      alert('No se pudo modificar los favoritos');
+    }
   }
 
   const handlePlayMovie = (e: React.MouseEvent, movieId: number) => {
@@ -178,11 +204,12 @@ export function Home() {
                         <span>Reproducir</span>
                       </button>
                       <button 
-                        className="favorite-button"
+                        className={`favorite-button ${movie.isFavorite ? 'is-favorite' : ''}`}
                         onClick={(e) => handleAddToFavorites(e, movie.id)}
-                        aria-label="Añadir a favoritos"
+                        aria-label={movie.isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"}
+                        title={movie.isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"}
                       >
-                        <AiOutlinePlus />
+                        {movie.isFavorite ? <AiFillHeart /> : <AiOutlinePlus />}
                       </button>
                     </div>
                   </div>
