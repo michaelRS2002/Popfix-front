@@ -36,6 +36,7 @@ $color-accent: #e50914;
   border: 1px solid $color-input;
   grid-column: 1;
   grid-row: 2;
+  box-shadow: 0 2px 8px rgba(34, 33, 48, 0.06);
 }
 
 // Video Section
@@ -85,7 +86,7 @@ $color-accent: #e50914;
 }
 
 .play-button-overlay {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(254, 254, 254, 0.9);
   border: none;
   border-radius: 50%;
   width: 100px;
@@ -98,7 +99,7 @@ $color-accent: #e50914;
   transition: all 0.3s;
 
   &:hover {
-    background: #ffffff;
+    background: #FEFEFE;
     transform: scale(1.1);
   }
 }
@@ -142,9 +143,10 @@ $color-accent: #e50914;
   border: 1px solid $color-input;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
   grid-column: 2;
-  grid-row: 1;
+  grid-row: 1 / span 2;
+  box-shadow: 0 2px 8px rgba(34, 33, 48, 0.06);
 }
 
 .movie-header {
@@ -314,7 +316,7 @@ $color-accent: #e50914;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.2s;
+  transition: all 0.3s;
   margin-bottom: 1.5rem;
   margin-left: auto;
 

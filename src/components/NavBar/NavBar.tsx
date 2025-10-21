@@ -23,6 +23,7 @@ const NavBar: React.FC<NavBarProps> = ({
   onSearchSubmit,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -54,6 +55,12 @@ const NavBar: React.FC<NavBarProps> = ({
       navigate("/login");
     }
   };
+
+  // Check if user is logged in on component mount
+  useEffect(() => {
+    const authToken = localStorage.getItem('authToken');
+    setIsLoggedIn(!!authToken);
+  }, []);
 
   // Close the menu when user click outside of it
   useEffect(() => {
