@@ -56,6 +56,8 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
     } finally {
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
+      setIsLoggedIn(false);
+      setIsMenuOpen(false);
       navigate('/login');
     }
   };

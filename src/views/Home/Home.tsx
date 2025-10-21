@@ -243,6 +243,42 @@ export function Home() {
     navigate(`/movie/${movieObj.id}`, { state: movieObj })
   }
 
+  const handleAddToFavorites = async (e: React.MouseEvent, movieId: number) => {
+    e.stopPropagation()
+    
+    // Find movie
+    const movie = movies.find(m => m.id === movieId)
+    if (!movie) return
+
+    const isCurrentlyFavorite = movie.isFavorite || false
+    
+    try {
+      // Modify this for add movies to favorites
+      // Uopdate local state
+      setMovies(prevMovies => 
+        prevMovies.map(m => 
+          m.id === movieId 
+            ? { ...m, isFavorite: !isCurrentlyFavorite }
+            : m
+        )
+      )
+
+      const message = isCurrentlyFavorite 
+        ? `"${movie.title}" eliminada de favoritos` 
+        : `"${movie.title}" añadida a favoritos`
+      console.log(message)
+      
+    } catch (error) {
+      console.error('Error al modificar favoritos:', error)
+      alert('No se pudo modificar los favoritos');
+    }
+  }
+
+  const handlePlayMovie = (e: React.MouseEvent, movieId: number) => {
+    e.stopPropagation()
+    navigate(`/movie/${movieId}`)
+  }
+
   return (
     <div className="Home">
       <NavBar 
