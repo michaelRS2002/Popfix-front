@@ -105,6 +105,79 @@
   }
 }
 
+.movie-hover-actions {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 10;
+
+  .movie-card:hover & {
+    opacity: 1;
+  }
+
+  .play-button,
+  .favorite-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    svg {
+      width: 80px;
+      height: 80px;
+      color: #ffffff;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+
+    &:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+  }
+
+  .favorite-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #000000;
+    
+    svg {
+      width: 24px;
+      height: 24px;
+      color: #ffffff;
+    }
+
+    &:hover {
+      background: #1f1f1f;
+      transform: scale(1.1);
+    }
+  }
+}
+
 .movie-overlay {
   position: absolute;
   top: 0;
