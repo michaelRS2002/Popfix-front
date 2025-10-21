@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './MovieScreen.scss';
 import NavBar from '../../components/NavBar/NavBar';
 import HelpButton from '../../components/HelpButton/HelpButton';
@@ -12,6 +12,7 @@ import {
   FaPaperPlane,
   FaComment
 } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 
 interface Comment {
   id: number;
@@ -22,6 +23,9 @@ interface Comment {
 }
 
 export function MovieScreen() {
+  const location = useLocation();
+  const passedMovie = (location?.state as any) || null;
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -35,17 +39,41 @@ export function MovieScreen() {
     }
   ]);
 
-  // Example Data
-  const movie = {
-    title: 'Aventura Épicamente Épica!',
-    year: '2024',
-    duration: '2h 14m',
-    rating: 8.5,
-    genre: 'Acción',
-    director: 'Alex Johnson',
-    description: 'Una emocionante aventura llena de acción y efectos espectaculares que te mantendrá al borde del asiento desde el primer minuto.',
-    videoUrl: ''
-  };
+  // Merge data: preferimos lo que viene de Home (Pexels adapter)
+  const movie = useMemo(() => {
+    if (passedMovie) {
+      return {
+        title: passedMovie.title || 'Video',
+        year: new Date().getFullYear().toString(),
+        duration: passedMovie.duration || '',
+        rating: typeof passedMovie.rating === 'number' ? passedMovie.rating : 0,
+        genre: passedMovie.genre || 'Video',
+        director: 'Desconocido',
+        description: passedMovie.description || '',
+        videoUrl: passedMovie.source || '',
+      };
+    }
+    return {
+      title: 'Video',
+      year: new Date().getFullYear().toString(),
+      duration: '',
+      rating: 0,
+      genre: 'Video',
+      director: 'Desconocido',
+      description: '',
+      videoUrl: ''
+    };
+  }, [passedMovie]);
+
+  useEffect(() => {
+    // Auto play cuando tengamos source
+    if (videoRef.current && movie.videoUrl) {
+      const v = videoRef.current;
+      // En algunos navegadores se requiere muted para autoplay
+      v.muted = true;
+      v.play().catch(() => {/* ignore */});
+    }
+  }, [movie.videoUrl]);
 
   const handleRatingClick = (rate: number) => {
     setRating(rate);
@@ -74,20 +102,22 @@ export function MovieScreen() {
           {/* Video Player */}
           <div className="video-section">
             <div className="video-player">
-              <video controls>
-                <source src={movie.videoUrl} type="video/mp4" />
+              <video ref={videoRef} controls playsInline>
+                {movie.videoUrl && (
+                  <source src={movie.videoUrl} type="video/mp4" />
+                )}
                 Tu navegador no soporta el elemento de video.
               </video>
               
               {/* Personalized Overlay Controls */}
               <div className="video-controls-overlay">
-                <button className="play-button-overlay" aria-label="Reproducir">
+                <button className="play-button-overlay" aria-label="Reproducir" onClick={() => videoRef.current?.play()}>
                   <FaPlay size={60} />
                 </button>
               </div>
               
               <div className="video-controls">
-                <button className="control-btn" aria-label="Volumen">
+                <button className="control-btn" aria-label="Volumen" onClick={() => { if (videoRef.current) videoRef.current.muted = !videoRef.current.muted }}>
                   <FaVolumeUp />
                 </button>
                 <button className="control-btn" aria-label="Configuración">

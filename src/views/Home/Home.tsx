@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import './Home.scss'
 import NavBar from '../../components/NavBar/NavBar'
 import HelpButton from '../../components/HelpButton/HelpButton'
-import { getAllMovies, searchMovies } from '../../utils/moviesApi'
+import { getPexelsPopularForHome, searchPexelsForHome } from '../../utils/moviesApi'
 import { AiFillStar, AiFillPlayCircle, AiOutlinePlus, AiFillHeart } from 'react-icons/ai'
 
 interface Movie {
@@ -41,31 +41,12 @@ export function Home() {
   const loadMovies = async () => {
     setLoading(true)
     try {
-      // Connect with API -- Back
-      const response = await getAllMovies(1)
-      const mockMovies: Movie[] = Array.from({ length: 8 }, (_, i) => ({
-        id: i + 1,
-        title: `Película ${i + 1}`,
-        rating: 4.5,
-        duration: '2h 14m',
-        genre: 'Acción',
-        description: 'Una emocionante aventura llena de acción y efectos espectaculares.',
-        poster: '/static/img/placeholder.jpg'
-      }))
-      setMovies(mockMovies)
+      // Popular de Pexels ya mapeado al shape de Home
+      const items = await getPexelsPopularForHome(1)
+      setMovies(items)
     } catch (error) {
       console.error('Error loading movies:', error)
-      // Example Data
-      const mockMovies: Movie[] = Array.from({ length: 8 }, (_, i) => ({
-        id: i + 1,
-        title: `Película ${i + 1}`,
-        rating: 4.5,
-        duration: '2h 14m',
-        genre: 'Acción',
-        description: 'Una emocionante aventura llena de acción y efectos espectaculares.',
-        poster: '/static/img/placeholder.jpg'
-      }))
-      setMovies(mockMovies)
+      setMovies([])
     } finally {
       setLoading(false)
     }
@@ -80,8 +61,8 @@ export function Home() {
     
     setLoading(true)
     try {
-      const response = await searchMovies(searchQuery)
-      console.log('Search results:', response)
+      const results = await searchPexelsForHome(searchQuery)
+      setMovies(results)
     } catch (error) {
       console.error('Error searching movies:', error)
     } finally {
@@ -124,9 +105,9 @@ export function Home() {
     }
   }
 
-  const handlePlayMovie = (e: React.MouseEvent, movieId: number) => {
+  const handlePlayMovie = (e: React.MouseEvent, movieObj: Movie) => {
     e.stopPropagation()
-    navigate(`/movie/${movieId}`)
+    navigate(`/movie/${movieObj.id}`, { state: movieObj })
   }
 
   return (
@@ -167,7 +148,7 @@ export function Home() {
                 <div 
                   key={movie.id} 
                   className="movie-card"
-                  onClick={() => navigate(`/movie/${movie.id}`)}
+                  onClick={() => navigate(`/movie/${movie.id}`, { state: movie })}
                   role="button"
                   tabIndex={0}
                   onKeyPress={(e) => {
@@ -197,7 +178,7 @@ export function Home() {
                     <div className="movie-hover-actions">
                       <button 
                         className="play-button"
-                        onClick={(e) => handlePlayMovie(e, movie.id)}
+                        onClick={(e) => handlePlayMovie(e, movie)}
                         aria-label="Reproducir película"
                       >
                         <AiFillPlayCircle />
