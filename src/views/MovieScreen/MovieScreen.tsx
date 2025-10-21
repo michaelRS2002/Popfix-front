@@ -6,6 +6,15 @@ import { AiFillStar } from 'react-icons/ai';
 import { FaPaperPlane, FaComment } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 
+/**
+ * Represents a single user comment.
+ * @interface Comment
+ * @property {number} id - Unique identifier of the comment.
+ * @property {string} author - Name of the comment author.
+ * @property {string} text - Content of the comment.
+ * @property {string} date - Time or date when the comment was posted.
+ * @property {string} [avatar] - Optional avatar initials or URL for the user.
+ */
 interface Comment {
   id: number;
   author: string;
@@ -19,16 +28,22 @@ export function MovieScreen() {
   const passedMovie = (location?.state as any) || null;
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [rating, setRating] = useState(0);
+
+  /** Current star being hovered by the user (for visual highlight). */
   const [hoverRating, setHoverRating] = useState(0);
-  const [comment, setComment] = useState('');
+
+  /** Current comment input value. */
+  const [comment, setComment] = useState("");
+
+  /** List of existing comments displayed below the video. */
   const [comments, setComments] = useState<Comment[]>([
     {
       id: 1,
-      author: 'María García',
-      text: '¡Excelente película! Los efectos visuales son impresionantes.',
-      date: 'Hace 2 horas',
-      avatar: 'MG'
-    }
+      author: "María García",
+      text: "¡Excelente película! Los efectos visuales son impresionantes.",
+      date: "Hace 2 horas",
+      avatar: "MG",
+    },
   ]);
 
   // Merge data: preferimos lo que viene de Home (Pexels adapter)
@@ -74,7 +89,11 @@ export function MovieScreen() {
     }
   }, [movie.videoUrl]);
 
-  const handleRatingClick = (rate: number) => {
+  /**
+   * Handles the event when the user clicks on a star rating.
+   * @param {number} rate - The number of stars selected by the user.
+   */
+  const handleRatingClick = (rate: number): void => {
     setRating(rate);
   };
 
@@ -96,23 +115,23 @@ export function MovieScreen() {
     if (comment.trim()) {
       const newComment: Comment = {
         id: comments.length + 1,
-        author: 'Usuario Actual',
+        author: "Usuario Actual",
         text: comment,
-        date: 'Justo ahora',
-        avatar: 'UA'
+        date: "Justo ahora",
+        avatar: "UA",
       };
       setComments([newComment, ...comments]);
-      setComment('');
+      setComment("");
     }
   };
 
   return (
     <div className="MovieScreen">
       <NavBar />
-      
+
       <div className="movie-container">
         <div className="movie-content">
-          {/* Video Player */}
+          {/* ----------------------- Video Section ----------------------- */}
           <div className="video-section">
             <div className="video-player">
               <video ref={videoRef} controls playsInline>
@@ -124,7 +143,7 @@ export function MovieScreen() {
             </div>
           </div>
 
-          {/* Movie Info */}
+          {/* ----------------------- Movie Info Section ----------------------- */}
           <div className="movie-info-section">
             <div className="movie-header">
               <h1>{movie.title}</h1>
@@ -149,18 +168,22 @@ export function MovieScreen() {
 
             <p className="movie-description">{getGenreDescription(movie.genre)}</p>
 
-            {/* User Rating */}
+            {/* ----------------------- User Rating ----------------------- */}
             <div className="user-rating">
               <label>Tu valoración:</label>
               <div className="rating-stars">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
-                    className={`star ${star <= (hoverRating || rating) ? 'active' : ''}`}
+                    className={`star ${
+                      star <= (hoverRating || rating) ? "active" : ""
+                    }`}
                     onClick={() => handleRatingClick(star)}
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
-                    aria-label={`Calificar con ${star} estrella${star > 1 ? 's' : ''}`}
+                    aria-label={`Calificar con ${star} estrella${
+                      star > 1 ? "s" : ""
+                    }`}
                   >
                     <AiFillStar />
                   </button>
@@ -170,7 +193,7 @@ export function MovieScreen() {
           </div>
         </div>
 
-        {/* Comments Section */}
+        {/* ----------------------- Comments Section ----------------------- */}
         <div className="comments-section">
           <div className="comments-header">
             <h2>
@@ -187,8 +210,8 @@ export function MovieScreen() {
               rows={3}
             />
           </div>
-          
-          <button 
+
+          <button
             className="comment-submit-btn"
             onClick={handleCommentSubmit}
             disabled={!comment.trim()}

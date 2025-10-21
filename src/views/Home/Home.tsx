@@ -6,6 +6,24 @@ import HelpButton from '../../components/HelpButton/HelpButton'
 import { getPexelsPopularForHome, insertFavoriteOrRating, updateUserMovie, getFavorites } from '../../utils/moviesApi'
 import { AiFillStar, AiFillPlayCircle, AiOutlinePlus, AiFillHeart } from 'react-icons/ai'
 
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Home.scss";
+import NavBar from "../../components/NavBar/NavBar";
+import HelpButton from "../../components/HelpButton/HelpButton";
+import { getAllMovies, searchMovies } from "../../utils/moviesApi";
+import { AiFillStar } from "react-icons/ai";
+
+/**
+ * @typedef {Object} Movie
+ * @property {number} id - Unique identifier of the movie.
+ * @property {string} title - Title of the movie.
+ * @property {number} rating - Average rating of the movie.
+ * @property {string} duration - Duration of the movie (e.g. "2h 14m").
+ * @property {string} genre - Genre of the movie.
+ * @property {string} description - Short description or synopsis.
+ * @property {string} poster - URL of the movie poster image.
+ */
 interface Movie {
   id: string | number
   title: string
@@ -32,6 +50,7 @@ export function Home() {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
   const [favoriteIds, setFavoriteIds] = useState<Set<string | number>>(new Set())
 
+  /** @constant categories - Predefined list of categories for filtering */
   const categories = [
     'Películas',
     'Accion',
@@ -42,6 +61,11 @@ export function Home() {
     'Ciencia Ficcion'
   ]
 
+  /**
+   * Loads movie data when the component mounts.
+   *
+   * @effect
+   */
   useEffect(() => {
     loadMovies()
     // Obtener userId del localStorage - viene dentro del objeto 'user'
@@ -103,9 +127,9 @@ export function Home() {
       console.error('Error loading movies:', error)
       setMovies([])
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
 
 
@@ -236,7 +260,7 @@ export function Home() {
       console.error('Error al modificar favoritos:', error)
       showToast('No se pudo modificar los favoritos', 'error')
     }
-  }
+  };
 
   const handlePlayMovie = (e: React.MouseEvent, movieObj: Movie) => {
     e.stopPropagation()
@@ -281,7 +305,7 @@ export function Home() {
 
   return (
     <div className="Home">
-      <NavBar 
+      <NavBar
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
@@ -301,18 +325,14 @@ export function Home() {
             <p>Descubre miles de películas y series en alta definición</p>
           </div>
 
-          {/* Category Filters */}
-          <div className="category-filters">
-            {categories.map((category) => (
-              <button
-                key={category}
-                className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
-                onClick={() => handleCategoryClick(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+      <div className="background-wrapper">
+        <div className="home-container">
+          {/* Catalog Section */}
+          <div className="catalog-section">
+            <div className="catalog-header">
+              <h2>Explora Nuestro Catálogo</h2>
+              <p>Descubre miles de películas y series en alta definición</p>
+            </div>
 
           {/* Movie Grid */}
           <div className="movies-grid">
@@ -377,20 +397,28 @@ export function Home() {
                         <span>{movie.rating}</span>
                       </div>
                     </div>
-                    <div className="movie-genre">
-                      <span className="genre-badge">{movie.genre}</span>
+                    <div className="movie-info">
+                      <div className="movie-header">
+                        <h3>{movie.title}</h3>
+                        <div className="movie-rating">
+                          <AiFillStar />
+                          <span>{movie.rating}</span>
+                        </div>
+                      </div>
+                      <div className="movie-genre">
+                        <span className="genre-badge">{movie.genre}</span>
+                      </div>
+                      <p className="movie-description">{movie.description}</p>
                     </div>
-                    <p className="movie-description">{movie.description}</p>
                   </div>
-                </div>
-              ))
-            )}
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>
-      
-      {/* Help Button */}
+
       <HelpButton />
     </div>
-  )
+  );
 }

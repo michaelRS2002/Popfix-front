@@ -10,7 +10,11 @@ interface NavBarProps {
   onSearchSubmit?: (e: React.FormEvent) => void;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSearchSubmit }) => {
+const NavBar: React.FC<NavBarProps> = ({
+  searchQuery = "",
+  onSearchChange,
+  onSearchSubmit,
+}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -49,16 +53,14 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
       if (res && res.message) {
         alert(res.message);
       } else {
-        alert('Sesión cerrada correctamente');
+        alert("Sesión cerrada correctamente");
       }
     } catch (err: any) {
-      alert(err?.message || 'Sesión cerrada localmente');
+      alert(err?.message || "Sesión cerrada localmente");
     } finally {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
-      setIsLoggedIn(false);
-      setIsMenuOpen(false);
-      navigate('/login');
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
+      navigate("/login");
     }
   };
 
@@ -75,9 +77,9 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 

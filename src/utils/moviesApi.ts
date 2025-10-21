@@ -1,6 +1,6 @@
-// Funciones para obtener y manejar películas
-import { httpClient } from './httpClient.js'
-import { API_ENDPOINTS, APP_CONFIG } from './constants.js'
+// Functions to fetch and handle movie-related data
+import { httpClient } from "./httpClient.js";
+import { API_ENDPOINTS, APP_CONFIG } from "./constants.js";
 
 // Tipos comunes
 export type MovieSummary = {
@@ -10,7 +10,15 @@ export type MovieSummary = {
   genre?: string
   source?: string
 }
-
+/**
+ * Fetches a list of popular movies from the backend API.
+ *
+ * @async
+ * @function getPopularMovies
+ * @param {number} [page=1] - The page number for pagination.
+ * @returns {Promise<any>} The API response containing a list of popular movies.
+ * @throws {Error} If the request fails or the backend returns an error.
+ */
 // Obtener películas populares
 export const getPopularMovies = async (page: number = 1) => {
   try {
@@ -19,9 +27,16 @@ export const getPopularMovies = async (page: number = 1) => {
   } catch (error: any) {
     throw new Error('Error al obtener películas populares: ' + (error?.message || ''))
   }
-}
+};
 
-// Obtener películas en tendencia
+/**
+ * Fetches trending movies from the backend API.
+ *
+ * @async
+ * @function getTrendingMovies
+ * @returns {Promise<any>} The API response containing trending movies.
+ * @throws {Error} If the request fails or the backend returns an error.
+ */
 export const getTrendingMovies = async () => {
   try {
     const response = await httpClient.get(API_ENDPOINTS.TRENDING_MOVIES)
@@ -29,9 +44,18 @@ export const getTrendingMovies = async () => {
   } catch (error: any) {
     throw new Error('Error al obtener películas en tendencia: ' + (error?.message || ''))
   }
-}
+};
 
-// Buscar películas por título
+/**
+ * Searches for movies by title.
+ *
+ * @async
+ * @function searchMovies
+ * @param {string} query - The search query or movie title.
+ * @param {number} [page=1] - The page number for pagination.
+ * @returns {Promise<any>} The API response containing the search results.
+ * @throws {Error} If the request fails or the backend returns an error.
+ */
 export const searchMovies = async (query: string, page: number = 1) => {
   try {
     const response = await httpClient.get(`${API_ENDPOINTS.SEARCH_MOVIES}?q=${encodeURIComponent(query)}&page=${page}`)
@@ -39,9 +63,17 @@ export const searchMovies = async (query: string, page: number = 1) => {
   } catch (error: any) {
     throw new Error('Error al buscar películas: ' + (error?.message || ''))
   }
-}
+};
 
-// Obtener detalles de una película específica
+/**
+ * Fetches detailed information for a specific movie by its ID.
+ *
+ * @async
+ * @function getMovieDetails
+ * @param {string|number} movieId - The ID of the movie to fetch details for.
+ * @returns {Promise<any>} The API response containing movie details.
+ * @throws {Error} If the request fails or the backend returns an error.
+ */
 export const getMovieDetails = async (movieId: string) => {
   try {
     const endpoint = API_ENDPOINTS.MOVIE_DETAILS.replace(':id', encodeURIComponent(movieId))
@@ -50,9 +82,17 @@ export const getMovieDetails = async (movieId: string) => {
   } catch (error: any) {
     throw new Error('Error al obtener detalles de la película: ' + (error?.message || ''))
   }
-}
+};
 
-// Obtener todas las películas (con paginación)
+/**
+ * Fetches all movies from the backend with pagination support.
+ *
+ * @async
+ * @function getAllMovies
+ * @param {number} [page=1] - The page number for pagination.
+ * @returns {Promise<any>} The API response containing the list of movies.
+ * @throws {Error} If the request fails or the backend returns an error.
+ */
 export const getAllMovies = async (page: number = 1) => {
   try {
     const response = await httpClient.get(`${API_ENDPOINTS.MOVIES}?page=${page}&limit=${APP_CONFIG.MOVIES_PER_PAGE}`)
@@ -87,7 +127,7 @@ const validateRating = (rating?: number) => {
   if (Number.isNaN(n) || n < 1 || n > 5) {
     throw new Error('El rating debe estar entre 1 y 5')
   }
-}
+};
 
 // GET /api/movies/favorites/:userId
 export const getFavorites = async (userId: string) => {
@@ -99,7 +139,7 @@ export const getFavorites = async (userId: string) => {
   } catch (error: any) {
     throw new Error(error?.message || 'Error al obtener favoritos')
   }
-}
+};
 
 // POST /api/movies/insertFavoriteRating/:userId
 export const insertFavoriteOrRating = async (userId: string, payload: InsertFavoriteOrRatingPayload) => {
@@ -127,9 +167,17 @@ export const updateUserMovie = async (userId: string, payload: UpdateUserMoviePa
   } catch (error: any) {
     throw new Error(error?.message || 'Error al actualizar favorito/rating')
   }
-}
+};
 
-// Función helper para construir URL de imagen
+/**
+ * Helper function to construct a full movie image URL.
+ * Returns a placeholder if the image path is missing.
+ *
+ * @function getImageUrl
+ * @param {string} imagePath - The image path provided by the API.
+ * @param {string} [size='w500'] - The desired image size (e.g., 'w200', 'w500', 'original').
+ * @returns {string} The complete image URL or a placeholder path.
+ */
 export const getImageUrl = (imagePath: string | null | undefined, size: string = 'w500'): string => {
   if (!imagePath) return '/placeholder-movie.jpg'
   return `${APP_CONFIG.IMAGE_BASE_URL.replace('w500', size)}${imagePath}`

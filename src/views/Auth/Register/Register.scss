@@ -1,3 +1,4 @@
+@use "sass:color";
 // Popup global styles
 .popup-message {
   position: fixed;
@@ -43,22 +44,25 @@
   height: 2.5rem;
   aspect-ratio: 1/1;
   font-size: 1.6rem;
-  color: #222;
+  color: #fff;
   text-decoration: none;
-  background: #fff8;
+  background: #424242;
   border-radius: 50%;
   box-shadow: 0 1px 4px #0001;
   transition: background 0.2s, box-shadow 0.2s;
   margin-bottom: 0.2rem;
 }
 .back-arrow:hover {
-  background: #e7e7e7;
-  box-shadow: 0 2px 8px #0002;
+  background: #000;
+  box-shadow: 0 2px 8px #fff;
 }
 $color-bg: #ffffff;
-$color-box: #e7e7e7;
-$color-input: #d9d9d9;
-$color-button: #000000;
+$color-box: #000000;
+$color-input: #2a2a2a;
+$color-input-text: #ffffff;
+$color-label: #ffffff;
+$color-text: #e5e5e5;
+$color-accent: #e50914;
 body {
   overflow-x: hidden;
 }
@@ -67,9 +71,7 @@ body {
   flex-direction: column;
   min-height: 80vh;
   width: 100vw;
-
   overflow-x: hidden;
-
 }
 
 .main-content-register {
@@ -79,6 +81,9 @@ body {
   justify-content: center;
   width: 100%;
   padding-top: 1.25rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .left-section-register {
@@ -86,7 +91,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: right;
-  background: #fff;
 }
 
 .right-section-register {
@@ -100,7 +104,7 @@ body {
 .register-box {
   background: $color-box;
   border-radius: 16px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
   padding: 2.5rem 2rem 2rem 2rem;
   width: 100%;
   max-width: 550px;
@@ -109,12 +113,16 @@ body {
   flex-direction: column;
   gap: 0.7rem;
   position: relative;
+
+  h2 {
+    color: $color-accent;
+  }
 }
 
 .title-logo {
   font-size: 5rem;
   font-weight: bold;
-  color: #222;
+  color: $color-accent;
   margin-bottom: 1.5rem;
   text-align: center;
 }
@@ -165,7 +173,7 @@ body {
 
 .button {
   background: #222;
-  color: #fff;
+  color: $color-accent;
   border: none;
   border-radius: 6px;
   padding: 0.8rem 0;
@@ -195,11 +203,21 @@ body {
 }
 
 @keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-3px); }
-  50% { transform: translateX(3px); }
-  75% { transform: translateX(-2px); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 @media (max-width: 900px) {
@@ -220,7 +238,7 @@ body {
 /* Responsive para tablets y móviles */
 @media (max-width: 768px) {
   .app-container-register {
-    min-height: 100vh;
+    height: 100vh;
     padding: 1rem;
   }
 
@@ -306,12 +324,17 @@ body {
   margin-top: 1.2rem;
   text-align: center;
   font-size: 1rem;
+  color: $color-text !important;
 }
 
 .login-link {
-  color: #222;
+  color: $color-accent !important;
   font-weight: 600;
   text-decoration: underline;
   margin-left: 4px;
   cursor: pointer;
+
+  &:hover {
+    color: color.adjust($color-accent, $lightness: -10%) !important;
+  }
 }

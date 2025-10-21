@@ -1,12 +1,22 @@
+@use "sass:color";
+
+$color-bg: #ffffff;
+$color-box: #000000;
+$color-input: #2a2a2a;
+$color-input-text: #ffffff;
+$color-label: #ffffff;
+$color-text: #e5e5e5;
+$color-accent: #e50914;
+
 .MovieScreen {
   min-height: 100vh;
-  background: #F4F4F4;
-  color: #222130;
+  color: $color-text;
   padding-bottom: 2rem;
 }
 
 .movie-container {
-  max-width: 1400px;
+  background-image: url("/static/img/wallpaper.jpeg");
+  background-size: cover;
   margin: 0 auto;
   padding: 2rem;
   display: grid;
@@ -15,23 +25,23 @@
 }
 
 .movie-content {
-  display: contents; // Permite que los hijos se posicionen en el grid del padre
+  display: contents;
 }
 
 // Comments Section
 .comments-section {
-  background: #FEFEFE;
+  background: $color-box;
   border-radius: 16px;
   padding: 2rem;
-  border: 1px solid #D9D9D9;
-  grid-column: 1; // Alinear con la columna del video
+  border: 1px solid $color-input;
+  grid-column: 1;
   grid-row: 2;
   box-shadow: 0 2px 8px rgba(34, 33, 48, 0.06);
 }
 
 // Video Section
 .video-section {
-  background: #000;
+  background: $color-box;
   border-radius: 16px;
   overflow: hidden;
   position: relative;
@@ -42,8 +52,8 @@
 .video-player {
   position: relative;
   width: 100%;
-  padding-top: 56.25%; // 16:9 aspect ratio
-  background: #1a1a1a;
+  padding-top: 56.25%;
+  background: $color-input;
 
   video {
     position: absolute;
@@ -84,7 +94,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #222130;
+  color: $color-box;
   cursor: pointer;
   transition: all 0.3s;
 
@@ -107,15 +117,13 @@
   background: rgba(0, 0, 0, 0.7);
   border: none;
   border-radius: 8px;
-  color: #ffffff;
+  color: $color-input-text;
   padding: 0.75rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
-  //backdrop-filter: blur(10px);
-  //-webkit-backdrop-filter: blur(10px);
 
   &:hover {
     background: rgba(0, 0, 0, 0.9);
@@ -129,10 +137,10 @@
 
 // Movie Info Section
 .movie-info-section {
-  background: #FEFEFE;
+  background: $color-box;
   border-radius: 16px;
   padding: 2rem;
-  border: 1px solid #D9D9D9;
+  border: 1px solid $color-input;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -152,6 +160,7 @@
     font-weight: 700;
     margin: 0;
     flex: 1;
+    color: $color-label;
   }
 }
 
@@ -159,7 +168,7 @@
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  color: #222130;
+  color: $color-accent;
   padding: 0.5rem 0.875rem;
   border-radius: 8px;
   font-weight: 700;
@@ -167,15 +176,14 @@
   flex-shrink: 0;
 
   svg {
-    color: #FFD700;
+    color: $color-accent;
   }
 }
 
 .movie-meta {
   display: flex;
   gap: 1.5rem;
-  color: #222130;
-  opacity: 0.6;
+  color: $color-text;
   font-size: 0.95rem;
 
   span {
@@ -188,39 +196,37 @@
   .genre-badge {
     display: inline-block;
     padding: 0.5rem 1rem;
-    background: #F4F4F4;
+    background: $color-input;
     border-radius: 20px;
     font-size: 0.875rem;
-    color: #222130;
-    border: 1px solid #D9D9D9;
+    color: $color-input-text;
+    border: 1px solid $color-input;
     font-weight: 500;
   }
 }
 
 .movie-director {
-  color: #222130;
-  opacity: 0.7;
+  color: $color-text;
   font-size: 0.95rem;
   font-weight: 500;
 }
 
 .movie-description {
-  color: #222130;
-  opacity: 0.7;
+  color: $color-text;
   line-height: 1.6;
   margin: 0;
 }
 
 // User Rating
 .user-rating {
-  border-top: 1px solid #D9D9D9;
+  border-top: 1px solid $color-input;
   padding-top: 1.5rem;
 
   label {
     display: block;
     font-weight: 600;
     margin-bottom: 0.75rem;
-    color: #222130;
+    color: $color-label;
   }
 }
 
@@ -234,14 +240,14 @@
     cursor: pointer;
     padding: 0.25rem;
     transition: all 0.2s;
-    color: #D9D9D9;
+    color: $color-text;
 
     svg {
       font-size: 1.75rem;
     }
 
     &.active {
-      color: #FFD700;
+      color: $color-accent;
     }
 
     &:hover {
@@ -252,10 +258,10 @@
 
 // Comments Section
 .comments-section {
-  background: #ffffff;
+  background: $color-box;
   border-radius: 16px;
   padding: 2rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid $color-input;
 }
 
 .comments-header {
@@ -268,21 +274,20 @@
     font-size: 1.5rem;
     font-weight: 700;
     margin: 0;
-    color: #222130;
+    color: $color-label;
 
     svg {
-      color: #222130;
-      opacity: 0.6;
+      color: $color-accent;
     }
   }
 }
 
 .comment-input-box {
-  background: #F4F4F4;
+  background: $color-input;
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1rem;
-  border: 1px solid #D9D9D9;
+  border: 1px solid $color-input;
 
   textarea {
     width: 100%;
@@ -292,18 +297,17 @@
     resize: none;
     font-family: inherit;
     font-size: 0.95rem;
-    color: #222130;
+    color: $color-input-text;
 
     &::placeholder {
-      color: #222130;
-      opacity: 0.5;
+      color: $color-text;
     }
   }
 }
 
 .comment-submit-btn {
-  background: #222130;
-  color: #FEFEFE;
+  background: $color-accent;
+  color: $color-input-text;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -317,9 +321,8 @@
   margin-left: auto;
 
   &:hover:not(:disabled) {
-    background: #FF0000;
+    background: color.adjust($color-accent, $lightness: -10%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(34, 33, 48, 0.2);
   }
 
   &:disabled {
@@ -331,7 +334,7 @@
 .comment-separator {
   width: 100%;
   height: 1px;
-  background: #D9D9D9;
+  background: $color-accent;
   margin-bottom: 1.5rem;
 }
 
@@ -345,17 +348,17 @@
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  background: #F4F4F4;
+  background: $color-input;
   border-radius: 12px;
-  border: 1px solid #D9D9D9;
+  border: 1px solid $color-input;
 }
 
 .comment-avatar {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #222130;
-  color: #FEFEFE;
+  background: $color-accent;
+  color: $color-input-text;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -377,88 +380,16 @@
 
 .comment-author {
   font-weight: 600;
-  color: #111827;
+  color: $color-label;
 }
 
 .comment-date {
   font-size: 0.875rem;
-  color: #9ca3af;
+  color: $color-text;
 }
 
 .comment-text {
   margin: 0;
-  color: #4b5563;
+  color: $color-text;
   line-height: 1.5;
-}
-
-// Responsive
-@media (max-width: 1024px) {
-  .movie-container {
-    grid-template-columns: 1fr;
-  }
-
-  .video-section {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .movie-info-section {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .comments-section {
-    grid-column: 1;
-    grid-row: 3;
-  }
-}
-
-@media (max-width: 768px) {
-  .movie-container {
-    padding: 1rem;
-  }
-
-  .movie-info-section,
-  .comments-section {
-    padding: 1.5rem;
-  }
-
-  .movie-header h1 {
-    font-size: 1.5rem;
-  }
-
-  .play-button-overlay {
-    width: 70px;
-    height: 70px;
-
-    svg {
-      font-size: 2rem;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .movie-container {
-    padding: 0.5rem;
-  }
-
-  .movie-content {
-    gap: 1rem;
-  }
-
-  .movie-info-section,
-  .comments-section {
-    padding: 1rem;
-    border-radius: 12px;
-  }
-
-  .video-section {
-    border-radius: 12px;
-  }
-
-  .comment-avatar {
-    width: 40px;
-    height: 40px;
-    font-size: 0.75rem;
-  }
 }
