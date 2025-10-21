@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import './Home.scss'
 import NavBar from '../../components/NavBar/NavBar'
 import HelpButton from '../../components/HelpButton/HelpButton'
-import { getPexelsPopularForHome, searchPexelsForHome } from '../../utils/moviesApi'
+import { getPexelsPopularForHome } from '../../utils/moviesApi'
 import { AiFillStar, AiFillPlayCircle, AiOutlinePlus, AiFillHeart } from 'react-icons/ai'
 
 interface Movie {
-  id: number
+  id: string | number
   title: string
   rating: number
   duration: string
@@ -19,24 +19,43 @@ interface Movie {
 
 export function Home() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [movies, setMovies] = useState<Movie[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState(() => {
+    // Permite que el NavBar navegue a / con ?q=busqueda
+    const params = new URLSearchParams(location.search)
+    return params.get('q') || ''
+  })
   const [selectedCategory, setSelectedCategory] = useState('Películas')
   const [loading, setLoading] = useState(false)
 
   const categories = [
     'Películas',
-    'Acción',
+    'Accion',
     'Drama',
     'Comedia',
     'Thriller',
     'Terror',
-    'Ciencia Ficción'
+    'Ciencia Ficcion'
   ]
 
   useEffect(() => {
     loadMovies()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Filtrado en cliente: por título (searchQuery) Y por género (selectedCategory)
+  const filteredMovies = movies.filter(m => {
+    // Filtro por búsqueda (título)
+    const matchesSearch = !searchQuery.trim() || 
+      m.title.toLowerCase().includes(searchQuery.trim().toLowerCase());
+    
+    // Filtro por categoría (género)
+    const matchesCategory = selectedCategory === 'Películas' || 
+      m.genre.toLowerCase() === selectedCategory.toLowerCase();
+    
+    return matchesSearch && matchesCategory;
+  })
 
   const loadMovies = async () => {
     setLoading(true)
@@ -52,29 +71,17 @@ export function Home() {
     }
   }
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!searchQuery.trim()) {
-      loadMovies()
-      return
-    }
-    
-    setLoading(true)
-    try {
-      const results = await searchPexelsForHome(searchQuery)
-      setMovies(results)
-    } catch (error) {
-      console.error('Error searching movies:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+
+
+  // Ya no se usa handleSearch, la búsqueda es reactiva al escribir
+
+  // (El filtrado ya es en cliente, no se necesita handleSearchInternal)
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category)
   }
 
-  const handleAddToFavorites = async (e: React.MouseEvent, movieId: number) => {
+  const handleAddToFavorites = async (e: React.MouseEvent, movieId: string | number) => {
     e.stopPropagation()
     
     // Find movie
@@ -115,7 +122,7 @@ export function Home() {
       <NavBar 
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        onSearchSubmit={handleSearch}
+  // onSearchSubmit ya no se usa
       />
       
       <div className="home-container">
@@ -144,7 +151,7 @@ export function Home() {
             {loading ? (
               <p>Cargando películas...</p>
             ) : (
-              movies.map((movie) => (
+              filteredMovies.map((movie) => (
                 <div 
                   key={movie.id} 
                   className="movie-card"

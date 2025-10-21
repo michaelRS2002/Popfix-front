@@ -20,10 +20,12 @@ import ChangePassword from './views/User/Change-password/Change-password'
 import SiteMap from './views/SiteMap/SiteMap'
 import FavScreen from './views/FavScreen/FavScreen'
 import { NotFound } from './views/NotFound'
+import ScrollToTop from './components/ScrollToTop/ScrollToTop'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* Routes Public */}
         <Route path="/" element={<Home />} />

@@ -12,7 +12,7 @@ export const API_ENDPOINTS = {
   LOGOUT: '/logout',
   
   // Películas
-  MOVIES: '/pexels/popular',
+  MOVIES: '/movies/mixed',
   MOVIE_DETAILS: '/pexels/:id',
   SEARCH_MOVIES: '/pexels/search',
   POPULAR_MOVIES: '/pexels/popular',

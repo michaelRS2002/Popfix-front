@@ -3,15 +3,7 @@ import './MovieScreen.scss';
 import NavBar from '../../components/NavBar/NavBar';
 import HelpButton from '../../components/HelpButton/HelpButton';
 import { AiFillStar } from 'react-icons/ai';
-import { 
-  FaPlay, 
-  FaVolumeUp, 
-  FaCog, 
-  FaClosedCaptioning, 
-  FaExpand,
-  FaPaperPlane,
-  FaComment
-} from 'react-icons/fa';
+import { FaPaperPlane, FaComment } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 
 interface Comment {
@@ -46,9 +38,9 @@ export function MovieScreen() {
         title: passedMovie.title || 'Video',
         year: new Date().getFullYear().toString(),
         duration: passedMovie.duration || '',
-        rating: typeof passedMovie.rating === 'number' ? passedMovie.rating : 0,
+        rating: typeof passedMovie.rating === 'number' ? passedMovie.rating : (parseFloat(passedMovie.rating) || 0),
         genre: passedMovie.genre || 'Video',
-        director: 'Desconocido',
+        director: passedMovie.director || 'Desconocido',
         description: passedMovie.description || '',
         videoUrl: passedMovie.source || '',
       };
@@ -77,6 +69,20 @@ export function MovieScreen() {
 
   const handleRatingClick = (rate: number) => {
     setRating(rate);
+  };
+
+  const getGenreDescription = (genre: string): string => {
+    const descriptions: { [key: string]: string } = {
+      'Accion': 'Una emocionante película de acción llena de adrenalina y escenas espectaculares.',
+      'Drama': 'Un conmovedor drama que te sumergirá en historias profundas y emociones intensas.',
+      'Comedia': 'Una hilarante película de comedia que te hará reír a carcajadas.',
+      'Thriller': 'Un emocionante thriller que te mantendrá al borde del asiento con giros inesperados.',
+      'Terror': 'Una terrorífica película de terror que te llenará de suspenso y miedo.',
+      'Ciencia Ficcion': 'Una asombrosa película de ciencia ficción que te transportará a mundos imaginarios.',
+      'Popular': 'Un video popular que no puedes perderte.',
+      'Video': 'Un interesante video que debes ver.'
+    };
+    return descriptions[genre] || `Una fascinante película de ${genre}.`;
   };
 
   const handleCommentSubmit = () => {
@@ -108,28 +114,6 @@ export function MovieScreen() {
                 )}
                 Tu navegador no soporta el elemento de video.
               </video>
-              
-              {/* Personalized Overlay Controls */}
-              <div className="video-controls-overlay">
-                <button className="play-button-overlay" aria-label="Reproducir" onClick={() => videoRef.current?.play()}>
-                  <FaPlay size={60} />
-                </button>
-              </div>
-              
-              <div className="video-controls">
-                <button className="control-btn" aria-label="Volumen" onClick={() => { if (videoRef.current) videoRef.current.muted = !videoRef.current.muted }}>
-                  <FaVolumeUp />
-                </button>
-                <button className="control-btn" aria-label="Configuración">
-                  <FaCog />
-                </button>
-                <button className="control-btn" aria-label="Subtítulos">
-                  <FaClosedCaptioning />
-                </button>
-                <button className="control-btn" aria-label="Pantalla completa">
-                  <FaExpand />
-                </button>
-              </div>
             </div>
           </div>
 
@@ -156,7 +140,7 @@ export function MovieScreen() {
               <span>Director: {movie.director}</span>
             </div>
 
-            <p className="movie-description">{movie.description}</p>
+            <p className="movie-description">{getGenreDescription(movie.genre)}</p>
 
             {/* User Rating */}
             <div className="user-rating">

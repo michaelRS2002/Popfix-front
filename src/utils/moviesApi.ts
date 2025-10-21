@@ -166,23 +166,26 @@ type PexelsResponse = {
 
 // Tipo esperado por Home
 export type HomeMovie = {
-  id: number
+  id: string | number
   title: string
   rating: number
   duration: string
   genre: string
   description: string
   poster: string
+  director?: string
   isFavorite?: boolean
   source?: string
 }
 
-const secondsToHhMm = (seconds?: number): string => {
-  if (seconds == null || Number.isNaN(seconds)) return ''
-  const s = Math.max(0, Math.floor(seconds))
-  const h = Math.floor(s / 3600)
-  const m = Math.floor((s % 3600) / 60)
-  const sec = s % 60
+const secondsToHhMm = (seconds?: number | string): string => {
+  if (seconds == null || seconds === '') return ''
+  const s = typeof seconds === 'string' ? parseInt(seconds, 10) : seconds
+  if (Number.isNaN(s)) return ''
+  const n = Math.max(0, Math.floor(s))
+  const h = Math.floor(n / 3600)
+  const m = Math.floor((n % 3600) / 60)
+  const sec = n % 60
   if (h > 0) return `${h}h ${m}m`
   if (m > 0) return `${m}m`
   return `${sec}s`
@@ -196,22 +199,48 @@ const mapPexelsToHomeMovies = (data: PexelsResponse): HomeMovie[] => {
     const sorted = [...files].sort((a, b) => (b.width || 0) - (a.width || 0))
     return sorted[0]?.link
   }
-  return list.map((v) => ({
-    id: v.id,
-    title: v.user?.name ? `Video ${v.id} by ${v.user.name}` : `Video ${v.id}`,
-    rating: 0, // Usa 0 para no romper el UI que espera número
-    duration: secondsToHhMm(v.duration),
-    genre: 'Video', // Se puede sobreescribir por el llamador
-    description: v.url || 'Video de Pexels',
-    poster: v.image || '/static/img/placeholder.jpg',
-    source: pickBestSource(v.video_files),
-  }))
-}
+  return list.map((v: any) => {
+    // Soporta ambas formas: Pexels raw y backend adaptado
+    // Si el backend ya mapea, recibe: id, title, rating (número), duration, genre, description, poster, source
+    // Si es Pexels raw, recibe: id, image, duration, url, user, video_files
+    const isBackendMapped = v.source || (typeof v.rating === 'number' && v.poster);
+    
+    if (isBackendMapped) {
+      // Backend ya mapeó: usa directamente
+      return {
+        id: v.id || v.pk_id,
+        title: v.title,
+        rating: typeof v.rating === 'number' ? v.rating : 0,
+        duration: v.duration || '0m',
+        genre: v.genre ? v.genre.charAt(0).toUpperCase() + v.genre.slice(1) : 'Video',
+        description: v.description && !v.description.startsWith('http') ? v.description : `Disfruta esta película de ${(v.genre || 'Video').toLowerCase()}.`,
+        poster: v.poster || '/static/img/placeholder.jpg',
+        director: v.director || 'Desconocido',
+        source: v.source || v.link,
+      };
+    } else {
+      // Pexels raw: mapea como antes
+      return {
+        id: v.id,
+        title: v.user?.name ? `Video ${v.id} by ${v.user.name}` : `Video ${v.id}`,
+        rating: 0,
+        duration: secondsToHhMm(v.duration),
+        genre: 'Video',
+        description: 'Un interesante video que no te puedes perder.',
+        poster: v.image || '/static/img/placeholder.jpg',
+        director: v.user?.name || 'Desconocido',
+        source: pickBestSource(v.video_files),
+      };
+    }
+  });
+};
 
 // Devuelve películas para Home usando endpoints /pexels
 export const getPexelsPopularForHome = async (page: number = 1): Promise<HomeMovie[]> => {
-  const res = await httpClient.get(`${API_ENDPOINTS.POPULAR_MOVIES}?page=${page}`)
-  return mapPexelsToHomeMovies(res as PexelsResponse).map(m => ({ ...m, genre: 'Popular' }))
+  const res = await httpClient.get(`${API_ENDPOINTS.POPULAR_MOVIES}?perPage=30`)
+  const movies = mapPexelsToHomeMovies(res as PexelsResponse)
+  // Si backend ya mapeó el genre, no lo sobrescribimos
+  return movies.map(m => m.genre === 'Video' && Array.isArray(res) ? { ...m, genre: 'Popular' } : m)
 }
 
 export const searchPexelsForHome = async (query: string, page: number = 1): Promise<HomeMovie[]> => {
