@@ -1,23 +1,10 @@
-/**
- * @file MovieScreen.tsx
- * @description Displays the main movie playback screen with video controls, movie information, user ratings, and a comment section.
- * @module MovieScreen
- */
-
-import React, { useState } from "react";
-import "./MovieScreen.scss";
-import NavBar from "../../components/NavBar/NavBar";
-import HelpButton from "../../components/HelpButton/HelpButton";
-import { AiFillStar } from "react-icons/ai";
-import {
-  FaPlay,
-  FaVolumeUp,
-  FaCog,
-  FaClosedCaptioning,
-  FaExpand,
-  FaPaperPlane,
-  FaComment,
-} from "react-icons/fa";
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import './MovieScreen.scss';
+import NavBar from '../../components/NavBar/NavBar';
+import HelpButton from '../../components/HelpButton/HelpButton';
+import { AiFillStar } from 'react-icons/ai';
+import { FaPaperPlane, FaComment } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 
 /**
  * Represents a single user comment.
@@ -36,20 +23,10 @@ interface Comment {
   avatar?: string;
 }
 
-/**
- * Renders the movie playback screen with movie information, rating system, and comment section.
- *
- * Includes:
- * - Video player with custom overlay controls.
- * - Movie details (title, rating, genre, duration, director, and description).
- * - User rating stars.
- * - Comment submission form and comment list.
- *
- * @function MovieScreen
- * @returns {JSX.Element} Movie screen component.
- */
-export function MovieScreen(): JSX.Element {
-  /** User-selected rating (1–5 stars). */
+export function MovieScreen() {
+  const location = useLocation();
+  const passedMovie = (location?.state as any) || null;
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [rating, setRating] = useState(0);
 
   /** Current star being hovered by the user (for visual highlight). */
@@ -69,21 +46,48 @@ export function MovieScreen(): JSX.Element {
     },
   ]);
 
-  /**
-   * Example movie data.
-   * @constant
-   */
-  const movie = {
-    title: "Aventura Épicamente Épica!",
-    year: "2024",
-    duration: "2h 14m",
-    rating: 8.5,
-    genre: "Acción",
-    director: "Alex Johnson",
-    description:
-      "Una emocionante aventura llena de acción y efectos espectaculares que te mantendrá al borde del asiento desde el primer minuto.",
-    videoUrl: "",
-  };
+  // Merge data: preferimos lo que viene de Home (Pexels adapter)
+  const movie = useMemo(() => {
+    if (passedMovie) {
+      const movieObj = {
+        title: passedMovie.title || 'Video',
+        year: new Date().getFullYear().toString(),
+        duration: passedMovie.duration || '',
+        rating: typeof passedMovie.rating === 'number' ? passedMovie.rating : (parseFloat(passedMovie.rating) || 0),
+        genre: passedMovie.genre || 'Video',
+        director: passedMovie.director || 'Desconocido',
+        description: passedMovie.description || '',
+        videoUrl: passedMovie.source || '',
+      };
+      console.log('🎬 MovieScreen recibió:', {
+        title: passedMovie.title,
+        source: passedMovie.source,
+        videoUrl: movieObj.videoUrl,
+        allProps: passedMovie
+      });
+      return movieObj;
+    }
+    return {
+      title: 'Video',
+      year: new Date().getFullYear().toString(),
+      duration: '',
+      rating: 0,
+      genre: 'Video',
+      director: 'Desconocido',
+      description: '',
+      videoUrl: ''
+    };
+  }, [passedMovie]);
+
+  useEffect(() => {
+    // Auto play cuando tengamos source
+    if (videoRef.current && movie.videoUrl) {
+      const v = videoRef.current;
+      // En algunos navegadores se requiere muted para autoplay
+      v.muted = true;
+      v.play().catch(() => {/* ignore */});
+    }
+  }, [movie.videoUrl]);
 
   /**
    * Handles the event when the user clicks on a star rating.
@@ -93,11 +97,21 @@ export function MovieScreen(): JSX.Element {
     setRating(rate);
   };
 
-  /**
-   * Handles comment submission. Adds a new comment to the top of the comment list.
-   * Clears the input field after posting.
-   */
-  const handleCommentSubmit = (): void => {
+  const getGenreDescription = (genre: string): string => {
+    const descriptions: { [key: string]: string } = {
+      'Accion': 'Una emocionante película de acción llena de adrenalina y escenas espectaculares.',
+      'Drama': 'Un conmovedor drama que te sumergirá en historias profundas y emociones intensas.',
+      'Comedia': 'Una hilarante película de comedia que te hará reír a carcajadas.',
+      'Thriller': 'Un emocionante thriller que te mantendrá al borde del asiento con giros inesperados.',
+      'Terror': 'Una terrorífica película de terror que te llenará de suspenso y miedo.',
+      'Ciencia Ficcion': 'Una asombrosa película de ciencia ficción que te transportará a mundos imaginarios.',
+      'Popular': 'Un video popular que no puedes perderte.',
+      'Video': 'Un interesante video que debes ver.'
+    };
+    return descriptions[genre] || `Una fascinante película de ${genre}.`;
+  };
+
+  const handleCommentSubmit = () => {
     if (comment.trim()) {
       const newComment: Comment = {
         id: comments.length + 1,
@@ -120,33 +134,12 @@ export function MovieScreen(): JSX.Element {
           {/* ----------------------- Video Section ----------------------- */}
           <div className="video-section">
             <div className="video-player">
-              <video controls>
-                <source src={movie.videoUrl} type="video/mp4" />
+              <video ref={videoRef} controls playsInline>
+                {movie.videoUrl && (
+                  <source src={movie.videoUrl} type="video/mp4" />
+                )}
                 Tu navegador no soporta el elemento de video.
               </video>
-
-              {/* Overlay Controls */}
-              <div className="video-controls-overlay">
-                <button className="play-button-overlay" aria-label="Reproducir">
-                  <FaPlay size={60} />
-                </button>
-              </div>
-
-              {/* Custom Control Buttons */}
-              <div className="video-controls">
-                <button className="control-btn" aria-label="Volumen">
-                  <FaVolumeUp />
-                </button>
-                <button className="control-btn" aria-label="Configuración">
-                  <FaCog />
-                </button>
-                <button className="control-btn" aria-label="Subtítulos">
-                  <FaClosedCaptioning />
-                </button>
-                <button className="control-btn" aria-label="Pantalla completa">
-                  <FaExpand />
-                </button>
-              </div>
             </div>
           </div>
 
@@ -173,7 +166,7 @@ export function MovieScreen(): JSX.Element {
               <span>Director: {movie.director}</span>
             </div>
 
-            <p className="movie-description">{movie.description}</p>
+            <p className="movie-description">{getGenreDescription(movie.genre)}</p>
 
             {/* ----------------------- User Rating ----------------------- */}
             <div className="user-rating">

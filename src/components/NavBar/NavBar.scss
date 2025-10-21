@@ -44,29 +44,26 @@ $navbar-btn-border-hover: #555555;
   justify-content: center;
 }
 
-.navbar_links li a {
-  color: $navbar-text;
-  text-decoration: none;
-  font-size: 1.1rem;
-  font-weight: 500;
-  transition: color 0.2s, background 0.2s, box-shadow 0.2s;
-  padding: 0.3rem 0.8rem;
-  border-radius: 0.5rem;
-}
+    @media (max-width: 768px) {
+      padding: 1rem 1.5rem;
+      gap: 1rem;
+    }
+  }
 
-.navbar_links li a:hover {
-  background: $navbar-link-hover;
-  color: $navbar-text;
-  box-shadow: 0 2px 8px 0 $navbar-link-hover;
-}
+  // Logo
+  .navbar-logo {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #111827;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
 
-// Contenedor derecho para búsqueda y usuario
-.navbar_right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  justify-self: end;
-}
+    &:hover {
+      opacity: 0.8;
+    }
 
 // Barra de búsqueda en el navbar
 .navbar_search {
@@ -83,8 +80,10 @@ $navbar-btn-border-hover: #555555;
   &:focus-within {
     border-color: #94a3b8;
     box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.25);
+    @media (max-width: 768px) {
+      font-size: 1.4rem;
+    }
   }
-}
 
 .navbar_search-input {
   flex: 1;
@@ -97,34 +96,56 @@ $navbar-btn-border-hover: #555555;
 
   &::placeholder {
     color: #aaa;
+  // Desktop Navigation
+  .navbar-desktop {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    flex: 1;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
-}
 
-.navbar_search-icon {
-  background: transparent;
-  border: none;
-  color: #6b7280;
-  cursor: pointer;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s;
-  order: -1;
+  // Links List
+  .navbar-links {
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 
-  &:hover {
-    color: #111827;
+    .nav-link {
+      background: none;
+      border: none;
+      color: #111827;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+
+      &:hover {
+        background: #f3f4f6;
+        color: #667eea;
+      }
+    }
   }
-}
 
-// User Actions
-.navbar_actions {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-shrink: 0;
-}
+  // Search Bar
+  .navbar-search {
+    flex: 1;
+    max-width: 400px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #f3f4f6;
+    border-radius: 30px;
+    padding: 0.6rem 1rem;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s;
 
 .navbar_user-icon {
   background: #000;
@@ -143,55 +164,57 @@ $navbar-btn-border-hover: #555555;
     background: #1a1a1a;
     border-color: #adadad;
   }
-}
 
-// User dropdown menu
-.user-menu {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  right: 0;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  min-width: 220px;
-  padding: 0.5rem;
-  z-index: 1000;
-  animation: slideDown 0.2s ease-out;
-}
+  .navbar-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #111827;
+    font-size: 0.95rem;
+    padding-left: 0.5rem;
 
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+    &::placeholder {
+      color: #9ca3af;
+    }
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .navbar-search-icon {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    order: -1;
+
+    &:hover {
+      color: #667eea;
+    }
   }
-}
 
-.user-menu-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  color: #111827;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: all 0.2s;
-  font-size: 0.95rem;
-  font-weight: 500;
-
-  svg {
-    font-size: 1.1rem;
+  // Profile Menu
+  .navbar-actions {
+    position: relative;
+    display: flex;
+    align-items: center;
     flex-shrink: 0;
   }
 
-  &:hover {
+  .navbar-user-icon {
     background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 0.6rem;
     color: #111827;
-  }
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
 
   &:last-child {
     color: #dc2626;
@@ -200,69 +223,83 @@ $navbar-btn-border-hover: #555555;
     padding-top: 0.75rem;
 
     &:hover {
-      background: #fee2e2;
-      color: #dc2626;
+      background: #e5e7eb;
+      border-color: #d1d5db;
     }
   }
-}
 
-.navbar_links {
-  list-style: none;
-  display: flex;
-  gap: 2rem;
-  margin: 0;
-  padding: 0;
-}
+  .user-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    padding: 0.5rem;
+    z-index: 1000;
+    animation: slideDown 0.2s ease-out;
+  }
 
-.navbar_links li a {
-  color: $navbar-text;
-  text-decoration: none;
-  font-size: 1.1rem;
-  font-weight: 500;
-  transition: color 0.2s, background 0.2s, box-shadow 0.2s;
-  padding: 0.3rem 0.8rem;
-  border-radius: 0.5rem;
-}
-
-.navbar_links li a:hover {
-  background: $navbar-link-hover;
-  color: $navbar-text;
-  box-shadow: 0 2px 8px 0 $navbar-link-hover;
-}
-
-.navbar_auth {
-  margin-left: 2rem;
-}
-
-.navbar_login {
-  color: $navbar-text;
-  background: $navbar-btn-bg;
-  padding: 0.5rem 1.2rem;
-  border-radius: 0.7rem;
-  text-decoration: none;
-  font-weight: 600;
-  border: 2px solid $navbar-btn-border;
-  box-shadow: 0 2px 8px 0 $navbar-btn-bg;
-  transition: background 0.2s, border 0.2s, box-shadow 0.2s;
-}
-
-.navbar_login:hover {
-  background: #f5f5f5;
-  border: 2px solid #111;
-  box-shadow: 0 4px 16px 0 #e7e7e7;
-}
-
-@media (max-width: 768px) {
-  .navbar {
+  .user-menu-item {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    padding: 1rem;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #111827;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    svg {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: #f3f4f6;
+      color: #667eea;
+    }
+
+    &.logout-item {
+      color: #dc2626;
+      border-top: 1px solid #e5e7eb;
+      margin-top: 0.25rem;
+      padding-top: 0.75rem;
+
+      &:hover {
+        background: #fee2e2;
+        color: #dc2626;
+      }
+    }
   }
 
   .navbar_logo {
+  // Mobile Toggle
+  .navbar-mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
     font-size: 1.5rem;
-    order: 1;
+    cursor: pointer;
+    color: #111827;
+    padding: 0.5rem;
+    transition: color 0.2s;
+
+    @media (max-width: 768px) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      order: -1;
+      margin-left: auto;
+
+      &:hover {
+        color: #667eea;
+      }
+    }
   }
 
   .navbar_links {
@@ -293,5 +330,145 @@ $navbar-btn-border-hover: #555555;
 
   .navbar_search {
     max-width: 250px;
+  // Mobile Navigation
+  .navbar-mobile {
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    animation: slideDown 0.3s ease-out;
+
+    @media (max-width: 768px) {
+      display: flex;
+      width: 100%;
+      order: 3;
+    }
+
+    .mobile-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      .mobile-link {
+        background: none;
+        border: none;
+        color: #111827;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        transition: all 0.2s;
+        text-align: left;
+        width: 100%;
+
+        &:hover {
+          background: #ffffff;
+          color: #667eea;
+        }
+      }
+    }
+
+    .mobile-search {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 0.6rem 1rem;
+      border: 1px solid #e5e7eb;
+      gap: 0.5rem;
+
+      &:focus-within {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+    }
+
+    .mobile-search-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #111827;
+      font-size: 0.95rem;
+
+      &::placeholder {
+        color: #9ca3af;
+      }
+    }
+
+    .mobile-search-icon {
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      padding: 0.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+      order: -1;
+
+      &:hover {
+        color: #667eea;
+      }
+    }
+
+    .mobile-profile {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid #e5e7eb;
+
+      .mobile-profile-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: #111827;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.2s;
+        font-size: 0.9rem;
+        font-weight: 500;
+
+        svg {
+          font-size: 1rem;
+          flex-shrink: 0;
+        }
+
+        &:hover {
+          background: #ffffff;
+          color: #667eea;
+        }
+
+        &.logout-item {
+          color: #dc2626;
+
+          &:hover {
+            background: #fee2e2;
+            color: #dc2626;
+          }
+        }
+      }
+    }
   }
 }
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

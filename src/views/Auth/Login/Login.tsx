@@ -64,7 +64,7 @@ const Login: React.FC = () => {
       await loginUser(formData);
       showSuccess("Login successful! Redirecting...");
       setTimeout(() => {
-        window.location.href = "/"; // or use navigate('/home') if using React Router's useNavigate
+        window.location.href = '/home';
       }, 1500);
     } catch (error: any) {
       setFormError(error.message || "Failed to log in");

@@ -1,15 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./NavBar.scss";
-import {
-  FaUserCircle,
-  FaUser,
-  FaHeart,
-  FaEdit,
-  FaSignOutAlt,
-  FaSearch,
-} from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { logoutUser } from "../../utils/authApi";
+import { FaUserCircle, FaUser, FaHeart, FaEdit, FaSignOutAlt, FaSearch, FaBars, FaTimes } from "react-icons/fa";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { logoutUser } from '../../utils/authApi';
 
 interface NavBarProps {
   searchQuery?: string;
@@ -23,9 +16,20 @@ const NavBar: React.FC<NavBarProps> = ({
   onSearchSubmit,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Determinar si mostrar NavBar según la ruta
+  const hideNavBar = ['/login', '/register', '/forgot-password', '/reset-password', '/'].includes(location.pathname);
+  const isHome = location.pathname === '/home';
+  const isFavorites = location.pathname === '/favoritos';
+  const showSearch = isHome;
+
+  if (hideNavBar) {
+    return null;
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +40,10 @@ const NavBar: React.FC<NavBarProps> = ({
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   const handleLogout = async (e: React.MouseEvent) => {
@@ -56,11 +64,10 @@ const NavBar: React.FC<NavBarProps> = ({
     }
   };
 
-  // Check if user is logged in on component mount
-  useEffect(() => {
-    const authToken = localStorage.getItem('authToken');
-    setIsLoggedIn(!!authToken);
-  }, []);
+  const handleNavigate = (path: string) => {
+    navigate(path);
+    setIsMobileMenuOpen(false);
+  };
 
   // Close the menu when user click outside of it
   useEffect(() => {
@@ -78,77 +85,148 @@ const NavBar: React.FC<NavBarProps> = ({
 
   return (
     <nav className="navbar">
-      <div className="navbar_logo">PopFix</div>
-
-      <ul className="navbar_links">
-        <li>
-          <a href="/">Inicio</a>
-        </li>
-        <li>
-          <a href="/login">Iniciar Sesión</a>
-        </li>
-        <li>
-          <a href="/favoritos">Favoritos</a>
-        </li>
-        <li>
-          <a href="/perfil">Perfil</a>
-        </li>
-      </ul>
-
-      <div className="navbar_right">
-        {/* Search Bar */}
-        <form onSubmit={handleSubmit} className="navbar_search">
-          <button
-            type="submit"
-            className="navbar_search-icon"
-            aria-label="Buscar"
-          >
-            <FaSearch />
-          </button>
-          <input
-            type="text"
-            placeholder="Buscar Películas"
-            value={searchQuery}
-            onChange={(e) => onSearchChange?.(e.target.value)}
-            className="navbar_search-input"
-          />
-        </form>
-
-        <div className="navbar_actions" ref={menuRef}>
-          <button
-            className="navbar_user-icon"
-            aria-label="Perfil de usuario"
-            onClick={toggleMenu}
-          >
-            <FaUserCircle size={24} />
-          </button>
-
-          {isMenuOpen && (
-            <div className="user-menu">
-              <a href="/user" className="user-menu-item">
-                <FaUser />
-                <span>Mi perfil</span>
-              </a>
-              <a href="/favoritos" className="user-menu-item">
-                <FaHeart />
-                <span>Lista de favoritos</span>
-              </a>
-              <a href="/edit-user" className="user-menu-item">
-                <FaEdit />
-                <span>Editar perfil</span>
-              </a>
-              <a
-                href="/logout"
-                className="user-menu-item"
-                onClick={handleLogout}
-              >
-                <FaSignOutAlt />
-                <span>Cerrar sesión</span>
-              </a>
-            </div>
-          )}
+      <div className="navbar-container">
+        {/* Logo */}
+        <div className="navbar-logo" onClick={() => handleNavigate('/home')}>
+          PopFix
         </div>
+
+        {/* Desktop Navigation */}
+        <div className="navbar-desktop">
+          {/* Links */}
+          <ul className="navbar-links">
+            <li>
+              <button 
+                className="nav-link"
+                onClick={() => handleNavigate('/home')}
+              >
+                Inicio
+              </button>
+            </li>
+            {(isHome || isFavorites) && (
+              <li>
+                <button 
+                  className="nav-link"
+                  onClick={() => handleNavigate('/favoritos')}
+                >
+                  Favoritos
+                </button>
+              </li>
+            )}
+          </ul>
+
+          {/* Search Bar - Only on Home */}
+          {showSearch && (
+            <form onSubmit={handleSubmit} className="navbar-search">
+              <button type="submit" className="navbar-search-icon" aria-label="Buscar">
+                <FaSearch />
+              </button>
+              <input
+                type="text"
+                placeholder="Buscar películas..."
+                value={searchQuery}
+                onChange={(e) => onSearchChange?.(e.target.value)}
+                className="navbar-search-input"
+              />
+            </form>
+          )}
+
+          {/* Profile Menu */}
+          <div className="navbar-actions" ref={menuRef}>
+            <button 
+              className="navbar-user-icon" 
+              aria-label="Perfil de usuario"
+              onClick={toggleMenu}
+            >
+              <FaUserCircle size={28} />
+            </button>
+            
+            {isMenuOpen && (
+              <div className="user-menu">
+                <a href="/perfil" className="user-menu-item">
+                  <FaUser />
+                  <span>Mi perfil</span>
+                </a>
+                <a href="/edit-user" className="user-menu-item">
+                  <FaEdit />
+                  <span>Editar perfil</span>
+                </a>
+                <a href="/logout" className="user-menu-item logout-item" onClick={handleLogout}>
+                  <FaSignOutAlt />
+                  <span>Cerrar sesión</span>
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button 
+          className="navbar-mobile-toggle"
+          onClick={toggleMobileMenu}
+          aria-label="Menú móvil"
+        >
+          {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+        </button>
       </div>
+
+      {/* Mobile Navigation */}
+      {isMobileMenuOpen && (
+        <div className="navbar-mobile">
+          <ul className="mobile-links">
+            <li>
+              <button 
+                className="mobile-link"
+                onClick={() => handleNavigate('/home')}
+              >
+                Inicio
+              </button>
+            </li>
+            {(isHome || isFavorites) && (
+              <li>
+                <button 
+                  className="mobile-link"
+                  onClick={() => handleNavigate('/favoritos')}
+                >
+                  Favoritos
+                </button>
+              </li>
+            )}
+          </ul>
+
+          {/* Mobile Search - Only on Home */}
+          {showSearch && (
+            <form onSubmit={handleSubmit} className="mobile-search">
+              <button type="submit" className="mobile-search-icon" aria-label="Buscar">
+                <FaSearch />
+              </button>
+              <input
+                type="text"
+                placeholder="Buscar películas..."
+                value={searchQuery}
+                onChange={(e) => onSearchChange?.(e.target.value)}
+                className="mobile-search-input"
+              />
+            </form>
+          )}
+
+          {/* Mobile Profile Menu */}
+          <div className="mobile-profile">
+            <a href="/perfil" className="mobile-profile-item">
+              <FaUser />
+              <span>Mi perfil</span>
+            </a>
+            <a href="/edit-user" className="mobile-profile-item">
+              <FaEdit />
+              <span>Editar perfil</span>
+            </a>
+            <a href="/logout" className="mobile-profile-item logout-item" onClick={handleLogout}>
+              <FaSignOutAlt />
+              <span>Cerrar sesión</span>
+            </a>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

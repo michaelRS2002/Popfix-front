@@ -24,11 +24,27 @@ export const API_BASE_URL = "https://popfix-back.onrender.com/api";
  * @property {string} USER_FAVORITES - Endpoint for getting user's favorite movies.
  */
 export const API_ENDPOINTS = {
-  // Authentication
-  LOGIN: "/users/login",
-  REGISTER: "/users/register",
-  FORGOT_PASSWORD: "/auth/forgot-password",
-  LOGOUT: "/logout",
+  // Autenticación
+  LOGIN: '/users/login',
+  REGISTER: '/users/register',
+  FORGOT_PASSWORD: '/auth/forgot-password',
+  LOGOUT: '/logout',
+  
+  // Películas
+  MOVIES: '/movies/mixed',
+  MOVIE_DETAILS: '/pexels/:id',
+  SEARCH_MOVIES: '/pexels/search',
+  POPULAR_MOVIES: '/pexels/popular',
+  TRENDING_MOVIES: '/pexels/trending',
+  // Favoritos y ratings
+  MOVIES_FAVORITES: '/movies/favorites/:userId',
+  MOVIES_INSERT_FAVORITE_RATING: '/movies/insertFavoriteRating/:userId',
+  MOVIES_UPDATE: '/movies/update/:userId',
+  
+  // Usuario
+  USER_PROFILE: '/user/profile',
+  USER_FAVORITES: '/user/favorites'
+}
 
   // Movies
   MOVIES: "/movies",
