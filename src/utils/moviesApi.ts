@@ -71,6 +71,7 @@ export type InsertFavoriteOrRatingPayload = {
   thumbnail_url?: string
   genre?: string
   source?: string
+  duration_seconds?: number
 }
 
 export type UpdateUserMoviePayload = {

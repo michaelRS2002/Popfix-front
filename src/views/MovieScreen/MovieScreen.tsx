@@ -34,7 +34,7 @@ export function MovieScreen() {
   // Merge data: preferimos lo que viene de Home (Pexels adapter)
   const movie = useMemo(() => {
     if (passedMovie) {
-      return {
+      const movieObj = {
         title: passedMovie.title || 'Video',
         year: new Date().getFullYear().toString(),
         duration: passedMovie.duration || '',
@@ -44,6 +44,13 @@ export function MovieScreen() {
         description: passedMovie.description || '',
         videoUrl: passedMovie.source || '',
       };
+      console.log('🎬 MovieScreen recibió:', {
+        title: passedMovie.title,
+        source: passedMovie.source,
+        videoUrl: movieObj.videoUrl,
+        allProps: passedMovie
+      });
+      return movieObj;
     }
     return {
       title: 'Video',
