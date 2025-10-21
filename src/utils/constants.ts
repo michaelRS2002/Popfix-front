@@ -36,6 +36,7 @@ export const API_ENDPOINTS = {
   SEARCH_MOVIES: '/pexels/search',
   POPULAR_MOVIES: '/pexels/popular',
   TRENDING_MOVIES: '/pexels/trending',
+  
   // Favoritos y ratings
   MOVIES_FAVORITES: '/movies/favorites/:userId',
   MOVIES_INSERT_FAVORITE_RATING: '/movies/insertFavoriteRating/:userId',
@@ -44,18 +45,6 @@ export const API_ENDPOINTS = {
   // Usuario
   USER_PROFILE: '/user/profile',
   USER_FAVORITES: '/user/favorites'
-}
-
-  // Movies
-  MOVIES: "/movies",
-  MOVIE_DETAILS: "/movies/:id",
-  SEARCH_MOVIES: "/movies/search",
-  POPULAR_MOVIES: "/movies/popular",
-  TRENDING_MOVIES: "/movies/trending",
-
-  // User
-  USER_PROFILE: "/user/profile",
-  USER_FAVORITES: "/user/favorites",
 };
 
 /**
