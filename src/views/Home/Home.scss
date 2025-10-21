@@ -2,6 +2,41 @@
   min-height: 100vh;
   background: #f5f7fb;
   color: #111827;
+
+  // Toast Notification
+  .toast {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 400px;
+
+    &.toast-success {
+      background: #10b981;
+      color: white;
+    }
+
+    &.toast-error {
+      background: #ef4444;
+      color: white;
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
 }
 
 .home-container {

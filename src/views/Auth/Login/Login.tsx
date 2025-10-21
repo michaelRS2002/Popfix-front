@@ -31,7 +31,7 @@ const Login: React.FC = () => {
       await loginUser(formData);
       showSuccess('¡Inicio de sesión exitoso! Redirigiendo...');
       setTimeout(() => {
-        window.location.href = '/'; // o usa navigate('/home') si usas useNavigate
+        window.location.href = '/home';
       }, 1500);
     } catch (error: any) {
       setFormError(error.message || 'Error al iniciar sesión');

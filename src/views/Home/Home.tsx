@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import './Home.scss'
 import NavBar from '../../components/NavBar/NavBar'
 import HelpButton from '../../components/HelpButton/HelpButton'
-import { getAllMovies, searchMovies } from '../../utils/moviesApi'
+import { getPexelsPopularForHome, insertFavoriteOrRating, updateUserMovie, getFavorites } from '../../utils/moviesApi'
 import { AiFillStar, AiFillPlayCircle, AiOutlinePlus, AiFillHeart } from 'react-icons/ai'
 
 interface Movie {
-  id: number
+  id: string | number
   title: string
   rating: number
   duration: string
@@ -19,78 +19,228 @@ interface Movie {
 
 export function Home() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [movies, setMovies] = useState<Movie[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState(() => {
+    // Permite que el NavBar navegue a /home con ?q=busqueda
+    const params = new URLSearchParams(location.search)
+    return params.get('q') || ''
+  })
   const [selectedCategory, setSelectedCategory] = useState('Películas')
   const [loading, setLoading] = useState(false)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
+  const [favoriteIds, setFavoriteIds] = useState<Set<string | number>>(new Set())
 
   const categories = [
     'Películas',
-    'Acción',
+    'Accion',
     'Drama',
     'Comedia',
     'Thriller',
     'Terror',
-    'Ciencia Ficción'
+    'Ciencia Ficcion'
   ]
 
   useEffect(() => {
     loadMovies()
+    // Obtener userId del localStorage - viene dentro del objeto 'user'
+    const userStr = localStorage.getItem('user')
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr)
+        if (user.id) {
+          setUserId(user.id)
+          // Cargar favoritos del usuario para saber cuáles marcar
+          loadUserFavorites(user.id)
+        }
+      } catch (e) {
+        console.error('Error parsing user:', e)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const loadUserFavorites = async (userId: string) => {
+    try {
+      const favs = await getFavorites(userId)
+      console.log('📺 Favoritos cargados del backend:', favs)
+      // Construir Set de IDs de películas favoritas
+      const favoriteIdSet = new Set(
+        favs.map((fav: any) => {
+          const movieData = fav.movies || fav
+          return movieData.id
+        })
+      )
+      console.log('❤️ IDs de favoritos:', Array.from(favoriteIdSet))
+      setFavoriteIds(favoriteIdSet)
+    } catch (error) {
+      console.error('Error loading favorites:', error)
+      // No es crítico, continuar sin favoritos precargados
+    }
+  }
+
+  // Filtrado en cliente: por título (searchQuery) Y por género (selectedCategory)
+  const filteredMovies = movies.filter(m => {
+    // Filtro por búsqueda (título)
+    const matchesSearch = !searchQuery.trim() || 
+      m.title.toLowerCase().includes(searchQuery.trim().toLowerCase());
+    
+    // Filtro por categoría (género)
+    const matchesCategory = selectedCategory === 'Películas' || 
+      m.genre.toLowerCase() === selectedCategory.toLowerCase();
+    
+    return matchesSearch && matchesCategory;
+  })
 
   const loadMovies = async () => {
     setLoading(true)
     try {
-      // Connect with API -- Back
-      const response = await getAllMovies(1)
-      const mockMovies: Movie[] = Array.from({ length: 8 }, (_, i) => ({
-        id: i + 1,
-        title: `Película ${i + 1}`,
-        rating: 4.5,
-        duration: '2h 14m',
-        genre: 'Acción',
-        description: 'Una emocionante aventura llena de acción y efectos espectaculares.',
-        poster: '/static/img/placeholder.jpg'
-      }))
-      setMovies(mockMovies)
+      // Popular de Pexels ya mapeado al shape de Home
+      const items = await getPexelsPopularForHome(1)
+      setMovies(items)
     } catch (error) {
       console.error('Error loading movies:', error)
-      // Example Data
-      const mockMovies: Movie[] = Array.from({ length: 8 }, (_, i) => ({
-        id: i + 1,
-        title: `Película ${i + 1}`,
-        rating: 4.5,
-        duration: '2h 14m',
-        genre: 'Acción',
-        description: 'Una emocionante aventura llena de acción y efectos espectaculares.',
-        poster: '/static/img/placeholder.jpg'
-      }))
-      setMovies(mockMovies)
+      setMovies([])
     } finally {
       setLoading(false)
     }
   }
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!searchQuery.trim()) {
-      loadMovies()
-      return
-    }
-    
-    setLoading(true)
-    try {
-      const response = await searchMovies(searchQuery)
-      console.log('Search results:', response)
-    } catch (error) {
-      console.error('Error searching movies:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+
+
+  // Ya no se usa handleSearch, la búsqueda es reactiva al escribir
+
+  // (El filtrado ya es en cliente, no se necesita handleSearchInternal)
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category)
+  }
+
+  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+    setToast({ message, type })
+    setTimeout(() => setToast(null), 3000) // Desaparece después de 3 segundos
+  }
+
+  // Convertir duración string a segundos
+  const durationToSeconds = (durationStr: string): number => {
+    if (!durationStr) return 0
+    
+    // Remover espacios y convertir a minúsculas
+    const normalized = durationStr.toLowerCase().trim()
+    let totalSeconds = 0
+    
+    // Buscar horas (h)
+    const hoursMatch = normalized.match(/(\d+)\s*h/i)
+    if (hoursMatch) {
+      totalSeconds += parseInt(hoursMatch[1]) * 3600
+    }
+    
+    // Buscar minutos (m)
+    const minutesMatch = normalized.match(/(\d+)\s*m(?!s)/)
+    if (minutesMatch) {
+      totalSeconds += parseInt(minutesMatch[1]) * 60
+    }
+    
+    // Buscar segundos (s)
+    const secondsMatch = normalized.match(/(\d+)\s*s/)
+    if (secondsMatch) {
+      totalSeconds += parseInt(secondsMatch[1])
+    }
+    
+    return totalSeconds || 0
+  }
+
+  // Formatear segundos a "Xm Ys"
+  const formatDurationFromSeconds = (durationValue: any): string => {
+    // Si ya está formateado (string con m/h/s), devolverlo
+    if (typeof durationValue === 'string' && /^\d+[mhs]/.test(durationValue)) {
+      return durationValue;
+    }
+    
+    // Si es número (segundos), formatear
+    const seconds = Number(durationValue) || 0;
+    if (seconds === 0) return '5m';
+    
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    
+    if (minutes === 0) {
+      return `${remainingSeconds}s`;
+    } else if (remainingSeconds === 0) {
+      return `${minutes}m`;
+    } else {
+      return `${minutes}m ${remainingSeconds}s`;
+    }
+  };
+
+  const handleAddToFavorites = async (e: React.MouseEvent, movieId: string | number) => {
+    e.stopPropagation()
+    
+    if (!userId) {
+      showToast('Por favor inicia sesión para añadir favoritos', 'error')
+      navigate('/login')
+      return
+    }
+
+    const movie = movies.find(m => m.id === movieId)
+    if (!movie) return
+
+    const isCurrentlyFavorite = favoriteIds.has(movieId)
+    
+    try {
+      // Llamar al backend
+      if (isCurrentlyFavorite) {
+        // Si ya era favorito, lo quitamos (PUT /api/movies/update)
+        await updateUserMovie(userId, {
+          movieId: String(movieId),
+          is_favorite: false
+        })
+        // Actualizar Set de favoritos
+        setFavoriteIds(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(movieId)
+          return newSet
+        })
+        showToast(`"${movie.title}" eliminada de favoritos`, 'success')
+      } else {
+        // Si no era favorito, lo añadimos (POST /api/movies/insertFavoriteRating)
+        // Necesitamos enviar todos los datos de la película
+        const durationSeconds = durationToSeconds(movie.duration);
+        const response = await insertFavoriteOrRating(userId, {
+          movieId: String(movieId),
+          favorite: true,
+          title: movie.title,
+          thumbnail_url: movie.poster,
+          genre: movie.genre,
+          source: (movie as any).source || '', // source opcional en Movie
+          duration_seconds: durationSeconds // Convertir duración a segundos
+        })
+        
+        // Usar la duración devuelta por el backend (puede venir en segundos o formateada)
+        // y formatearla si es necesario
+        const backendDuration = formatDurationFromSeconds((response as any)?.duration || movie.duration)
+        
+        // Guardar duración formateada en localStorage para recuperarla después
+        const favorites = JSON.parse(localStorage.getItem('favoriteDurations') || '{}')
+        favorites[String(movieId)] = backendDuration
+        localStorage.setItem('favoriteDurations', JSON.stringify(favorites))
+        
+        // Actualizar Set de favoritos
+        setFavoriteIds(prev => new Set([...prev, movieId]))
+        
+        showToast(`"${movie.title}" añadida a favoritos`, 'success')
+      }
+      
+    } catch (error) {
+      console.error('Error al modificar favoritos:', error)
+      showToast('No se pudo modificar los favoritos', 'error')
+    }
+  }
+
+  const handlePlayMovie = (e: React.MouseEvent, movieObj: Movie) => {
+    e.stopPropagation()
+    navigate(`/movie/${movieObj.id}`, { state: movieObj })
   }
 
   const handleAddToFavorites = async (e: React.MouseEvent, movieId: number) => {
@@ -134,8 +284,14 @@ export function Home() {
       <NavBar 
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        onSearchSubmit={handleSearch}
       />
+      
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`toast toast-${toast.type}`}>
+          {toast.message}
+        </div>
+      )}
       
       <div className="home-container">
         {/* Catalog Section */}
@@ -163,11 +319,11 @@ export function Home() {
             {loading ? (
               <p>Cargando películas...</p>
             ) : (
-              movies.map((movie) => (
+              filteredMovies.map((movie) => (
                 <div 
                   key={movie.id} 
                   className="movie-card"
-                  onClick={() => navigate(`/movie/${movie.id}`)}
+                  onClick={() => navigate(`/movie/${movie.id}`, { state: movie })}
                   role="button"
                   tabIndex={0}
                   onKeyPress={(e) => {
@@ -197,19 +353,19 @@ export function Home() {
                     <div className="movie-hover-actions">
                       <button 
                         className="play-button"
-                        onClick={(e) => handlePlayMovie(e, movie.id)}
+                        onClick={(e) => handlePlayMovie(e, movie)}
                         aria-label="Reproducir película"
                       >
                         <AiFillPlayCircle />
                         <span>Reproducir</span>
                       </button>
                       <button 
-                        className={`favorite-button ${movie.isFavorite ? 'is-favorite' : ''}`}
+                        className={`favorite-button ${favoriteIds.has(movie.id) ? 'is-favorite' : ''}`}
                         onClick={(e) => handleAddToFavorites(e, movie.id)}
-                        aria-label={movie.isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"}
-                        title={movie.isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"}
+                        aria-label={favoriteIds.has(movie.id) ? "Eliminar de favoritos" : "Añadir a favoritos"}
+                        title={favoriteIds.has(movie.id) ? "Eliminar de favoritos" : "Añadir a favoritos"}
                       >
-                        {movie.isFavorite ? <AiFillHeart /> : <AiOutlinePlus />}
+                        {favoriteIds.has(movie.id) ? <AiFillHeart /> : <AiOutlinePlus />}
                       </button>
                     </div>
                   </div>

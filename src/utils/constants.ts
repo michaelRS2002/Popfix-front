@@ -1,7 +1,7 @@
 // Configuración y constantes de la aplicación PopFix
 
 // URL base del API (cambia por la URL de tu backend)
-export const API_BASE_URL = 'https://popfix-back.onrender.com/api'
+export const API_BASE_URL = 'http://localhost:5100/api'
 
 // Endpoints del API
 export const API_ENDPOINTS = {
@@ -12,11 +12,15 @@ export const API_ENDPOINTS = {
   LOGOUT: '/logout',
   
   // Películas
-  MOVIES: '/movies',
-  MOVIE_DETAILS: '/movies/:id',
-  SEARCH_MOVIES: '/movies/search',
-  POPULAR_MOVIES: '/movies/popular',
-  TRENDING_MOVIES: '/movies/trending',
+  MOVIES: '/movies/mixed',
+  MOVIE_DETAILS: '/pexels/:id',
+  SEARCH_MOVIES: '/pexels/search',
+  POPULAR_MOVIES: '/pexels/popular',
+  TRENDING_MOVIES: '/pexels/trending',
+  // Favoritos y ratings
+  MOVIES_FAVORITES: '/movies/favorites/:userId',
+  MOVIES_INSERT_FAVORITE_RATING: '/movies/insertFavoriteRating/:userId',
+  MOVIES_UPDATE: '/movies/update/:userId',
   
   // Usuario
   USER_PROFILE: '/user/profile',
