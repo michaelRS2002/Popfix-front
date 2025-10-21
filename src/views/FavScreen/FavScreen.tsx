@@ -159,7 +159,7 @@ const FavScreen: React.FC = () => {
     });
 
     const handleBack = () => {
-        navigate('/');
+        navigate('/home');
     };
 
     const handleRemoveFavorite = async (movieId: string | number) => {
