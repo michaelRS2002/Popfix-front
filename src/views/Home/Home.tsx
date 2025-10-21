@@ -4,7 +4,7 @@ import './Home.scss'
 import NavBar from '../../components/NavBar/NavBar'
 import HelpButton from '../../components/HelpButton/HelpButton'
 import { getAllMovies, searchMovies } from '../../utils/moviesApi'
-import { AiFillStar } from 'react-icons/ai'
+import { AiFillStar, AiFillPlayCircle, AiOutlinePlus } from 'react-icons/ai'
 
 interface Movie {
   id: number
@@ -92,6 +92,17 @@ export function Home() {
     setSelectedCategory(category)
   }
 
+  const handleAddToFavorites = (e: React.MouseEvent, movieId: number) => {
+    e.stopPropagation()
+    console.log('Añadir a favoritos:', movieId)
+    // Aquí se implementará la lógica para añadir a favoritos
+  }
+
+  const handlePlayMovie = (e: React.MouseEvent, movieId: number) => {
+    e.stopPropagation()
+    navigate(`/movie/${movieId}`)
+  }
+
   return (
     <div className="Home">
       <NavBar 
@@ -156,6 +167,23 @@ export function Home() {
                         </svg>
                         {movie.duration}
                       </span>
+                    </div>
+                    <div className="movie-hover-actions">
+                      <button 
+                        className="play-button"
+                        onClick={(e) => handlePlayMovie(e, movie.id)}
+                        aria-label="Reproducir película"
+                      >
+                        <AiFillPlayCircle />
+                        <span>Reproducir</span>
+                      </button>
+                      <button 
+                        className="favorite-button"
+                        onClick={(e) => handleAddToFavorites(e, movie.id)}
+                        aria-label="Añadir a favoritos"
+                      >
+                        <AiOutlinePlus />
+                      </button>
                     </div>
                   </div>
                   <div className="movie-info">
