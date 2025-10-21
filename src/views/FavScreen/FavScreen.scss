@@ -10,6 +10,45 @@ $red: #FF0000;
   min-height: 100vh;
   padding-bottom: 2rem;
 
+  // Focus Viible - WCAG (AA)
+  *:focus-visible {
+    outline: 3px solid $dark;
+    outline-offset: 2px;
+  }
+
+  button:focus-visible,
+  .movie-card:focus-visible,
+  input:focus-visible {
+    outline: 3px solid $dark;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(34, 33, 48, 0.1);
+  }
+
+  .back-button:focus-visible,
+  .filter-button:focus-visible {
+    outline: 3px solid $dark;
+    outline-offset: 2px;
+  }
+
+  .delete-button:focus-visible,
+  .play-button:focus-visible {
+    outline: 3px solid $red;
+    outline-offset: 2px;
+  }
+
+  .dropdown-item:focus-visible {
+    outline: 3px solid $dark;
+    outline-offset: -2px;
+    background-color: rgba(34, 33, 48, 0.1);
+  }
+
+  .star.clickable:focus-visible {
+    outline: 3px solid $red;
+    outline-offset: 2px;
+    transform: scale(1.2);
+  }
+  // =====================================================
+
   // Toast Notification
   .toast {
     position: fixed;

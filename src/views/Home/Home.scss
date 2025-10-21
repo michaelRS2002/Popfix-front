@@ -11,30 +11,6 @@
   background: #f5f7fb;
   color: #111827;
 
-  // Focus Viible - WCAG (AA)
-  *:focus-visible {
-    outline: 3px solid #222130;
-    outline-offset: 2px;
-  }
-
-  button:focus-visible,
-  .movie-card:focus-visible {
-    outline: 3px solid #222130;
-    outline-offset: 2px;
-    box-shadow: 0 0 0 4px rgba(34, 33, 48, 0.1);
-  }
-
-  .category-btn:focus-visible {
-    outline: 3px solid #222130;
-    outline-offset: 2px;
-  }
-
-  .favorite-button:focus-visible,
-  .play-button:focus-visible {
-    outline: 3px solid #FF0000;
-    outline-offset: 2px;
-  }
-
   // Toast Notification
   .toast {
     position: fixed;
@@ -136,7 +112,7 @@
 }
 
 .movie-card {
-  background: #ffffff;
+  background: #000000;
   border-radius: 12px;
   overflow: hidden;
   transition: transform 0.3s, box-shadow 0.3s;

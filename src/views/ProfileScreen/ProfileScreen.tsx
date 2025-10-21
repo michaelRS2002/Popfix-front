@@ -222,7 +222,7 @@ export function ProfileScreen() {
                       favoriteMovies.map((movie) => (
                         <div
                           key={movie.id}
-                          className="movie-card"
+                          className="movie-card-profile"
                           onClick={() => navigate(`/movie/${movie.id}`)}
                         >
                           <div className="movie-poster">
