@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./Forgot-password.scss";
-import NavBar from "../../../components/NavBar/NavBar";
 import { Link } from "react-router-dom";
 import { validateEmail } from "../../../utils/validators";
 import { forgotPassword } from "../../../utils/authApi";
@@ -102,7 +101,6 @@ const ForgotPassword: React.FC = (): JSX.Element => {
 
   return (
     <>
-      <NavBar />
       <div className="app-container-forgot">
         <div className="main-content-forgot">
           <div className="forgot-box">

@@ -7,7 +7,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Register.scss";
-import NavBar from "../../../components/NavBar/NavBar";
 import { Link } from "react-router-dom";
 import { validateRegisterForm } from "../../../utils/validators";
 import { registerUser } from "../../../utils/authApi";
@@ -126,7 +125,6 @@ const Register: React.FC = () => {
 
   return (
     <>
-      <NavBar />
       <div className="app-container-register">
         <div className="main-content-register">
           <div className="left-section-register">
