@@ -76,7 +76,7 @@ export function ProfileScreen() {
   };
 
   const handleBackToCatalog = () => {
-    navigate("/");
+    navigate("/home");
   };
 
   if (loading) {
