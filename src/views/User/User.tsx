@@ -106,7 +106,7 @@ const User: React.FC = () => {
             </div>
 
             <label className="login-redirect">
-              <Link to="/home" className="login-link">Volver al Inicio</Link>
+              <Link to="/" className="login-link">Volver al Inicio</Link>
             </label>
           </div>
         </div>
