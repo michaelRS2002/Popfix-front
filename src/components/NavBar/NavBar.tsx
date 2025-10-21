@@ -45,7 +45,6 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
         <li><a href="/">Inicio</a></li>
         <li><a href="/peliculas">Películas</a></li>
         <li><a href="/favoritos">Favoritos</a></li>
-        <li><a href="/perfil">Perfil</a></li>
       </ul>
       
       <div className="navbar_right">
@@ -74,7 +73,7 @@ const NavBar: React.FC<NavBarProps> = ({ searchQuery = '', onSearchChange, onSea
           
           {isMenuOpen && (
             <div className="user-menu">
-              <a href="/user" className="user-menu-item">
+              <a href="/perfil" className="user-menu-item">
                 <FaUser />
                 <span>Mi perfil</span>
               </a>

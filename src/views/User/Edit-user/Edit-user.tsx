@@ -65,7 +65,7 @@ const EditUser: React.FC = () => {
       <div className="app-container-edit">
         <div className="main-content-edit">
           <div className="edit-box">
-            <Link to="/user" className="back-arrow-edit" aria-label="Volver al perfil">←</Link>
+            <Link to="/perfil" className="back-arrow-edit" aria-label="Volver al perfil">←</Link>
             <img src="/static/img/film-icon.jpg" alt="PopFix logo" className="icon" />
             <h2>Editar Perfil</h2>
             <p>Actualiza tu información personal</p>
@@ -125,7 +125,7 @@ const EditUser: React.FC = () => {
                 <Link to="/change-password" className="login-link">Cambiar contraseña</Link>
               </label>
               <label className="login-redirect">
-                <Link to="/user" className="login-link">Cancelar y volver</Link>
+                <Link to="/perfil" className="login-link">Cancelar y volver</Link>
               </label>
             </div>
           </div>
