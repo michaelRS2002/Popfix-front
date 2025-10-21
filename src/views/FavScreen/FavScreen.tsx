@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './FavScreen.scss';
 import { IoArrowBack, IoSearchOutline } from 'react-icons/io5';
-import { AiFillHeart } from 'react-icons/ai';
+import { CiHeart } from "react-icons/ci";
 import { MdFilterList, MdCalendarToday, MdDelete } from 'react-icons/md';
 import { BiPlay } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
@@ -18,68 +18,76 @@ interface Movie {
 }
 
 const FavScreen: React.FC = () => {
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [genreFilter, setGenreFilter] = useState('Todos los gen');
-  const [dateFilter, setDateFilter] = useState('Fecha añad');
-  const [isGenreOpen, setIsGenreOpen] = useState(false);
-  const [isDateOpen, setIsDateOpen] = useState(false);
+    const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [genreFilter, setGenreFilter] = useState('Todos los gen');
+    const [dateFilter, setDateFilter] = useState('Fecha añad');
+    const [isGenreOpen, setIsGenreOpen] = useState(false);
+    const [isDateOpen, setIsDateOpen] = useState(false);
 
   // Datos de ejemplo - reemplazar con datos reales
-  const [movies] = useState<Movie[]>([
+    const [movies, setMovies] = useState<Movie[]>([
     {
-      id: 1,
-      title: 'Película 1',
-      image: 'https://via.placeholder.com/300x450',
-      rating: 9.5,
-      duration: '2h 14m',
-      genre: 'Acción',
-      addedDate: '15 de Octubre 2024',
-      userRating: 5
+        id: 1,
+        title: 'Película 1',
+        image: 'https://via.placeholder.com/300x450',
+        rating: 9.5,
+        duration: '2h 14m',
+        genre: 'Acción',
+        addedDate: '15 de Octubre 2024',
+        userRating: 5
     },
     {
-      id: 2,
-      title: 'Película 1',
-      image: 'https://via.placeholder.com/300x450',
-      rating: 9.5,
-      duration: '2h 14m',
-      genre: 'Acción',
-      addedDate: '15 de Octubre 2024',
-      userRating: 5
+        id: 2,
+        title: 'Película 1',
+        image: 'https://via.placeholder.com/300x450',
+        rating: 9.5,
+        duration: '2h 14m',
+        genre: 'Acción',
+        addedDate: '15 de Octubre 2024',
+        userRating: 5
     },
     {
-      id: 3,
-      title: 'Película 1',
-      image: 'https://via.placeholder.com/300x450',
-      rating: 9.5,
-      duration: '2h 14m',
-      genre: 'Acción',
-      addedDate: '15 de Octubre 2024',
-      userRating: 5
+        id: 3,
+        title: 'Película 1',
+        image: 'https://via.placeholder.com/300x450',
+        rating: 9.5,
+        duration: '2h 14m',
+        genre: 'Acción',
+        addedDate: '15 de Octubre 2024',
+        userRating: 5
     }
   ]);
 
-  const handleBack = () => {
-    navigate('/');
-  };
+    const handleBack = () => {
+        navigate('/');
+    };
 
-  const handleRemoveFavorite = (movieId: number) => {
-    // Lógica para eliminar de favoritos
-    console.log('Eliminar película:', movieId);
-  };
+    const handleRemoveFavorite = async (movieId: number) => {
+        try {
+            // Update method to use function with Backend
+            setMovies(prevMovies => prevMovies.filter(movie => movie.id !== movieId));
+        
+            console.log(`Película ${movieId} eliminada de favoritos`);
+        
+        } catch (error) {
+            console.error('Error al eliminar favorito:', error);
+            alert('No se pudo eliminar la película de favoritos');
+        }
+    };
 
-  const handlePlay = (movieId: number) => {
-    // Lógica para reproducir
-    console.log('Reproducir película:', movieId);
-  };
+    const handlePlay = (movieId: number) => {
+        // Lógica para reproducir
+        console.log('Reproducir película:', movieId);
+    };
 
-  const renderStars = (rating: number) => {
-    return [...Array(5)].map((_, index) => (
-      <span key={index} className={index < rating ? 'star filled' : 'star'}>
-        ★
-      </span>
-    ));
-  };
+    const renderStars = (rating: number) => {
+        return [...Array(5)].map((_, index) => (
+        <span key={index} className={index < rating ? 'star filled' : 'star'}>
+            ★
+        </span>
+        ));
+    };
 
   return (
     <div className="fav-screen">
@@ -100,7 +108,7 @@ const FavScreen: React.FC = () => {
             <p className="subtitle">Gestiona tu colección personal de películas favoritas</p>
           </div>
           <div className="favorites-count">
-            <AiFillHeart className="heart-icon" />
+            <CiHeart className="heart-icon" />
             <span>{movies.length} películas favoritas</span>
           </div>
         </div>
