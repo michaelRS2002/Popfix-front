@@ -64,7 +64,7 @@ const Login: React.FC = () => {
       await loginUser(formData);
       showSuccess("Login successful! Redirecting...");
       setTimeout(() => {
-        window.location.href = '/home';
+        window.location.href = "/home";
       }, 1500);
     } catch (error: any) {
       setFormError(error.message || "Failed to log in");
@@ -119,11 +119,11 @@ const Login: React.FC = () => {
 
         <div className="right-section">
           <div className="login-box">
-            <h2>Sign In</h2>
-            <p>to access your movie library</p>
+            <h2>Inicia Sesión</h2>
+            <p>para acceder a tu biblioteca de películas</p>
 
             <form className="form" onSubmit={handleSubmit} noValidate>
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">Correo electrónico</label>
               <input
                 type="email"
                 id="email"
@@ -137,7 +137,7 @@ const Login: React.FC = () => {
                 <span className="error-message">{errors.email}</span>
               )}
 
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">Contraseña</label>
               <input
                 type="password"
                 id="password"
@@ -152,7 +152,7 @@ const Login: React.FC = () => {
               )}
 
               <button type="submit" className="button" disabled={loading}>
-                {loading ? "Loading..." : "Sign In"}
+                {loading ? "Loading..." : "Iniciar sesión"}
               </button>
               {formError && (
                 <div className="error-message" style={{ marginTop: 8 }}>
@@ -162,13 +162,13 @@ const Login: React.FC = () => {
             </form>
 
             <a href="/forgot-password" className="forgot">
-              Forgot your password?
+              ¿Olvidaste tu contraseña?
             </a>
 
             <p className="register-text">
-              Don’t have an account?{" "}
+              ¿No tienes cuenta?{" "}
               <a href="/register" className="register-link">
-                Sign up here
+                Regístrate aquí
               </a>
             </p>
           </div>

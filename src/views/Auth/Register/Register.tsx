@@ -132,10 +132,10 @@ const Register: React.FC = () => {
               <Link to="/" className="back-arrow" aria-label="Go back to home">
                 ←
               </Link>
-              <h2>Sign up and create your account</h2>
+              <h2>Regístrate y crea tu cuenta</h2>
 
               <form className="form" onSubmit={handleSubmit} noValidate>
-                <label htmlFor="name">Name</label>
+                <label htmlFor="name">Nombre</label>
                 <input
                   type="text"
                   id="name"
@@ -151,7 +151,7 @@ const Register: React.FC = () => {
 
                 <div className="form-row">
                   <div style={{ flex: 3 }}>
-                    <label htmlFor="email">Email</label>
+                    <label htmlFor="email">Correo electrónico</label>
                     <input
                       type="email"
                       id="email"
@@ -166,7 +166,7 @@ const Register: React.FC = () => {
                     )}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <label htmlFor="age">Age</label>
+                    <label htmlFor="age">Edad</label>
                     <input
                       type="number"
                       id="age"
@@ -183,7 +183,7 @@ const Register: React.FC = () => {
                   </div>
                 </div>
 
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">Contraseña</label>
                 <input
                   type="password"
                   id="password"
@@ -197,7 +197,7 @@ const Register: React.FC = () => {
                   <span className="error-message">{errors.password}</span>
                 )}
 
-                <label htmlFor="confirmPassword">Confirm Password</label>
+                <label htmlFor="confirmPassword">Confirmar Contraseña</label>
                 <input
                   type="password"
                   id="confirmPassword"
@@ -214,7 +214,7 @@ const Register: React.FC = () => {
                 )}
 
                 <button type="submit" className="button" disabled={loading}>
-                  {loading ? "Loading..." : "Sign Up"}
+                  {loading ? "Loading..." : "Registrarse"}
                 </button>
 
                 {formError && (
@@ -233,9 +233,9 @@ const Register: React.FC = () => {
               </form>
 
               <label className="login-redirect">
-                Already have an account?{" "}
+                ¿Ya tienes cuenta?{" "}
                 <a href="/login" className="login-link">
-                  Sign in here
+                  Inicia sesión aquí
                 </a>
               </label>
             </div>
