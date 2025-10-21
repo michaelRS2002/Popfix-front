@@ -9,7 +9,7 @@ $color-danger: #dc3545;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   color: #000;
   min-height: 100vh;
   background-color: $color-bg;
@@ -26,7 +26,6 @@ $color-danger: #dc3545;
   position: relative;
   z-index: 1; // Menor que el NavBar (1000)
 }
-
 
 .delete-box {
   position: relative;
@@ -74,14 +73,14 @@ $color-danger: #dc3545;
   line-height: 2.5rem;
   text-align: center;
   text-decoration: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
   z-index: 10;
 
   &:hover {
     background: $color-box;
     color: #333;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     text-decoration: none;
   }
 }
@@ -260,21 +259,21 @@ $color-danger: #dc3545;
   .main-content-delete {
     padding: 1rem;
   }
-  
+
   .delete-box {
     padding: 2rem 1.5rem;
     border-radius: 16px;
-    
+
     .icon {
       width: 100px;
       height: 100px;
     }
-    
+
     h2 {
       font-size: 1.5rem;
     }
   }
-  
+
   .back-arrow-delete {
     top: 1rem;
     left: 1rem;
@@ -291,4 +290,16 @@ $color-danger: #dc3545;
     min-width: 180px;
     padding: 0.7rem 1.2rem;
   }
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid #222130;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(34, 33, 48, 0.1);
+  border-radius: 6px;
+  transition: box-shadow 0.2s ease, outline-color 0.2s ease;
 }

@@ -67,7 +67,7 @@
         }
 
         &::before {
-          content: '→ ';
+          content: "→ ";
           margin-right: 0.5rem;
           color: #9ca3af;
         }
@@ -101,4 +101,13 @@
       font-size: 1.25rem;
     }
   }
+}
+
+a:focus-visible {
+  outline: 3px solid #222130;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(34, 33, 48, 0.1);
+  border-radius: 6px;
+  background-color: #f3f4f6;
+  color: #111827;
 }

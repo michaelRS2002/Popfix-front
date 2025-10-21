@@ -165,10 +165,18 @@ const User: React.FC = () => {
             </div>
 
             <div className="user-actions">
-              <Link to="/edit-user" className="btn-edit">
+              <Link
+                to="/edit-user"
+                className="btn-edit"
+                aria-label="Edit your profile information"
+              >
                 Edit Profile
               </Link>
-              <Link to="/delete-user" className="btn-delete">
+              <Link
+                to="/delete-user"
+                className="btn-delete"
+                aria-label="Permanently delete your account"
+              >
                 Delete Account
               </Link>
             </div>
