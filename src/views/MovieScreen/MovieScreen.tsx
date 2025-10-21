@@ -1,10 +1,15 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import './MovieScreen.scss';
-import NavBar from '../../components/NavBar/NavBar';
-import HelpButton from '../../components/HelpButton/HelpButton';
-import { AiFillStar } from 'react-icons/ai';
-import { FaPaperPlane, FaComment } from 'react-icons/fa';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import "./MovieScreen.scss";
+import NavBar from "../../components/NavBar/NavBar";
+import HelpButton from "../../components/HelpButton/HelpButton";
+import { AiFillStar, AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { FaPaperPlane, FaComment } from "react-icons/fa";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  insertFavoriteOrRating,
+  updateUserMovie,
+  getFavorites,
+} from "../../utils/moviesApi";
 
 /**
  * Represents a single user comment.
@@ -25,17 +30,12 @@ interface Comment {
 
 export function MovieScreen() {
   const location = useLocation();
+  const navigate = useNavigate();
   const passedMovie = (location?.state as any) || null;
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [rating, setRating] = useState(0);
-
-  /** Current star being hovered by the user (for visual highlight). */
   const [hoverRating, setHoverRating] = useState(0);
-
-  /** Current comment input value. */
   const [comment, setComment] = useState("");
-
-  /** List of existing comments displayed below the video. */
   const [comments, setComments] = useState<Comment[]>([
     {
       id: 1,
@@ -46,67 +46,109 @@ export function MovieScreen() {
     },
   ]);
 
-  // Merge data: preferimos lo que viene de Home (Pexels adapter)
+  const [userId, setUserId] = useState<string | null>(null);
+  const [favoriteIds, setFavoriteIds] = useState<Set<string | number>>(
+    new Set()
+  );
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
+
+  // -------- Load user and favorites --------
+  useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        if (user.id) {
+          setUserId(user.id);
+          loadUserFavorites(user.id);
+        }
+      } catch (e) {
+        console.error("Error parsing user:", e);
+      }
+    }
+  }, []);
+
+  const loadUserFavorites = async (userId: string) => {
+    try {
+      const favs = await getFavorites(userId);
+      const favoriteIdSet = new Set(
+        favs.map((fav: any) => (fav.movies ? fav.movies.id : fav.movie_id))
+      );
+      setFavoriteIds(favoriteIdSet);
+    } catch (error) {
+      console.error("Error loading favorites:", error);
+    }
+  };
+
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success"
+  ) => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 2500);
+  };
+
+  // -------- Movie data --------
   const movie = useMemo(() => {
     if (passedMovie) {
       const movieObj = {
-        title: passedMovie.title || 'Video',
+        id: passedMovie.id || Date.now(),
+        title: passedMovie.title || "Video",
         year: new Date().getFullYear().toString(),
-        duration: passedMovie.duration || '',
-        rating: typeof passedMovie.rating === 'number' ? passedMovie.rating : (parseFloat(passedMovie.rating) || 0),
-        genre: passedMovie.genre || 'Video',
-        director: passedMovie.director || 'Desconocido',
-        description: passedMovie.description || '',
-        videoUrl: passedMovie.source || '',
+        duration: passedMovie.duration || "",
+        rating:
+          typeof passedMovie.rating === "number"
+            ? passedMovie.rating
+            : parseFloat(passedMovie.rating) || 0,
+        genre: passedMovie.genre || "Video",
+        director: passedMovie.director || "Desconocido",
+        description: passedMovie.description || "",
+        videoUrl: passedMovie.source || "",
+        poster: passedMovie.poster || "",
+        source: passedMovie.source || "",
       };
-      console.log('🎬 MovieScreen recibió:', {
-        title: passedMovie.title,
-        source: passedMovie.source,
-        videoUrl: movieObj.videoUrl,
-        allProps: passedMovie
-      });
       return movieObj;
     }
     return {
-      title: 'Video',
+      id: Date.now(),
+      title: "Video",
       year: new Date().getFullYear().toString(),
-      duration: '',
+      duration: "",
       rating: 0,
-      genre: 'Video',
-      director: 'Desconocido',
-      description: '',
-      videoUrl: ''
+      genre: "Video",
+      director: "Desconocido",
+      description: "",
+      videoUrl: "",
+      poster: "",
+      source: "",
     };
   }, [passedMovie]);
 
   useEffect(() => {
-    // Auto play cuando tengamos source
     if (videoRef.current && movie.videoUrl) {
       const v = videoRef.current;
-      // En algunos navegadores se requiere muted para autoplay
       v.muted = true;
-      v.play().catch(() => {/* ignore */});
+      v.play().catch(() => {});
     }
   }, [movie.videoUrl]);
 
-  /**
-   * Handles the event when the user clicks on a star rating.
-   * @param {number} rate - The number of stars selected by the user.
-   */
   const handleRatingClick = (rate: number): void => {
     setRating(rate);
   };
 
   const getGenreDescription = (genre: string): string => {
     const descriptions: { [key: string]: string } = {
-      'Accion': 'Una emocionante película de acción llena de adrenalina y escenas espectaculares.',
-      'Drama': 'Un conmovedor drama que te sumergirá en historias profundas y emociones intensas.',
-      'Comedia': 'Una hilarante película de comedia que te hará reír a carcajadas.',
-      'Thriller': 'Un emocionante thriller que te mantendrá al borde del asiento con giros inesperados.',
-      'Terror': 'Una terrorífica película de terror que te llenará de suspenso y miedo.',
-      'Ciencia Ficcion': 'Una asombrosa película de ciencia ficción que te transportará a mundos imaginarios.',
-      'Popular': 'Un video popular que no puedes perderte.',
-      'Video': 'Un interesante video que debes ver.'
+      Accion: "Una emocionante película de acción llena de adrenalina.",
+      Drama: "Un conmovedor drama lleno de emociones.",
+      Comedia: "Una comedia divertida que te hará reír a carcajadas.",
+      Thriller: "Un thriller intenso con giros inesperados.",
+      Terror: "Una película de terror llena de suspenso.",
+      "Ciencia Ficcion": "Una historia futurista de ciencia ficción.",
+      Popular: "Un video popular que no puedes perderte.",
+      Video: "Un interesante video que debes ver.",
     };
     return descriptions[genre] || `Una fascinante película de ${genre}.`;
   };
@@ -125,31 +167,111 @@ export function MovieScreen() {
     }
   };
 
+  // -------- FAVORITES HANDLER --------
+  const handleAddToFavorites = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!userId) {
+      showToast("Inicia sesión para añadir favoritos", "error");
+      navigate("/login");
+      return;
+    }
+
+    const isCurrentlyFavorite = favoriteIds.has(movie.id);
+
+    setFavoriteIds((prev) => {
+      const newSet = new Set(prev);
+      if (isCurrentlyFavorite) newSet.delete(movie.id);
+      else newSet.add(movie.id);
+      return newSet;
+    });
+
+    try {
+      if (isCurrentlyFavorite) {
+        await updateUserMovie(userId, {
+          movieId: String(movie.id),
+          is_favorite: false,
+        });
+        showToast(`"${movie.title}" eliminada de favoritos`, "success");
+      } else {
+        await insertFavoriteOrRating(userId, {
+          movieId: String(movie.id),
+          favorite: true,
+          title: movie.title,
+          thumbnail_url: movie.poster,
+          genre: movie.genre,
+          source: movie.source,
+          duration_seconds: 300,
+        });
+        showToast(`"${movie.title}" añadida a favoritos`, "success");
+      }
+    } catch (error) {
+      console.error("Error modificando favoritos:", error);
+
+      setFavoriteIds((prev) => {
+        const newSet = new Set(prev);
+        if (isCurrentlyFavorite) newSet.add(movie.id);
+        else newSet.delete(movie.id);
+        return newSet;
+      });
+
+      showToast("No se pudo modificar favoritos", "error");
+    }
+  };
+
   return (
     <div className="MovieScreen">
       <NavBar />
 
+      {toast && (
+        <div className={`toast toast-${toast.type}`}>{toast.message}</div>
+      )}
+
       <div className="movie-container">
         <div className="movie-content">
-          {/* ----------------------- Video Section ----------------------- */}
+          {/* ----------------------- Video ----------------------- */}
           <div className="video-section">
             <div className="video-player">
               <video ref={videoRef} controls playsInline>
                 {movie.videoUrl && (
                   <source src={movie.videoUrl} type="video/mp4" />
                 )}
-                Tu navegador no soporta el elemento de video.
+                Tu navegador no soporta el video.
               </video>
             </div>
           </div>
 
-          {/* ----------------------- Movie Info Section ----------------------- */}
+          {/* ----------------------- Movie Info ----------------------- */}
           <div className="movie-info-section">
             <div className="movie-header">
               <h1>{movie.title}</h1>
-              <div className="movie-rating-badge">
-                <AiFillStar />
-                <span>{movie.rating}</span>
+              <div className="movie-actions">
+                <button
+                  className={`favorite-button ${
+                    favoriteIds.has(movie.id) ? "is-favorite" : ""
+                  }`}
+                  onClick={handleAddToFavorites}
+                  aria-label={
+                    favoriteIds.has(movie.id)
+                      ? "Eliminar de favoritos"
+                      : "Añadir a favoritos"
+                  }
+                  title={
+                    favoriteIds.has(movie.id)
+                      ? "Eliminar de favoritos"
+                      : "Añadir a favoritos"
+                  }
+                >
+                  {favoriteIds.has(movie.id) ? (
+                    <AiFillHeart color="red" />
+                  ) : (
+                    <AiOutlineHeart color="white" />
+                  )}
+                </button>
+                <div className="movie-rating-badge">
+                  <AiFillStar />
+                  <span>{movie.rating}</span>
+                </div>
               </div>
             </div>
 
@@ -166,7 +288,9 @@ export function MovieScreen() {
               <span>Director: {movie.director}</span>
             </div>
 
-            <p className="movie-description">{getGenreDescription(movie.genre)}</p>
+            <p className="movie-description">
+              {getGenreDescription(movie.genre)}
+            </p>
 
             {/* ----------------------- User Rating ----------------------- */}
             <div className="user-rating">
@@ -181,9 +305,6 @@ export function MovieScreen() {
                     onClick={() => handleRatingClick(star)}
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
-                    aria-label={`Calificar con ${star} estrella${
-                      star > 1 ? "s" : ""
-                    }`}
                   >
                     <AiFillStar />
                   </button>
@@ -193,12 +314,11 @@ export function MovieScreen() {
           </div>
         </div>
 
-        {/* ----------------------- Comments Section ----------------------- */}
+        {/* ----------------------- Comments ----------------------- */}
         <div className="comments-section">
           <div className="comments-header">
             <h2>
-              <FaComment />
-              Comentarios
+              <FaComment /> Comentarios
             </h2>
           </div>
 
