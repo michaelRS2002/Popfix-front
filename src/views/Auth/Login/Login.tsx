@@ -1,92 +1,143 @@
+/**
+ * @file Login.tsx
+ * @description Login page component for PopFix. Handles user authentication,
+ * form validation, error display, and success feedback through a popup.
+ *
+ * This component allows users to log in using their email and password,
+ * validates inputs, and provides visual feedback during the process.
+ */
+
 import React, { useState } from "react";
 import "./Login.scss";
-import NavBar from '../../../components/NavBar/NavBar';
-import { Link } from 'react-router-dom';
-import { validateLoginForm } from '../../../utils/validators';
-import { loginUser } from '../../../utils/authApi';
+import { Link } from "react-router-dom";
+import { validateLoginForm } from "../../../utils/validators";
+import { loginUser } from "../../../utils/authApi";
 
-
+/**
+ * Login page component.
+ * @component
+ * @returns {JSX.Element} The rendered Login page component.
+ */
 const Login: React.FC = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  /** @state {Object} formData - Stores user input values for email and password. */
+  const [formData, setFormData] = useState({ email: "", password: "" });
+
+  /** @state {Object} errors - Stores validation errors for form inputs. */
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {}
+  );
+
+  /** @state {string|null} formError - Error message displayed if authentication fails. */
   const [formError, setFormError] = useState<string | null>(null);
+
+  /** @state {boolean} loading - Indicates whether the login request is in progress. */
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Handles input field changes and resets errors for the changed field.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
     setErrors({ ...errors, [e.target.id]: undefined });
     setFormError(null);
   };
 
+  /**
+   * Handles form submission for user login.
+   * Validates input, performs API request, and shows feedback messages.
+   * @async
+   * @param {React.FormEvent} e - The form submission event.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
+
     const { isValid, errors: validationErrors } = validateLoginForm(formData);
     if (!isValid) {
       setErrors(validationErrors);
       return;
     }
+
     setLoading(true);
     try {
       await loginUser(formData);
-      showSuccess('¡Inicio de sesión exitoso! Redirigiendo...');
+      showSuccess("Login successful! Redirecting...");
       setTimeout(() => {
-        window.location.href = '/'; // o usa navigate('/home') si usas useNavigate
+        window.location.href = '/home';
       }, 1500);
     } catch (error: any) {
-      setFormError(error.message || 'Error al iniciar sesión');
+      setFormError(error.message || "Failed to log in");
     } finally {
       setLoading(false);
     }
   };
 
+  /**
+   * Displays a temporary popup with a success message.
+   * The popup disappears automatically after 3 seconds.
+   * @param {string} message - The message to display in the popup.
+   */
   const showSuccess = (message: string) => {
-    let popup = document.getElementById('popup-message');
+    let popup = document.getElementById("popup-message");
     if (!popup) {
-      popup = document.createElement('div');
-      popup.id = 'popup-message';
+      popup = document.createElement("div");
+      popup.id = "popup-message";
       document.body.appendChild(popup);
     }
-    popup.className = 'popup-message popup-success popup-show';
+
+    popup.className = "popup-message popup-success popup-show";
     popup.textContent = message;
-    // Remove after 3s
+
+    // Remove after 3 seconds
     // @ts-ignore
     clearTimeout((popup as any)._timeout);
     // @ts-ignore
     (popup as any)._timeout = setTimeout(() => {
-      popup?.classList.remove('popup-show');
+      popup?.classList.remove("popup-show");
     }, 3000);
   };
 
   return (
     <>
-      <NavBar />
       <div className="app-container">
         <div className="left-section">
-          <Link to="/" className="back-arrow-login" aria-label="Volver al inicio">←</Link>
+          <Link
+            to="/"
+            className="back-arrow-login"
+            aria-label="Go back to home"
+          >
+            ←
+          </Link>
           <h1 className="title-logo">PopFix</h1>
-          <img src="/static/img/film-icon.jpg" alt="PopFix logo" className="icon" />
+          <img
+            src="/static/img/film-icon.jpg"
+            alt="PopFix logo"
+            className="icon"
+          />
         </div>
 
         <div className="right-section">
           <div className="login-box">
-            <h2>Inicia Sesión</h2>
-            <p>para acceder a tu biblioteca de películas</p>
+            <h2>Sign In</h2>
+            <p>to access your movie library</p>
 
             <form className="form" onSubmit={handleSubmit} noValidate>
-              <label htmlFor="email">Correo Electrónico</label>
+              <label htmlFor="email">Email</label>
               <input
                 type="email"
                 id="email"
-                placeholder="tu@gmail.com"
+                placeholder="you@gmail.com"
                 className="input"
                 value={formData.email}
                 onChange={handleChange}
                 disabled={loading}
               />
-              {errors.email && <span className="error-message">{errors.email}</span>}
+              {errors.email && (
+                <span className="error-message">{errors.email}</span>
+              )}
 
-              <label htmlFor="password">Contraseña</label>
+              <label htmlFor="password">Password</label>
               <input
                 type="password"
                 id="password"
@@ -96,22 +147,28 @@ const Login: React.FC = () => {
                 onChange={handleChange}
                 disabled={loading}
               />
-              {errors.password && <span className="error-message">{errors.password}</span>}
+              {errors.password && (
+                <span className="error-message">{errors.password}</span>
+              )}
 
               <button type="submit" className="button" disabled={loading}>
-                {loading ? 'Cargando...' : 'Iniciar Sesión'}
+                {loading ? "Loading..." : "Sign In"}
               </button>
-              {formError && <div className="error-message" style={{ marginTop: 8 }}>{formError}</div>}
+              {formError && (
+                <div className="error-message" style={{ marginTop: 8 }}>
+                  {formError}
+                </div>
+              )}
             </form>
 
             <a href="/forgot-password" className="forgot">
-              ¿Olvidaste tu contraseña?
+              Forgot your password?
             </a>
 
             <p className="register-text">
-              ¿No tienes cuenta?{" "}
+              Don’t have an account?{" "}
               <a href="/register" className="register-link">
-                Regístrate aquí
+                Sign up here
               </a>
             </p>
           </div>
@@ -122,4 +179,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-

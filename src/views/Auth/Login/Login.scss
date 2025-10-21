@@ -1,7 +1,13 @@
+@use "sass:color";
+
 $color-bg: #ffffff;
-$color-box: #e7e7e7;
-$color-input: #d9d9d9;
-$color-button: #000000;
+$color-box: #000000;
+$color-input: #2a2a2a;
+$color-input-text: #ffffff;
+$color-label: #ffffff;
+$color-text: #e5e5e5;
+$color-accent: #e50914;
+
 .back-arrow-login {
   display: inline-block;
   position: absolute;
@@ -16,14 +22,14 @@ $color-button: #000000;
   line-height: 3rem;
   text-align: center;
   text-decoration: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
   z-index: 10;
 
   &:hover {
     background: #e7e7e7;
     color: #333;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
     text-decoration: none;
   }
 }
@@ -33,8 +39,8 @@ $color-button: #000000;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Poppins', sans-serif;
-  color: #000;
+  font-family: "Poppins", sans-serif;
+  color: $color-text;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -46,6 +52,7 @@ $color-button: #000000;
   text-align: center;
 
   .title-logo {
+    color: $color-accent;
     font-size: 5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
@@ -79,12 +86,13 @@ $color-button: #000000;
 
   h2 {
     margin-bottom: 0.5rem;
+    color: $color-accent;
   }
 
   p {
     margin-bottom: 1.5rem;
     font-size: 0.9rem;
-    color: #333;
+    color: $color-text;
   }
 }
 
@@ -98,6 +106,7 @@ $color-button: #000000;
     margin-top: 0.5rem;
     margin-bottom: 0.3rem;
     font-size: 0.9rem;
+    color: $color-label !important;
   }
 
   .input {
@@ -111,7 +120,7 @@ $color-button: #000000;
   }
 
   .button {
-    background-color: $color-button;
+    background-color: $color-accent !important;
     color: white;
     border: none;
     border-radius: 8px;
@@ -122,7 +131,8 @@ $color-button: #000000;
     transition: background-color 0.2s ease;
 
     &:hover {
-      background-color: #333;
+      background-color: color.adjust($color-accent, $lightness: -10%);
+      transform: scale(1.03);
     }
   }
 }
@@ -133,9 +143,10 @@ $color-button: #000000;
   font-weight: 600;
   font-size: 0.9rem;
   text-decoration: none;
-  color: #000;
+  color: $color-accent;
 
   &:hover {
+    color: color.adjust($color-accent, $lightness: -10%);
     text-decoration: underline;
   }
 }
@@ -147,9 +158,10 @@ $color-button: #000000;
   .register-link {
     font-weight: 600;
     text-decoration: none;
-    color: #000;
+    color: $color-accent;
 
     &:hover {
+      color: color.adjust($color-accent, $lightness: -10%);
       text-decoration: underline;
     }
   }

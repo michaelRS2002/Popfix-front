@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './MovieScreen.scss';
 import NavBar from '../../components/NavBar/NavBar';
 import HelpButton from '../../components/HelpButton/HelpButton';
 import { AiFillStar } from 'react-icons/ai';
-import { 
-  FaPlay, 
-  FaVolumeUp, 
-  FaCog, 
-  FaClosedCaptioning, 
-  FaExpand,
-  FaPaperPlane,
-  FaComment
-} from 'react-icons/fa';
+import { FaPaperPlane, FaComment } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 
+/**
+ * Represents a single user comment.
+ * @interface Comment
+ * @property {number} id - Unique identifier of the comment.
+ * @property {string} author - Name of the comment author.
+ * @property {string} text - Content of the comment.
+ * @property {string} date - Time or date when the comment was posted.
+ * @property {string} [avatar] - Optional avatar initials or URL for the user.
+ */
 interface Comment {
   id: number;
   author: string;
@@ -22,88 +24,126 @@ interface Comment {
 }
 
 export function MovieScreen() {
+  const location = useLocation();
+  const passedMovie = (location?.state as any) || null;
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [rating, setRating] = useState(0);
+
+  /** Current star being hovered by the user (for visual highlight). */
   const [hoverRating, setHoverRating] = useState(0);
-  const [comment, setComment] = useState('');
+
+  /** Current comment input value. */
+  const [comment, setComment] = useState("");
+
+  /** List of existing comments displayed below the video. */
   const [comments, setComments] = useState<Comment[]>([
     {
       id: 1,
-      author: 'María García',
-      text: '¡Excelente película! Los efectos visuales son impresionantes.',
-      date: 'Hace 2 horas',
-      avatar: 'MG'
-    }
+      author: "María García",
+      text: "¡Excelente película! Los efectos visuales son impresionantes.",
+      date: "Hace 2 horas",
+      avatar: "MG",
+    },
   ]);
 
-  // Example Data
-  const movie = {
-    title: 'Aventura Épicamente Épica!',
-    year: '2024',
-    duration: '2h 14m',
-    rating: 8.5,
-    genre: 'Acción',
-    director: 'Alex Johnson',
-    description: 'Una emocionante aventura llena de acción y efectos espectaculares que te mantendrá al borde del asiento desde el primer minuto.',
-    videoUrl: ''
+  // Merge data: preferimos lo que viene de Home (Pexels adapter)
+  const movie = useMemo(() => {
+    if (passedMovie) {
+      const movieObj = {
+        title: passedMovie.title || 'Video',
+        year: new Date().getFullYear().toString(),
+        duration: passedMovie.duration || '',
+        rating: typeof passedMovie.rating === 'number' ? passedMovie.rating : (parseFloat(passedMovie.rating) || 0),
+        genre: passedMovie.genre || 'Video',
+        director: passedMovie.director || 'Desconocido',
+        description: passedMovie.description || '',
+        videoUrl: passedMovie.source || '',
+      };
+      console.log('🎬 MovieScreen recibió:', {
+        title: passedMovie.title,
+        source: passedMovie.source,
+        videoUrl: movieObj.videoUrl,
+        allProps: passedMovie
+      });
+      return movieObj;
+    }
+    return {
+      title: 'Video',
+      year: new Date().getFullYear().toString(),
+      duration: '',
+      rating: 0,
+      genre: 'Video',
+      director: 'Desconocido',
+      description: '',
+      videoUrl: ''
+    };
+  }, [passedMovie]);
+
+  useEffect(() => {
+    // Auto play cuando tengamos source
+    if (videoRef.current && movie.videoUrl) {
+      const v = videoRef.current;
+      // En algunos navegadores se requiere muted para autoplay
+      v.muted = true;
+      v.play().catch(() => {/* ignore */});
+    }
+  }, [movie.videoUrl]);
+
+  /**
+   * Handles the event when the user clicks on a star rating.
+   * @param {number} rate - The number of stars selected by the user.
+   */
+  const handleRatingClick = (rate: number): void => {
+    setRating(rate);
   };
 
-  const handleRatingClick = (rate: number) => {
-    setRating(rate);
+  const getGenreDescription = (genre: string): string => {
+    const descriptions: { [key: string]: string } = {
+      'Accion': 'Una emocionante película de acción llena de adrenalina y escenas espectaculares.',
+      'Drama': 'Un conmovedor drama que te sumergirá en historias profundas y emociones intensas.',
+      'Comedia': 'Una hilarante película de comedia que te hará reír a carcajadas.',
+      'Thriller': 'Un emocionante thriller que te mantendrá al borde del asiento con giros inesperados.',
+      'Terror': 'Una terrorífica película de terror que te llenará de suspenso y miedo.',
+      'Ciencia Ficcion': 'Una asombrosa película de ciencia ficción que te transportará a mundos imaginarios.',
+      'Popular': 'Un video popular que no puedes perderte.',
+      'Video': 'Un interesante video que debes ver.'
+    };
+    return descriptions[genre] || `Una fascinante película de ${genre}.`;
   };
 
   const handleCommentSubmit = () => {
     if (comment.trim()) {
       const newComment: Comment = {
         id: comments.length + 1,
-        author: 'Usuario Actual',
+        author: "Usuario Actual",
         text: comment,
-        date: 'Justo ahora',
-        avatar: 'UA'
+        date: "Justo ahora",
+        avatar: "UA",
       };
       setComments([newComment, ...comments]);
-      setComment('');
+      setComment("");
     }
   };
 
   return (
     <div className="MovieScreen">
       <NavBar />
-      
+
       <div className="movie-container">
         <div className="movie-content">
-          {/* Video Player */}
+          {/* ----------------------- Video Section ----------------------- */}
           <div className="video-section">
             <div className="video-player">
-              <video controls>
-                <source src={movie.videoUrl} type="video/mp4" />
+              <video ref={videoRef} controls playsInline>
+                {movie.videoUrl && (
+                  <source src={movie.videoUrl} type="video/mp4" />
+                )}
                 Tu navegador no soporta el elemento de video.
               </video>
-              
-              {/* Personalized Overlay Controls */}
-              <div className="video-controls-overlay">
-                <button className="play-button-overlay" aria-label="Reproducir">
-                  <FaPlay size={60} />
-                </button>
-              </div>
-              
-              <div className="video-controls">
-                <button className="control-btn" aria-label="Volumen">
-                  <FaVolumeUp />
-                </button>
-                <button className="control-btn" aria-label="Configuración">
-                  <FaCog />
-                </button>
-                <button className="control-btn" aria-label="Subtítulos">
-                  <FaClosedCaptioning />
-                </button>
-                <button className="control-btn" aria-label="Pantalla completa">
-                  <FaExpand />
-                </button>
-              </div>
             </div>
           </div>
 
-          {/* Movie Info */}
+          {/* ----------------------- Movie Info Section ----------------------- */}
           <div className="movie-info-section">
             <div className="movie-header">
               <h1>{movie.title}</h1>
@@ -126,20 +166,24 @@ export function MovieScreen() {
               <span>Director: {movie.director}</span>
             </div>
 
-            <p className="movie-description">{movie.description}</p>
+            <p className="movie-description">{getGenreDescription(movie.genre)}</p>
 
-            {/* User Rating */}
+            {/* ----------------------- User Rating ----------------------- */}
             <div className="user-rating">
               <label>Tu valoración:</label>
               <div className="rating-stars">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
-                    className={`star ${star <= (hoverRating || rating) ? 'active' : ''}`}
+                    className={`star ${
+                      star <= (hoverRating || rating) ? "active" : ""
+                    }`}
                     onClick={() => handleRatingClick(star)}
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
-                    aria-label={`Calificar con ${star} estrella${star > 1 ? 's' : ''}`}
+                    aria-label={`Calificar con ${star} estrella${
+                      star > 1 ? "s" : ""
+                    }`}
                   >
                     <AiFillStar />
                   </button>
@@ -149,7 +193,7 @@ export function MovieScreen() {
           </div>
         </div>
 
-        {/* Comments Section */}
+        {/* ----------------------- Comments Section ----------------------- */}
         <div className="comments-section">
           <div className="comments-header">
             <h2>
@@ -166,8 +210,8 @@ export function MovieScreen() {
               rows={3}
             />
           </div>
-          
-          <button 
+
+          <button
             className="comment-submit-btn"
             onClick={handleCommentSubmit}
             disabled={!comment.trim()}
