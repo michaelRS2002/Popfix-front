@@ -6,14 +6,6 @@ import HelpButton from '../../components/HelpButton/HelpButton'
 import { getPexelsPopularForHome, insertFavoriteOrRating, updateUserMovie, getFavorites } from '../../utils/moviesApi'
 import { AiFillStar, AiFillPlayCircle, AiOutlinePlus, AiFillHeart } from 'react-icons/ai'
 
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "./Home.scss";
-import NavBar from "../../components/NavBar/NavBar";
-import HelpButton from "../../components/HelpButton/HelpButton";
-import { getAllMovies, searchMovies } from "../../utils/moviesApi";
-import { AiFillStar } from "react-icons/ai";
-
 /**
  * @typedef {Object} Movie
  * @property {number} id - Unique identifier of the movie.
@@ -267,42 +259,6 @@ export function Home() {
     navigate(`/movie/${movieObj.id}`, { state: movieObj })
   }
 
-  const handleAddToFavorites = async (e: React.MouseEvent, movieId: number) => {
-    e.stopPropagation()
-    
-    // Find movie
-    const movie = movies.find(m => m.id === movieId)
-    if (!movie) return
-
-    const isCurrentlyFavorite = movie.isFavorite || false
-    
-    try {
-      // Modify this for add movies to favorites
-      // Uopdate local state
-      setMovies(prevMovies => 
-        prevMovies.map(m => 
-          m.id === movieId 
-            ? { ...m, isFavorite: !isCurrentlyFavorite }
-            : m
-        )
-      )
-
-      const message = isCurrentlyFavorite 
-        ? `"${movie.title}" eliminada de favoritos` 
-        : `"${movie.title}" añadida a favoritos`
-      console.log(message)
-      
-    } catch (error) {
-      console.error('Error al modificar favoritos:', error)
-      alert('No se pudo modificar los favoritos');
-    }
-  }
-
-  const handlePlayMovie = (e: React.MouseEvent, movieId: number) => {
-    e.stopPropagation()
-    navigate(`/movie/${movieId}`)
-  }
-
   return (
     <div className="Home">
       <NavBar
@@ -325,14 +281,18 @@ export function Home() {
             <p>Descubre miles de películas y series en alta definición</p>
           </div>
 
-      <div className="background-wrapper">
-        <div className="home-container">
-          {/* Catalog Section */}
-          <div className="catalog-section">
-            <div className="catalog-header">
-              <h2>Explora Nuestro Catálogo</h2>
-              <p>Descubre miles de películas y series en alta definición</p>
-            </div>
+          {/* Categories Filter */}
+          <div className="categories-filter">
+            {categories.map((category) => (
+              <button
+                key={category}
+                className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
+                onClick={() => handleCategoryClick(category)}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
 
           {/* Movie Grid */}
           <div className="movies-grid">
@@ -397,23 +357,14 @@ export function Home() {
                         <span>{movie.rating}</span>
                       </div>
                     </div>
-                    <div className="movie-info">
-                      <div className="movie-header">
-                        <h3>{movie.title}</h3>
-                        <div className="movie-rating">
-                          <AiFillStar />
-                          <span>{movie.rating}</span>
-                        </div>
-                      </div>
-                      <div className="movie-genre">
-                        <span className="genre-badge">{movie.genre}</span>
-                      </div>
-                      <p className="movie-description">{movie.description}</p>
+                    <div className="movie-genre">
+                      <span className="genre-badge">{movie.genre}</span>
                     </div>
+                    <p className="movie-description">{movie.description}</p>
                   </div>
-                ))
-              )}
-            </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
