@@ -105,9 +105,9 @@ const Login: React.FC = () => {
           <Link
             to="/"
             className="back-arrow-login"
-            aria-label="Go back to home"
+            aria-label="Volver a la página principal"
           >
-            ←
+            <span aria-hidden="true">←</span>
           </Link>
           <h1 className="title-logo">PopFix</h1>
           <img
@@ -132,9 +132,12 @@ const Login: React.FC = () => {
                 value={formData.email}
                 onChange={handleChange}
                 disabled={loading}
+                aria-label="Ingresa tu correo electrónico"
+                aria-required="true"
+                aria-invalid={errors.email ? "true" : "false"}
               />
               {errors.email && (
-                <span className="error-message">{errors.email}</span>
+                <span className="error-message" role="alert">{errors.email}</span>
               )}
 
               <label htmlFor="password">Contraseña</label>
@@ -146,16 +149,19 @@ const Login: React.FC = () => {
                 value={formData.password}
                 onChange={handleChange}
                 disabled={loading}
+                aria-label="Ingresa tu contraseña"
+                aria-required="true"
+                aria-invalid={errors.password ? "true" : "false"}
               />
               {errors.password && (
-                <span className="error-message">{errors.password}</span>
+                <span className="error-message" role="alert">{errors.password}</span>
               )}
 
-              <button type="submit" className="button" disabled={loading}>
+              <button type="submit" className="button" disabled={loading} aria-label={loading ? "Iniciando sesión" : "Iniciar sesión"}>
                 {loading ? "Loading..." : "Iniciar sesión"}
               </button>
               {formError && (
-                <div className="error-message" style={{ marginTop: 8 }}>
+                <div className="error-message" style={{ marginTop: 8 }} role="alert" aria-live="polite">
                   {formError}
                 </div>
               )}

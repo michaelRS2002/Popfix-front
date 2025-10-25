@@ -8,6 +8,41 @@ $color-label: #ffffff;
 $color-text: #e5e5e5;
 $color-accent: #e50914;
 
+// Focus Visible - WCAG (AA)
+
+*:focus-visible {
+  outline: 3px solid $color-accent;
+  outline-offset: 2px;
+}
+
+input:focus-visible {
+  outline: 3px solid $color-accent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.2);
+}
+
+button:focus-visible,
+.button:focus-visible {
+  outline: 3px solid $color-accent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.2);
+}
+
+.back-arrow-login:focus-visible {
+  outline: 3px solid $color-accent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.2);
+}
+
+a:focus-visible,
+.forgot:focus-visible,
+.register-link:focus-visible {
+  outline: 3px solid $color-accent;
+  outline-offset: 2px;
+  background-color: rgba(229, 9, 20, 0.1);
+}
+// =====================================================
+
 .back-arrow-login {
   display: inline-block;
   position: absolute;

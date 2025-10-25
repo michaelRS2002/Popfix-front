@@ -12,6 +12,48 @@ $color-accent: #e50914;
   min-height: 100vh;
   color: $color-text;
   padding-bottom: 2rem;
+
+  // Focus Visible - WCAG (AA)
+  *:focus-visible {
+    outline: 3px solid $color-accent;
+    outline-offset: 2px;
+  }
+
+  button:focus-visible {
+    outline: 3px solid $color-accent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.2);
+  }
+
+  .favorite-button:focus-visible {
+    outline: 3px solid $color-accent;
+    outline-offset: 2px;
+    transform: scale(1.1);
+  }
+
+  .star:focus-visible {
+    outline: 3px solid $color-accent;
+    outline-offset: 2px;
+    transform: scale(1.2);
+  }
+
+  textarea:focus-visible {
+    outline: 3px solid $color-accent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.2);
+  }
+
+  .comment-submit-btn:focus-visible {
+    outline: 3px solid $color-accent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.2);
+  }
+
+  video:focus-visible {
+    outline: 3px solid $color-accent;
+    outline-offset: 4px;
+  }
+  // =====================================================
 }
 
 .movie-container {

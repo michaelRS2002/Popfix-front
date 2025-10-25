@@ -107,9 +107,9 @@ const ForgotPassword: React.FC = (): JSX.Element => {
             <Link
               to="/login"
               className="back-arrow-forgot"
-              aria-label="Volver al login"
+              aria-label="Volver a la página de inicio de sesión"
             >
-              ←
+              <span aria-hidden="true">←</span>
             </Link>
             <img
               src="/static/img/film-icon.jpg"
@@ -129,17 +129,20 @@ const ForgotPassword: React.FC = (): JSX.Element => {
                 value={email}
                 onChange={handleChange}
                 disabled={loading}
+                aria-label="Ingresa tu correo electrónico"
+                aria-required="true"
+                aria-invalid={emailError ? "true" : "false"}
               />
               {emailError && (
-                <span className="error-message">{emailError}</span>
+                <span className="error-message" role="alert">{emailError}</span>
               )}
 
-              <button type="submit" className="button" disabled={loading}>
+              <button type="submit" className="button" disabled={loading} aria-label={loading ? "Enviando enlace de recuperación" : "Enviar enlace de recuperación"}>
                 {loading ? "Enviando..." : "Enviar enlace de recuperación"}
               </button>
 
               {formError && (
-                <div className="error-message" style={{ marginTop: 8 }}>
+                <div className="error-message" style={{ marginTop: 8 }} role="alert" aria-live="polite">
                   {formError}
                 </div>
               )}
