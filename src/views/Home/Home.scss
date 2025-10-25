@@ -165,19 +165,37 @@
     opacity: 1;
   }
 
-  .play-button,
   .favorite-button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #000000;
+    transition: all 0.3s ease;
+
+    svg {
+      width: 24px;
+      height: 24px;
+      color: #ffffff;
+      transition: color 0.3s ease;
+    }
 
     &:hover {
+      background: #1f1f1f;
       transform: scale(1.1);
+    }
+
+    &.is-favorite {
+      background: #000000 !important;
+      svg {
+        color: #ff0000;
+      }
+
+      &:hover {
+        background: #1f1f1f;
+      }
     }
   }
 
