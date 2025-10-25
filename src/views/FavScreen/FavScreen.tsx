@@ -159,7 +159,7 @@ const FavScreen: React.FC = () => {
     });
 
     const handleBack = () => {
-        navigate('/');
+        navigate('/home');
     };
 
     const handleRemoveFavorite = async (movieId: string | number) => {
@@ -224,16 +224,34 @@ const FavScreen: React.FC = () => {
     };
 
     const renderStars = (rating: number, movieId?: string | number, isClickable: boolean = false) => {
-        return [...Array(5)].map((_, index) => (
-            <span 
-                key={index} 
-                className={`star ${index < rating ? 'filled' : ''} ${isClickable ? 'clickable' : ''}`}
-                onClick={() => isClickable && movieId !== undefined && handleRatingChange(movieId, index + 1)}
-                style={{ cursor: isClickable ? 'pointer' : 'default' }}
-            >
-                ★
-            </span>
-        ));
+        return [...Array(5)].map((_, index) => {
+            const starProps = isClickable ? {
+                role: 'button' as const,
+                tabIndex: 0,
+                'aria-label': `Calificar con ${index + 1} estrella${index > 0 ? 's' : ''}`,
+                onClick: () => movieId !== undefined && handleRatingChange(movieId, index + 1),
+                onKeyDown: (e: React.KeyboardEvent) => {
+                    if (movieId !== undefined && (e.key === 'Enter' || e.key === ' ')) {
+                        e.preventDefault();
+                        handleRatingChange(movieId, index + 1);
+                    }
+                }
+            } : {
+                onClick: () => {},
+                onKeyDown: () => {}
+            };
+
+            return (
+                <span 
+                    key={index} 
+                    className={`star ${index < rating ? 'filled' : ''} ${isClickable ? 'clickable' : ''}`}
+                    style={{ cursor: isClickable ? 'pointer' : 'default' }}
+                    {...starProps}
+                >
+                    ★
+                </span>
+            );
+        });
     };
 
   return (
@@ -242,15 +260,15 @@ const FavScreen: React.FC = () => {
       
       {/* Toast Notification */}
       {toast && (
-        <div className={`toast toast-${toast.type}`}>
+        <div className={`toast toast-${toast.type}`} role="alert" aria-live="polite">
           {toast.message}
         </div>
       )}
       
       {/* Header */}
       <header className="fav-header">
-        <button className="back-button" onClick={handleBack}>
-          <IoArrowBack />
+        <button className="back-button" onClick={handleBack} aria-label="Volver al catálogo">
+          <IoArrowBack aria-hidden="true" />
           <span>Volver al Catálogo</span>
         </button>
       </header>
@@ -272,13 +290,14 @@ const FavScreen: React.FC = () => {
         {/* Search and Filters */}
         <div className="search-filters-container">
           <div className="search-box">
-            <IoSearchOutline className="search-icon" />
+            <IoSearchOutline className="search-icon" aria-hidden="true" />
             <input
               type="text"
               placeholder="Buscar en favoritos"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="search-input"
+              aria-label="Buscar películas en favoritos"
             />
           </div>
 
@@ -287,32 +306,118 @@ const FavScreen: React.FC = () => {
               <button 
                 className="filter-button"
                 onClick={() => setIsGenreOpen(!isGenreOpen)}
+                aria-label={`Filtrar por género: ${genreFilter}`}
+                aria-expanded={isGenreOpen ? "true" : "false"}
               >
-                <MdFilterList className="filter-icon" />
+                <MdFilterList className="filter-icon" aria-hidden="true" />
                 <span>{genreFilter}</span>
-                <span className="arrow">▼</span>
+                <span className="arrow" aria-hidden="true">▼</span>
               </button>
               {isGenreOpen && (
-                <div className="dropdown-menu">
-                  <div className="dropdown-item" onClick={() => { setGenreFilter('Todos los generos'); setIsGenreOpen(false); }}>
+                <div className="dropdown-menu" role="menu">
+                  <div 
+                    className="dropdown-item" 
+                    role="menuitem"
+                    tabIndex={0}
+                    onClick={() => { setGenreFilter('Todos los generos'); setIsGenreOpen(false); }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setGenreFilter('Todos los generos');
+                        setIsGenreOpen(false);
+                      }
+                    }}
+                  >
                     Todos los géneros
                   </div>
-                  <div className="dropdown-item" onClick={() => { setGenreFilter('Accion'); setIsGenreOpen(false); }}>
+                  <div 
+                    className="dropdown-item" 
+                    role="menuitem"
+                    tabIndex={0}
+                    onClick={() => { setGenreFilter('Accion'); setIsGenreOpen(false); }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setGenreFilter('Accion');
+                        setIsGenreOpen(false);
+                      }
+                    }}
+                  >
                     Acción
                   </div>
-                  <div className="dropdown-item" onClick={() => { setGenreFilter('Drama'); setIsGenreOpen(false); }}>
+                  <div 
+                    className="dropdown-item" 
+                    role="menuitem"
+                    tabIndex={0}
+                    onClick={() => { setGenreFilter('Drama'); setIsGenreOpen(false); }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setGenreFilter('Drama');
+                        setIsGenreOpen(false);
+                      }
+                    }}
+                  >
                     Drama
                   </div>
-                  <div className="dropdown-item" onClick={() => { setGenreFilter('Comedia'); setIsGenreOpen(false); }}>
+                  <div 
+                    className="dropdown-item" 
+                    role="menuitem"
+                    tabIndex={0}
+                    onClick={() => { setGenreFilter('Comedia'); setIsGenreOpen(false); }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setGenreFilter('Comedia');
+                        setIsGenreOpen(false);
+                      }
+                    }}
+                  >
                     Comedia
                   </div>
-                  <div className="dropdown-item" onClick={() => { setGenreFilter('Terror'); setIsGenreOpen(false); }}>
+                  <div 
+                    className="dropdown-item" 
+                    role="menuitem"
+                    tabIndex={0}
+                    onClick={() => { setGenreFilter('Terror'); setIsGenreOpen(false); }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setGenreFilter('Terror');
+                        setIsGenreOpen(false);
+                      }
+                    }}
+                  >
                     Terror
                   </div>
-                  <div className="dropdown-item" onClick={() => { setGenreFilter('Thriller'); setIsGenreOpen(false); }}>
+                  <div 
+                    className="dropdown-item" 
+                    role="menuitem"
+                    tabIndex={0}
+                    onClick={() => { setGenreFilter('Thriller'); setIsGenreOpen(false); }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setGenreFilter('Thriller');
+                        setIsGenreOpen(false);
+                      }
+                    }}
+                  >
                     Thriller
                   </div>
-                  <div className="dropdown-item" onClick={() => { setGenreFilter('Ciencia Ficcion'); setIsGenreOpen(false); }}>
+                  <div 
+                    className="dropdown-item" 
+                    role="menuitem"
+                    tabIndex={0}
+                    onClick={() => { setGenreFilter('Ciencia Ficcion'); setIsGenreOpen(false); }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setGenreFilter('Ciencia Ficcion');
+                        setIsGenreOpen(false);
+                      }
+                    }}
+                  >
                     Ciencia Ficción
                   </div>
                 </div>
@@ -324,31 +429,38 @@ const FavScreen: React.FC = () => {
         {/* Movies Grid */}
         <div className="movies-grid">
           {loading ? (
-            <p>Cargando favoritos...</p>
+            <p role="status" aria-live="polite">Cargando favoritos...</p>
           ) : filteredMovies.length === 0 ? (
             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
-              <p>No tienes películas favoritas aún</p>
+              <p role="status">No tienes películas favoritas aún</p>
             </div>
           ) : (
             filteredMovies.map((movie) => (
-            <div key={movie.id} className="movie-card">
+            <div 
+              key={movie.id} 
+              className="movie-card"
+              aria-label={`${movie.title}, género ${movie.genre}, calificación ${movie.rating}`}
+            >
               <div className="movie-image-container">
                 <img src={movie.poster} alt={movie.title} className="movie-image" />
-                <div className="movie-rating">
-                  <span>⭐</span>
+                <div className="movie-rating" aria-label={`Calificación ${movie.rating} estrellas`}>
+                  <span aria-hidden="true">⭐</span>
                   <span>{movie.rating}</span>
                 </div>
                 <button 
                   className="delete-button"
                   onClick={() => handleRemoveFavorite(movie.id)}
-                  title="Eliminar de favoritos"
-                  aria-label="Eliminar de favoritos"
+                  aria-label={`Eliminar ${movie.title} de favoritos`}
                 >
-                  <MdDelete />
+                  <MdDelete aria-hidden="true" />
                 </button>
                 <div className="movie-overlay">
-                  <button className="play-button" onClick={() => handlePlay(movie)}>
-                    <BiPlay className="play-icon" />
+                  <button 
+                    className="play-button" 
+                    onClick={() => handlePlay(movie)}
+                    aria-label={`Reproducir ${movie.title}`}
+                  >
+                    <BiPlay className="play-icon" aria-hidden="true" />
                     <span>Reproducir</span>
                   </button>
                 </div>

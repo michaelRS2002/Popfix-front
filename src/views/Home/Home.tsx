@@ -289,7 +289,9 @@ export function Home() {
 
       {/* Toast Notification */}
       {toast && (
-        <div className={`toast toast-${toast.type}`}>{toast.message}</div>
+        <div className={`toast toast-${toast.type}`} role="alert" aria-live="polite">
+          {toast.message}
+        </div>
       )}
 
       <div className="home-container">
@@ -318,7 +320,7 @@ export function Home() {
           {/* Movie Grid */}
           <div className="movies-grid">
             {loading ? (
-              <p>Cargando películas...</p>
+              <p role="status" aria-live="polite">Cargando películas...</p>
             ) : (
               filteredMovies.map((movie) => (
                 <div
@@ -329,9 +331,11 @@ export function Home() {
                   }
                   role="button"
                   tabIndex={0}
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      navigate(`/movie/${movie.id}`);
+                  aria-label={`${movie.title}, género ${movie.genre}, calificación ${movie.rating}`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      navigate(`/movie/${movie.id}`, { state: movie });
                     }
                   }}
                 >
@@ -372,9 +376,9 @@ export function Home() {
                       <button
                         className="play-button"
                         onClick={(e) => handlePlayMovie(e, movie)}
-                        aria-label="Reproducir película"
+                        aria-label={`Reproducir ${movie.title}`}
                       >
-                        <AiFillPlayCircle />
+                        <AiFillPlayCircle aria-hidden="true" />
                         <span>Reproducir</span>
                       </button>
                       <button
@@ -382,18 +386,10 @@ export function Home() {
                           favoriteIds.has(movie.id) ? "is-favorite" : ""
                         }`}
                         onClick={(e) => handleAddToFavorites(e, movie.id)}
-                        aria-label={
-                          favoriteIds.has(movie.id)
-                            ? "Eliminar de favoritos"
-                            : "Añadir a favoritos"
-                        }
-                        title={
-                          favoriteIds.has(movie.id)
-                            ? "Eliminar de favoritos"
-                            : "Añadir a favoritos"
-                        }
+                        aria-label={favoriteIds.has(movie.id) ? `Quitar ${movie.title} de favoritos` : `Añadir ${movie.title} a favoritos`}
+                        title={favoriteIds.has(movie.id) ? "Eliminar de favoritos" : "Añadir a favoritos"}
                       >
-                        <AiFillHeart />
+                        {favoriteIds.has(movie.id) ? <AiFillHeart aria-hidden="true" /> : <AiOutlinePlus aria-hidden="true" />}
                       </button>
                     </div>
                   </div>

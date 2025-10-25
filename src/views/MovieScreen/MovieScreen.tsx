@@ -224,7 +224,7 @@ export function MovieScreen() {
       <NavBar />
 
       {toast && (
-        <div className={`toast toast-${toast.type}`}>{toast.message}</div>
+        <div className={`toast toast-${toast.type}`} role="alert" aria-live="polite">{toast.message}</div>
       )}
 
       <div className="movie-container">
@@ -232,7 +232,7 @@ export function MovieScreen() {
           {/* ----------------------- Video ----------------------- */}
           <div className="video-section">
             <div className="video-player">
-              <video ref={videoRef} controls playsInline>
+              <video ref={videoRef} controls playsInline aria-label={`Reproduciendo ${movie.title}`}>
                 {movie.videoUrl && (
                   <source src={movie.videoUrl} type="video/mp4" />
                 )}
@@ -253,23 +253,19 @@ export function MovieScreen() {
                   onClick={handleAddToFavorites}
                   aria-label={
                     favoriteIds.has(movie.id)
-                      ? "Eliminar de favoritos"
-                      : "Añadir a favoritos"
+                      ? `Eliminar ${movie.title} de favoritos`
+                      : `Añadir ${movie.title} a favoritos`
                   }
-                  title={
-                    favoriteIds.has(movie.id)
-                      ? "Eliminar de favoritos"
-                      : "Añadir a favoritos"
-                  }
+                  aria-pressed={favoriteIds.has(movie.id) ? "true" : "false"}
                 >
                   {favoriteIds.has(movie.id) ? (
-                    <AiFillHeart color="red" />
+                    <AiFillHeart color="red" aria-hidden="true" />
                   ) : (
-                    <AiOutlineHeart color="white" />
+                    <AiOutlineHeart color="white" aria-hidden="true" />
                   )}
                 </button>
-                <div className="movie-rating-badge">
-                  <AiFillStar />
+                <div className="movie-rating-badge" aria-label={`Calificación de la película: ${movie.rating} estrellas`}>
+                  <AiFillStar aria-hidden="true" />
                   <span>{movie.rating}</span>
                 </div>
               </div>
@@ -295,7 +291,7 @@ export function MovieScreen() {
             {/* ----------------------- User Rating ----------------------- */}
             <div className="user-rating">
               <label>Tu valoración:</label>
-              <div className="rating-stars">
+              <div className="rating-stars" role="group" aria-label="Calificar película">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
@@ -305,8 +301,10 @@ export function MovieScreen() {
                     onClick={() => handleRatingClick(star)}
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
+                    aria-label={`Calificar con ${star} estrella${star > 1 ? 's' : ''}`}
+                    aria-pressed={star <= rating ? "true" : "false"}
                   >
-                    <AiFillStar />
+                    <AiFillStar aria-hidden="true" />
                   </button>
                 ))}
               </div>
@@ -318,7 +316,7 @@ export function MovieScreen() {
         <div className="comments-section">
           <div className="comments-header">
             <h2>
-              <FaComment /> Comentarios
+              <FaComment aria-hidden="true" /> Comentarios
             </h2>
           </div>
 
@@ -328,6 +326,7 @@ export function MovieScreen() {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               rows={3}
+              aria-label="Escribe tu comentario sobre la película"
             />
           </div>
 
@@ -335,17 +334,18 @@ export function MovieScreen() {
             className="comment-submit-btn"
             onClick={handleCommentSubmit}
             disabled={!comment.trim()}
+            aria-label="Publicar comentario"
           >
-            <FaPaperPlane />
+            <FaPaperPlane aria-hidden="true" />
             Comentar
           </button>
 
           <div className="comment-separator"></div>
 
-          <div className="comments-list">
+          <div className="comments-list" role="list" aria-label="Lista de comentarios">
             {comments.map((comm) => (
-              <div key={comm.id} className="comment-item">
-                <div className="comment-avatar">
+              <div key={comm.id} className="comment-item" role="listitem">
+                <div className="comment-avatar" aria-hidden="true">
                   {comm.avatar || comm.author.substring(0, 2).toUpperCase()}
                 </div>
                 <div className="comment-content">
