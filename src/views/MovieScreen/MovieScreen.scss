@@ -161,7 +161,7 @@ $color-accent: #FF0000;
 // Subtitle Control
 .subtitle-control {
   position: absolute;
-  bottom: 1rem;
+  top: 1rem;
   right: 1rem;
   z-index: 10;
 }
@@ -492,7 +492,7 @@ $color-accent: #FF0000;
 }
 
 .favorite-button {
-  background: none;
+  background: transparent;
   border: none;
   cursor: pointer;
   font-size: 1.8rem;
@@ -501,7 +501,7 @@ $color-accent: #FF0000;
   justify-content: center;
   transition: all 0.3s ease;
   line-height: 1;
-  padding: 0;
+  padding: 0.5rem;
   margin: 0;
   outline: none;
 
@@ -510,7 +510,7 @@ $color-accent: #FF0000;
   }
 
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.15);
   }
 
   svg {
@@ -519,9 +519,11 @@ $color-accent: #FF0000;
     color: $color-text;
   }
 
-  &.is-favorite svg {
-    color: $color-accent;
-    fill: $color-accent;
+  &.is-favorite {
+    svg {
+      color: $color-accent;
+      fill: $color-accent;
+    }
   }
 }
 

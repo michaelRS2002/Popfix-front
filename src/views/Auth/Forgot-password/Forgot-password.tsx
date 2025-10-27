@@ -101,8 +101,8 @@ const ForgotPassword: React.FC = (): JSX.Element => {
 
   return (
     <>
-      <div className="app-container-forgot">
-        <div className="main-content-forgot">
+      <div className="app-container-forgot" role="main">
+        <div className="main-content-forgot" role="presentation" aria-label="Fondo decorativo de películas">
           <div className="forgot-box">
             <Link
               to="/login"
@@ -113,7 +113,7 @@ const ForgotPassword: React.FC = (): JSX.Element => {
             </Link>
             <img
               src="/static/img/film-icon.jpg"
-              alt="PopFix logo"
+              alt="Logotipo de PopFix - ícono de carrete de película"
               className="icon"
             />
             <h2>Recuperar contraseña</h2>

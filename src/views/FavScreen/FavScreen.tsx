@@ -293,7 +293,7 @@ const FavScreen: React.FC = () => {
             <p className="subtitle">Gestiona tu colección personal de películas favoritas</p>
           </div>
           <div className="favorites-count">
-            <CiHeart className="heart-icon" />
+            <CiHeart className="heart-icon" aria-hidden="true" />
             <span>{movies.length} películas favoritas</span>
           </div>
         </div>
@@ -453,7 +453,7 @@ const FavScreen: React.FC = () => {
               aria-label={`${movie.title}, género ${movie.genre}, calificación ${movie.rating}`}
             >
               <div className="movie-image-container">
-                <img src={movie.poster} alt={movie.title} className="movie-image" />
+                <img src={movie.poster} alt={`Póster de la película ${movie.title}`} className="movie-image" />
                 <div className="movie-rating" aria-label={`Calificación ${movie.rating} estrellas`}>
                   <span aria-hidden="true">⭐</span>
                   <span>{movie.rating}</span>

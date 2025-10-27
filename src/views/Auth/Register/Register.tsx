@@ -262,7 +262,7 @@ const Register: React.FC = () => {
             <h1 className="title-logo">PopFix</h1>
             <img
               src="/static/img/film-icon.jpg"
-              alt="PopFix logo"
+              alt="Logotipo de PopFix - ícono de carrete de película"
               className="icon"
             />
           </div>
