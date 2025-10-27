@@ -318,14 +318,14 @@ export function Home() {
           </div>
 
           {/* Movie Grid */}
-          <div className="movies-grid">
+          <div className="movies-grid-home">
             {loading ? (
               <p role="status" aria-live="polite">Cargando películas...</p>
             ) : (
               filteredMovies.map((movie) => (
                 <div
                   key={movie.id}
-                  className="movie-card"
+                  className="movie-card-home"
                   onClick={() =>
                     navigate(`/movie/${movie.id}`, { state: movie })
                   }

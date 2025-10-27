@@ -1,6 +1,6 @@
 /* Popfix Main Styles */
-$color-bg: #ffffff;
-$bg-image: "/static/img/wallpaper.jpeg";
+$color-bg: #FEFEFE;
+
 * {
   margin: 0;
   padding: 0;
@@ -9,7 +9,6 @@ $bg-image: "/static/img/wallpaper.jpeg";
 body,
 #root {
   background-color: $color-bg;
-  background-image: url(#{$bg-image});
   min-height: 100vh;
   height: 100vh;
   display: flex;
