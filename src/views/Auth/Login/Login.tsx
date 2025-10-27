@@ -127,7 +127,7 @@ const Login: React.FC = () => {
               <input
                 type="email"
                 id="email"
-                placeholder="you@gmail.com"
+                placeholder="tu@email.com"
                 className="input"
                 value={formData.email}
                 onChange={handleChange}
@@ -137,7 +137,9 @@ const Login: React.FC = () => {
                 aria-invalid={errors.email ? "true" : "false"}
               />
               {errors.email && (
-                <span className="error-message" role="alert">{errors.email}</span>
+                <span className="error-message" role="alert">
+                  {errors.email}
+                </span>
               )}
 
               <label htmlFor="password">Contraseña</label>
@@ -154,14 +156,26 @@ const Login: React.FC = () => {
                 aria-invalid={errors.password ? "true" : "false"}
               />
               {errors.password && (
-                <span className="error-message" role="alert">{errors.password}</span>
+                <span className="error-message" role="alert">
+                  {errors.password}
+                </span>
               )}
 
-              <button type="submit" className="button" disabled={loading} aria-label={loading ? "Iniciando sesión" : "Iniciar sesión"}>
+              <button
+                type="submit"
+                className="button"
+                disabled={loading}
+                aria-label={loading ? "Iniciando sesión" : "Iniciar sesión"}
+              >
                 {loading ? "Loading..." : "Iniciar sesión"}
               </button>
               {formError && (
-                <div className="error-message" style={{ marginTop: 8 }} role="alert" aria-live="polite">
+                <div
+                  className="error-message"
+                  style={{ marginTop: 8 }}
+                  role="alert"
+                  aria-live="polite"
+                >
                   {formError}
                 </div>
               )}
