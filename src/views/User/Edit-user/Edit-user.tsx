@@ -107,7 +107,7 @@ const EditUser: React.FC = () => {
             <Link
               to="/user"
               className="back-arrow-edit"
-              aria-label="Back to profile"
+              aria-label="Volver al perfil"
             >
               ←
             </Link>
@@ -116,8 +116,8 @@ const EditUser: React.FC = () => {
               alt="Logotipo de PopFix - ícono de carrete de película"
               className="icon"
             />
-            <h2>Edit Profile</h2>
-            <p>Update your personal information</p>
+            <h2>Editar Perfil</h2>
+            <p>Actualiza tu información personal</p>
 
             <form className="edit-form" onSubmit={handleSubmit} noValidate>
               <label htmlFor="nombres">Name</label>

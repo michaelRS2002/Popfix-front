@@ -101,7 +101,7 @@ const User: React.FC = () => {
             <div className="user-box">
               <p className="error-message">{error}</p>
               <Link to="/home" className="login-link">
-                Return to Home
+                Volver al Inicio
               </Link>
             </div>
           </div>
@@ -123,7 +123,7 @@ const User: React.FC = () => {
             <Link
               to="/home"
               className="back-arrow-user"
-              aria-label="Return to home"
+              aria-label="Volver al inicio"
             >
               ←
             </Link>
@@ -168,22 +168,22 @@ const User: React.FC = () => {
               <Link
                 to="/edit-user"
                 className="btn-edit"
-                aria-label="Edit your profile information"
+                aria-label="Editar información de tu perfil"
               >
-                Edit Profile
+                Editar Perfil
               </Link>
               <Link
                 to="/delete-user"
                 className="btn-delete"
-                aria-label="Permanently delete your account"
+                aria-label="Eliminar permanentemente tu cuenta"
               >
-                Delete Account
+                Eliminar Cuenta
               </Link>
             </div>
 
             <label className="login-redirect">
               <Link to="/home" className="login-link">
-                Return to Home
+                Volver al Inicio
               </Link>
             </label>
           </div>

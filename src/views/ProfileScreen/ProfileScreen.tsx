@@ -95,7 +95,7 @@ export function ProfileScreen() {
           <button
             className="back-button"
             onClick={handleBackToCatalog}
-            aria-label="Return to catalog"
+            aria-label="Volver al catálogo"
           >
             <IoArrowBack />
             <span>Volver al Catálogo</span>
@@ -103,7 +103,7 @@ export function ProfileScreen() {
           <button
             className="edit-button"
             onClick={handleEditProfile}
-            aria-label="Edit profile"
+            aria-label="Editar perfil"
           >
             <AiFillSetting aria-hidden="true" />
             <span>Editar Perfil</span>
