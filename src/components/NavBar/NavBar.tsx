@@ -57,7 +57,8 @@ const NavBar: React.FC<NavBarProps> = ({
         alert("Sesión cerrada correctamente");
       }
     } catch (err: any) {
-      alert(err?.message || "Sesión cerrada localmente");
+      console.error("Logout error:", err);
+      alert("Sesión cerrada");
     } finally {
       localStorage.removeItem("authToken");
       localStorage.removeItem("user");
