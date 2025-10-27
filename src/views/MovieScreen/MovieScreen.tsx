@@ -3,7 +3,7 @@ import "./MovieScreen.scss";
 import NavBar from "../../components/NavBar/NavBar";
 import HelpButton from "../../components/HelpButton/HelpButton";
 import { AiFillStar, AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { FaPaperPlane, FaComment } from "react-icons/fa";
+import { FaPaperPlane, FaComment, FaClosedCaptioning } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   insertFavoriteOrRating,
@@ -54,6 +54,7 @@ export function MovieScreen() {
     message: string;
     type: "success" | "error";
   } | null>(null);
+  const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
 
   // -------- Load user and favorites --------
   useEffect(() => {
@@ -89,6 +90,19 @@ export function MovieScreen() {
   ) => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 2500);
+  };
+
+  const toggleSubtitles = () => {
+    setSubtitlesEnabled(!subtitlesEnabled);
+    const video = videoRef.current;
+    if (video && video.textTracks.length > 0) {
+      const track = video.textTracks[0];
+      track.mode = !subtitlesEnabled ? "showing" : "hidden";
+    }
+    showToast(
+      !subtitlesEnabled ? "Subtítulos activados" : "Subtítulos desactivados",
+      "success"
+    );
   };
 
   // -------- Movie data --------
@@ -238,6 +252,18 @@ export function MovieScreen() {
                 )}
                 Tu navegador no soporta el video.
               </video>
+              
+              {/* Botón de subtítulos */}
+              <div className="subtitle-control">
+                <button
+                  className={`subtitle-btn ${subtitlesEnabled ? "active" : ""}`}
+                  onClick={toggleSubtitles}
+                  aria-label={subtitlesEnabled ? "Desactivar subtítulos" : "Activar subtítulos"}
+                  aria-pressed={subtitlesEnabled ? "true" : "false"}
+                >
+                  <FaClosedCaptioning />
+                </button>
+              </div>
             </div>
           </div>
 
