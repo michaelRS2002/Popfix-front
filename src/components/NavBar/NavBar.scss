@@ -1,13 +1,13 @@
-$navbar-bg: #000000;
-$navbar-text: #ffffff;
-$navbar-border: #222222;
-$navbar-shadow: rgba(255, 255, 255, 0.08);
-$navbar-shadow-light: #333333;
-$navbar-link-hover: #333333;
-$navbar-link-active: #2a2a2a;
-$navbar-btn-bg: #000000;
-$navbar-btn-border: #333333;
-$navbar-btn-border-hover: #555555;
+$navbar-bg: #ffffff;
+$navbar-text: #000000;
+$navbar-border: #e5e5e5;
+$navbar-shadow: rgba(0, 0, 0, 0.08);
+$navbar-shadow-light: #f5f5f5;
+$navbar-link-hover: #f5f5f5;
+$navbar-link-active: #e5e5e5;
+$navbar-btn-bg: #ffffff;
+$navbar-btn-border: #e5e5e5;
+$navbar-btn-border-hover: #cccccc;
 
 .navbar {
   display: flex;
@@ -78,6 +78,12 @@ $navbar-btn-border-hover: #555555;
 
   .navbar-search {
     margin-left: auto;
+    
+    // Cuando hay search, el actions necesita menos margen
+    ~ .navbar-actions {
+      margin-left: 1rem;
+      margin-right: 3.7rem;
+    }
   }
 
   .navbar-actions {
@@ -85,7 +91,7 @@ $navbar-btn-border-hover: #555555;
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    margin-left: 1rem;
+    margin-left: auto;
     margin-right: 3.7rem;
   }
 

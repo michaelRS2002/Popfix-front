@@ -24,6 +24,7 @@ interface Movie {
 const FavScreen: React.FC = () => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
+    const [navSearchQuery, setNavSearchQuery] = useState('');
     const [genreFilter, setGenreFilter] = useState('Todos los gen');
     const [isGenreOpen, setIsGenreOpen] = useState(false);
     const [movies, setMovies] = useState<Movie[]>([]);
@@ -151,8 +152,9 @@ const FavScreen: React.FC = () => {
 
     // Filtrado: por búsqueda y por género
     const filteredMovies = movies.filter(m => {
-      const matchesSearch = !searchQuery.trim() || 
-        m.title.toLowerCase().includes(searchQuery.trim().toLowerCase());
+      const searchTerm = navSearchQuery || searchQuery;
+      const matchesSearch = !searchTerm.trim() || 
+        m.title.toLowerCase().includes(searchTerm.trim().toLowerCase());
       const matchesGenre = genreFilter === 'Todos los gen' || 
         m.genre.toLowerCase() === genreFilter.toLowerCase();
       return matchesSearch && matchesGenre;
@@ -160,6 +162,11 @@ const FavScreen: React.FC = () => {
 
     const handleBack = () => {
         navigate('/home');
+    };
+
+    const handleNavSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        // La búsqueda se aplica automáticamente a través del filtrado
     };
 
     const handleRemoveFavorite = async (movieId: string | number) => {
@@ -256,7 +263,11 @@ const FavScreen: React.FC = () => {
 
   return (
     <div className="fav-screen">
-      <NavBar searchQuery="" onSearchChange={() => {}} />
+      <NavBar 
+        searchQuery={navSearchQuery}
+        onSearchChange={setNavSearchQuery}
+        onSearchSubmit={handleNavSearch}
+      />
       
       {/* Toast Notification */}
       {toast && (
