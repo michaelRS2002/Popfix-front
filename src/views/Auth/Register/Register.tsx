@@ -129,7 +129,11 @@ const Register: React.FC = () => {
         <div className="main-content-register">
           <div className="left-section-register">
             <div className="register-box">
-              <Link to="/" className="back-arrow" aria-label="Volver a la página principal">
+              <Link
+                to="/"
+                className="back-arrow"
+                aria-label="Volver a la página principal"
+              >
                 <span aria-hidden="true">←</span>
               </Link>
               <h2>Regístrate y crea tu cuenta</h2>
@@ -139,7 +143,7 @@ const Register: React.FC = () => {
                 <input
                   type="text"
                   id="name"
-                  placeholder="Your full name"
+                  placeholder="Tu nombre completo"
                   className="input"
                   value={formData.name}
                   onChange={handleChange}
@@ -149,7 +153,9 @@ const Register: React.FC = () => {
                   aria-invalid={errors.name ? "true" : "false"}
                 />
                 {errors.name && (
-                  <span className="error-message" role="alert">{errors.name}</span>
+                  <span className="error-message" role="alert">
+                    {errors.name}
+                  </span>
                 )}
 
                 <div className="form-row">
@@ -158,7 +164,7 @@ const Register: React.FC = () => {
                     <input
                       type="email"
                       id="email"
-                      placeholder="you@gmail.com"
+                      placeholder="tu@email.com"
                       className="input"
                       value={formData.email}
                       onChange={handleChange}
@@ -168,7 +174,9 @@ const Register: React.FC = () => {
                       aria-invalid={errors.email ? "true" : "false"}
                     />
                     {errors.email && (
-                      <span className="error-message" role="alert">{errors.email}</span>
+                      <span className="error-message" role="alert">
+                        {errors.email}
+                      </span>
                     )}
                   </div>
                   <div style={{ flex: 1 }}>
@@ -176,7 +184,7 @@ const Register: React.FC = () => {
                     <input
                       type="number"
                       id="age"
-                      placeholder="Your age"
+                      placeholder="Tu edad"
                       className="input"
                       value={formData.age}
                       onChange={handleChange}
@@ -187,7 +195,9 @@ const Register: React.FC = () => {
                       aria-invalid={errors.age ? "true" : "false"}
                     />
                     {errors.age && (
-                      <span className="error-message" role="alert">{errors.age}</span>
+                      <span className="error-message" role="alert">
+                        {errors.age}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -206,7 +216,9 @@ const Register: React.FC = () => {
                   aria-invalid={errors.password ? "true" : "false"}
                 />
                 {errors.password && (
-                  <span className="error-message" role="alert">{errors.password}</span>
+                  <span className="error-message" role="alert">
+                    {errors.password}
+                  </span>
                 )}
 
                 <label htmlFor="confirmPassword">Confirmar Contraseña</label>
@@ -228,12 +240,22 @@ const Register: React.FC = () => {
                   </span>
                 )}
 
-                <button type="submit" className="button" disabled={loading} aria-label={loading ? "Registrando usuario" : "Registrarse"}>
+                <button
+                  type="submit"
+                  className="button"
+                  disabled={loading}
+                  aria-label={loading ? "Registrando usuario" : "Registrarse"}
+                >
                   {loading ? "Loading..." : "Registrarse"}
                 </button>
 
                 {formError && (
-                  <div className="error-message" style={{ marginTop: 8 }} role="alert" aria-live="polite">
+                  <div
+                    className="error-message"
+                    style={{ marginTop: 8 }}
+                    role="alert"
+                    aria-live="polite"
+                  >
                     {formError}
                   </div>
                 )}
