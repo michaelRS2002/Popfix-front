@@ -35,6 +35,7 @@
     padding: 0.7rem 1.2rem;
   }
 }
+
 .back-arrow {
   display: flex;
   align-items: center;
@@ -44,25 +45,37 @@
   height: 2.5rem;
   aspect-ratio: 1/1;
   font-size: 1.6rem;
-  color: #fff;
+  color: #000; // ← texto/ícono negro
   text-decoration: none;
-  background: #424242;
-  border-radius: 50%;
-  box-shadow: 0 1px 4px #0001;
-  transition: background 0.2s, box-shadow 0.2s;
+  background: #fff; // ← fondo blanco
+  border-radius: 50%; // (opcional) da mejor visibilidad en fondo claro
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s, box-shadow 0.2s, color 0.2s;
   margin-bottom: 0.2rem;
+
+  &:hover {
+    background: #e7e7e7; // gris claro al pasar el mouse
+    color: #000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  &:focus-visible {
+    outline: 3px solid #000;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1);
+  }
 }
-.back-arrow:hover {
-  background: #000;
-  box-shadow: 0 2px 8px #fff;
-}
-$color-bg: #ffffff;
-$color-box: #000000;
-$color-input: #2a2a2a;
-$color-input-text: #ffffff;
-$color-label: #ffffff;
-$color-text: #e5e5e5;
-$color-accent: #e50914;
+
+// 🎨 Tema claro (colores del Edit-user.scss)
+$color-bg: #ffffff; // Fondo general
+$color-box: #e7e7e7; // Fondo caja
+$color-input: #d9d9d9; // Fondo campos input
+$color-input-text: #000000; // Texto dentro de input
+$color-label: #000000; // Color de labels
+$color-text: #000000; // Texto general
+$color-accent: #000000; // Color principal (botones, acentos)
+$color-button: #000000; // Botón principal
+// =====================================================
 
 // Focus Visible - WCAG (AA)
 *:focus-visible {
@@ -100,6 +113,7 @@ a:focus-visible {
 body {
   overflow-x: hidden;
 }
+
 .app-container-register {
   display: flex;
   flex-direction: column;
@@ -149,14 +163,14 @@ body {
   position: relative;
 
   h2 {
-    color: $color-accent;
+    color: $color-text;
   }
 }
 
 .title-logo {
   font-size: 5rem;
   font-weight: bold;
-  color: $color-accent;
+  color: #e50914;
   margin-bottom: 1.5rem;
   text-align: center;
 }
@@ -200,14 +214,16 @@ body {
   font-size: 1rem;
   outline: none;
   transition: border 0.2s;
+  background: $color-input;
+  color: $color-input-text;
 }
 .input:focus {
-  border-color: #222;
+  border-color: $color-accent;
 }
 
 .button {
-  background: #222;
-  color: $color-accent;
+  background: $color-button;
+  color: $color-bg;
   border: none;
   border-radius: 6px;
   padding: 0.8rem 0;
@@ -298,7 +314,7 @@ body {
   }
 
   .form-row {
-    flex-direction: column; /* Apila email y edad */
+    flex-direction: column;
     gap: 0.75rem;
     width: 100%;
   }
@@ -314,7 +330,7 @@ body {
   }
 
   .input {
-    font-size: 16px; /* Evita zoom en móviles iOS */
+    font-size: 16px;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
@@ -335,7 +351,6 @@ body {
     gap: 0.6rem;
   }
 
-  /* Evita superposición: coloca la flecha en el flujo del layout */
   .back-arrow {
     position: static;
     align-self: flex-start;
