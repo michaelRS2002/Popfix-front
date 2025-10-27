@@ -25,7 +25,8 @@ const NavBar: React.FC<NavBarProps> = ({
   const hideNavBar = ['/login', '/register', '/forgot-password', '/reset-password', '/'].includes(location.pathname);
   const isHome = location.pathname === '/home';
   const isFavorites = location.pathname === '/favoritos';
-  const showSearch = isHome;
+  const showSearch = isHome || isFavorites;
+  const showFavoritesLink = !isFavorites; // Mostrar "Favoritos" en todas las páginas excepto en /favoritos
 
   if (hideNavBar) {
     return null;
@@ -103,7 +104,7 @@ const NavBar: React.FC<NavBarProps> = ({
                 Inicio
               </button>
             </li>
-            {(isHome || isFavorites) && (
+            {showFavoritesLink && (
               <li>
                 <button 
                   className="nav-link"
@@ -191,7 +192,7 @@ const NavBar: React.FC<NavBarProps> = ({
                 Inicio
               </button>
             </li>
-            {(isHome || isFavorites) && (
+            {showFavoritesLink && (
               <li>
                 <button 
                   className="mobile-link"
