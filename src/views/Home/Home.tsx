@@ -12,7 +12,7 @@ import {
 import {
   AiFillStar,
   AiFillPlayCircle,
-  AiOutlinePlus,
+  AiOutlineHeart,
   AiFillHeart,
 } from "react-icons/ai";
 
@@ -318,14 +318,14 @@ export function Home() {
           </div>
 
           {/* Movie Grid */}
-          <div className="movies-grid">
+          <div className="movies-grid-home">
             {loading ? (
               <p role="status" aria-live="polite">Cargando películas...</p>
             ) : (
               filteredMovies.map((movie) => (
                 <div
                   key={movie.id}
-                  className="movie-card"
+                  className="movie-card-home"
                   onClick={() =>
                     navigate(`/movie/${movie.id}`, { state: movie })
                   }
@@ -389,7 +389,7 @@ export function Home() {
                         aria-label={favoriteIds.has(movie.id) ? `Quitar ${movie.title} de favoritos` : `Añadir ${movie.title} a favoritos`}
                         title={favoriteIds.has(movie.id) ? "Eliminar de favoritos" : "Añadir a favoritos"}
                       >
-                        {favoriteIds.has(movie.id) ? <AiFillHeart aria-hidden="true" /> : <AiOutlinePlus aria-hidden="true" />}
+                        {favoriteIds.has(movie.id) ? <AiFillHeart aria-hidden="true" /> : <AiOutlineHeart aria-hidden="true" />}
                       </button>
                     </div>
                   </div>

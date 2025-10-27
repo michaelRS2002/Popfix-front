@@ -1,15 +1,7 @@
-.background-wrapper {
-  background-image: url("/static/img/wallpaper.jpeg");
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: cover;
-  width: 100%;
-}
-
 .Home {
   min-height: 100vh;
-  background: #f5f7fb;
-  color: #111827;
+  background: #FEFEFE;
+  color: #222130;
 
   // Toast Notification
   .toast {
@@ -65,12 +57,22 @@
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
+    color: #222130;
   }
 
   p {
-    color: #6b7280;
+    color: #222130;
+    opacity: 0.7;
     font-size: 1rem;
   }
+}
+
+.categories-filter {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  width: 100%;
 }
 
 .category-filters {
@@ -81,52 +83,54 @@
 }
 
 .category-btn {
-  padding: 0.625rem 1.25rem;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  padding: 0.75rem 1.25rem;
+  background: #FEFEFE;
+  border: 1px solid #D9D9D9;
   border-radius: 20px;
-  color: #111827;
+  color: #222130;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s;
   white-space: nowrap;
+  text-align: center;
+  width: 100%;
 
   &:hover {
-    background: #f9fafb;
-    border-color: #d1d5db;
+    background: #F4F4F4;
+    border-color: #222130;
   }
 
   &.active {
-    background: #111827;
-    color: #ffffff;
-    border-color: #111827;
+    background: #222130;
+    color: #FEFEFE;
+    border-color: #222130;
     font-weight: 600;
   }
 }
 
-.movies-grid {
+.movies-grid-home {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
 }
 
-.movie-card {
-  background: #000000;
+.movie-card-home {
+  background: #FEFEFE;
   border-radius: 12px;
   overflow: hidden;
   transition: transform 0.3s, box-shadow 0.3s;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #D9D9D9;
   cursor: pointer;
 
   &:hover {
     transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-    border-color: #d1d5db;
+    box-shadow: 0 12px 24px rgba(34, 33, 48, 0.15);
+    border-color: #222130;
   }
 
   &:focus {
-    outline: 2px solid #111827;
+    outline: 2px solid #222130;
     outline-offset: 2px;
   }
 }
@@ -135,7 +139,7 @@
   position: relative;
   width: 100%;
   padding-top: 150%; // Aspect ratio 2:3
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #D9D9D9;
   overflow: hidden;
 
   img {
@@ -161,7 +165,7 @@
   transition: opacity 0.3s;
   z-index: 10;
 
-  .movie-card:hover & {
+  .movie-card-home:hover & {
     opacity: 1;
   }
 
@@ -212,20 +216,27 @@
     gap: 0.5rem;
     font-weight: 600;
     font-size: 1rem;
+    transition: all 0.3s ease;
 
     svg {
       width: 24px;
       height: 24px;
-      color: #ffffff;
+      color: #FEFEFE;
+      transition: transform 0.3s ease;
     }
 
     span {
-      color: #ffffff;
+      color: #FEFEFE;
     }
 
     &:hover {
-      transform: translate(-50%, -50%) scale(1.05);
-      background: #2d2b3d;
+      transform: translate(-50%, -50%) scale(1.02);
+      background: #2a2938;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+      svg {
+        transform: scale(1.05);
+      }
     }
   }
 
@@ -236,30 +247,37 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #000000;
+    background: #222130;
     transition: all 0.3s ease;
 
     svg {
       width: 24px;
       height: 24px;
-      color: #ffffff;
-      transition: color 0.3s ease;
+      color: #FEFEFE;
+      transition: all 0.3s ease;
     }
 
     &:hover {
-      background: #1f1f1f;
-      transform: scale(1.1);
+      background: #2a2938;
+      transform: scale(1.03);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+      svg {
+        transform: scale(1.05);
+      }
     }
 
     &.is-favorite {
-      background: #ff0000;
+      background: #FF0000;
 
       svg {
-        color: #ffffff;
+        color: #FEFEFE;
       }
 
       &:hover {
-        background: #cc0000;
+        background: #ff1a1a;
+        transform: scale(1.03);
+        box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
       }
     }
   }
@@ -282,7 +300,7 @@
   opacity: 0;
   transition: opacity 0.3s;
 
-  .movie-card:hover & {
+  .movie-card-home:hover & {
     opacity: 1;
   }
 }
@@ -291,13 +309,12 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #111827;
+  color: #222130;
   font-size: 0.875rem;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(254, 254, 254, 0.9);
   padding: 0.375rem 0.75rem;
   border-radius: 20px;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  border: 1px solid #D9D9D9;
 
   svg {
     width: 16px;
@@ -307,7 +324,7 @@
 
 .movie-info {
   padding: 1rem;
-  background-color: #000000;
+  background-color: #FEFEFE;
 }
 
 .movie-header {
@@ -323,7 +340,7 @@
     margin: 0;
     flex: 1;
     line-height: 1.3;
-    color: #ffffff !important;
+    color: #222130 !important;
   }
 }
 
@@ -331,7 +348,7 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  color: #e50914; /* amber-500 */
+  color: #FF0000;
   font-weight: 600;
   font-size: 0.9rem;
   flex-shrink: 0;
@@ -344,20 +361,25 @@
 
 .movie-genre {
   margin-bottom: 0.75rem;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
 }
 
 .genre-badge {
   display: inline-block;
-  padding: 0.375rem 0.75rem;
-  background: #f3f4f6;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  color: #111827;
-  border: 1px solid #e5e7eb;
+  padding: 0.35rem 0.75rem;
+  background: transparent;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #222130;
+  border: 1px solid #D9D9D9;
 }
 
 .movie-description {
-  color: #ffffff !important;
+  color: #222130 !important;
   font-size: 0.875rem;
   line-height: 1.5;
   margin: 0;
@@ -370,7 +392,7 @@
 
 // Responsive part
 @media (max-width: 1024px) {
-  .movies-grid {
+  .movies-grid-home {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1.5rem;
   }
@@ -385,7 +407,7 @@
     font-size: 1.5rem;
   }
 
-  .movies-grid {
+  .movies-grid-home {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 1rem;
   }
@@ -423,7 +445,7 @@
     }
   }
 
-  .movies-grid {
+  .movies-grid-home {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 }
