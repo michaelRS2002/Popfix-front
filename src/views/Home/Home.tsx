@@ -12,7 +12,7 @@ import {
 import {
   AiFillStar,
   AiFillPlayCircle,
-  AiOutlinePlus,
+  AiOutlineHeart,
   AiFillHeart,
 } from "react-icons/ai";
 
@@ -389,7 +389,7 @@ export function Home() {
                         aria-label={favoriteIds.has(movie.id) ? `Quitar ${movie.title} de favoritos` : `Añadir ${movie.title} a favoritos`}
                         title={favoriteIds.has(movie.id) ? "Eliminar de favoritos" : "Añadir a favoritos"}
                       >
-                        {favoriteIds.has(movie.id) ? <AiFillHeart aria-hidden="true" /> : <AiOutlinePlus aria-hidden="true" />}
+                        {favoriteIds.has(movie.id) ? <AiFillHeart aria-hidden="true" /> : <AiOutlineHeart aria-hidden="true" />}
                       </button>
                     </div>
                   </div>
