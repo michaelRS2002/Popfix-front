@@ -7,8 +7,11 @@ import { FaPaperPlane, FaComment } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   insertFavoriteOrRating,
-  updateUserMovie,
   getFavorites,
+  deleteFavorite,
+  addUserMovieComment,
+  addFavorite,
+  setRating as apiSetRating,
 } from "../../utils/moviesApi";
 
 /**
@@ -34,6 +37,7 @@ export function MovieScreen() {
   const passedMovie = (location?.state as any) || null;
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [rating, setRating] = useState(0);
+  const [displayRating, setDisplayRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState<Comment[]>([
@@ -128,15 +132,42 @@ export function MovieScreen() {
   }, [passedMovie]);
 
   useEffect(() => {
+    setDisplayRating(movie.rating || 0);
     if (videoRef.current && movie.videoUrl) {
       const v = videoRef.current;
       v.muted = true;
       v.play().catch(() => {});
     }
-  }, [movie.videoUrl]);
+  }, [movie]);
 
-  const handleRatingClick = (rate: number): void => {
+  const handleRatingClick = async (rate: number): Promise<void> => {
     setRating(rate);
+    // Send rating to backend (upsert). If user not logged, keep local only.
+    if (!userId) {
+      showToast("Inicia sesión para guardar tu valoración", "error");
+      return;
+    }
+    try {
+      const resp = await apiSetRating(userId, {
+        movieId: String(movie.id),
+        rating: rate,
+      });
+      // If backend returns suggestedRating, update display
+      const suggested = resp?.suggestedRating ?? resp?.suggestedRating === 0 ? resp.suggestedRating : undefined;
+      if (typeof suggested === "number") setDisplayRating(suggested);
+      else setDisplayRating(rate);
+      // Notify other views (Home) that this movie's rating changed
+      try {
+        const detail = { movieId: String(movie.id), rating: typeof suggested === "number" ? suggested : rate };
+        window.dispatchEvent(new CustomEvent("movie:rating-updated", { detail } as any));
+      } catch (e) {
+        // ignore
+      }
+      showToast("Valoración guardada", "success");
+    } catch (err) {
+      console.error("Error guardando valoración:", err);
+      showToast("No se pudo guardar la valoración", "error");
+    }
   };
 
   const getGenreDescription = (genre: string): string => {
@@ -153,17 +184,39 @@ export function MovieScreen() {
     return descriptions[genre] || `Una fascinante película de ${genre}.`;
   };
 
-  const handleCommentSubmit = () => {
-    if (comment.trim()) {
+  const handleCommentSubmit = async () => {
+    if (!comment.trim()) return;
+    if (!userId) {
+      showToast("Inicia sesión para comentar", "error");
+      return;
+    }
+
+    try {
+      const resp = await addUserMovieComment(userId, {
+        movieId: String(movie.id),
+        text: comment.trim(),
+      });
+      // Backend returns comment with author_name, author_surname and avatar
+      const created = resp?.comment ?? null;
+      const authorName = created?.author_name || "Usuario";
+      const authorSurname = created?.author_surname || "";
+      const authorFull = `${authorName} ${authorSurname}`.trim();
+      const avatar = created?.avatar || (authorFull ? authorFull.substring(0,2).toUpperCase() : "UA");
+
       const newComment: Comment = {
-        id: comments.length + 1,
-        author: "Usuario Actual",
-        text: comment,
+        id: created?.id || comments.length + 1,
+        author: authorFull || "Usuario Actual",
+        text: created?.content || comment.trim(),
         date: "Justo ahora",
-        avatar: "UA",
+        avatar: avatar,
       };
+
       setComments([newComment, ...comments]);
       setComment("");
+      showToast("Comentario publicado", "success");
+    } catch (err) {
+      console.error("Error publicando comentario:", err);
+      showToast("No se pudo publicar el comentario", "error");
     }
   };
 
@@ -188,13 +241,12 @@ export function MovieScreen() {
 
     try {
       if (isCurrentlyFavorite) {
-        await updateUserMovie(userId, {
-          movieId: String(movie.id),
-          is_favorite: false,
-        });
+        // Use DELETE favorites endpoint
+        await deleteFavorite(userId, String(movie.id));
         showToast(`"${movie.title}" eliminada de favoritos`, "success");
+        try { window.dispatchEvent(new CustomEvent('movie:favorite-changed', { detail: { movieId: String(movie.id), isFavorite: false } } as any)); } catch(e){}
       } else {
-        await insertFavoriteOrRating(userId, {
+        await addFavorite(userId, {
           movieId: String(movie.id),
           favorite: true,
           title: movie.title,
@@ -204,6 +256,7 @@ export function MovieScreen() {
           duration_seconds: 300,
         });
         showToast(`"${movie.title}" añadida a favoritos`, "success");
+        try { window.dispatchEvent(new CustomEvent('movie:favorite-changed', { detail: { movieId: String(movie.id), isFavorite: true } } as any)); } catch(e){}
       }
     } catch (error) {
       console.error("Error modificando favoritos:", error);
@@ -264,9 +317,9 @@ export function MovieScreen() {
                     <AiOutlineHeart color="white" aria-hidden="true" />
                   )}
                 </button>
-                <div className="movie-rating-badge" aria-label={`Calificación de la película: ${movie.rating} estrellas`}>
+                <div className="movie-rating-badge" aria-label={`Calificación de la película: ${displayRating} estrellas`}>
                   <AiFillStar aria-hidden="true" />
-                  <span>{movie.rating}</span>
+                  <span>{displayRating}</span>
                 </div>
               </div>
             </div>

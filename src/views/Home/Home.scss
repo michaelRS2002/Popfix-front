@@ -361,7 +361,7 @@
 
 .movie-genre {
   margin-bottom: 0.75rem;
-  background: transparent !important;
+  background: black !important;
   border: none !important;
   padding: 0 !important;
   box-shadow: none !important;
@@ -369,13 +369,14 @@
 
 .genre-badge {
   display: inline-block;
-  padding: 0.35rem 0.75rem;
-  background: transparent;
-  border-radius: 16px;
-  font-size: 0.85rem;
+  padding: 0.15rem 0.5rem; // smaller padding so it reads as a label, not a button
+  background: #000000;
+  border-radius: 0px;
+  font-size: 1rem;
   font-weight: 500;
-  color: #222130;
-  border: 1px solid #D9D9D9;
+   // remove border so it doesn't look like a button
+  box-shadow: none;
+  cursor: default;
 }
 
 .movie-description {

@@ -6,8 +6,9 @@ import HelpButton from "../../components/HelpButton/HelpButton";
 import {
   getPexelsPopularForHome,
   insertFavoriteOrRating,
-  updateUserMovie,
   getFavorites,
+  addFavorite,
+  deleteFavorite,
 } from "../../utils/moviesApi";
 import {
   AiFillStar,
@@ -90,6 +91,41 @@ export function Home() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Listen for updates coming from other views (MovieScreen)
+  useEffect(() => {
+    const onRatingUpdated = (e: any) => {
+      try {
+        const { movieId, rating } = e.detail || {};
+        if (!movieId) return;
+        setMovies((prev) =>
+          prev.map((m) => (String(m.id) === String(movieId) ? { ...m, rating } : m))
+        );
+      } catch (err) {
+        // ignore
+      }
+    };
+
+    const onFavoriteChanged = (e: any) => {
+      try {
+        const { movieId, isFavorite } = e.detail || {};
+        if (!movieId) return;
+        setFavoriteIds((prev) => {
+          const s = new Set(prev);
+          if (isFavorite) s.add(movieId);
+          else s.delete(movieId);
+          return s;
+        });
+      } catch (err) {}
+    };
+
+    window.addEventListener("movie:rating-updated", onRatingUpdated as EventListener);
+    window.addEventListener("movie:favorite-changed", onFavoriteChanged as EventListener);
+    return () => {
+      window.removeEventListener("movie:rating-updated", onRatingUpdated as EventListener);
+      window.removeEventListener("movie:favorite-changed", onFavoriteChanged as EventListener);
+    };
   }, []);
 
   const loadUserFavorites = async (userId: string) => {
@@ -228,11 +264,8 @@ export function Home() {
     try {
       // Llamar al backend
       if (isCurrentlyFavorite) {
-        // Si ya era favorito, lo quitamos (PUT /api/movies/update)
-        await updateUserMovie(userId, {
-          movieId: String(movieId),
-          is_favorite: false,
-        });
+        // Si ya era favorito, lo quitamos (DELETE /api/movies/favorites/:userId/:movieId)
+        await deleteFavorite(userId, String(movieId));
         // Actualizar Set de favoritos
         setFavoriteIds((prev) => {
           const newSet = new Set(prev);
@@ -244,7 +277,7 @@ export function Home() {
         // Si no era favorito, lo añadimos (POST /api/movies/insertFavoriteRating)
         // Necesitamos enviar todos los datos de la película
         const durationSeconds = durationToSeconds(movie.duration);
-        const response = await insertFavoriteOrRating(userId, {
+        const response = await addFavorite(userId, {
           movieId: String(movieId),
           favorite: true,
           title: movie.title,
