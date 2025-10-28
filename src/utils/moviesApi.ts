@@ -169,6 +169,62 @@ export const updateUserMovie = async (userId: string, payload: UpdateUserMoviePa
   }
 };
 
+// POST /api/movies/favorite/:userId - add a movie to favorites (creates movie if needed)
+export const addFavorite = async (userId: string, payload: InsertFavoriteOrRatingPayload) => {
+  if (!userId) throw new Error('userId es requerido')
+  if (!payload || !payload.movieId) throw new Error('movieId es requerido')
+  try {
+    const endpoint = `/movies/favorite/${encodeURIComponent(userId)}`
+    const response = await httpClient.post(endpoint, payload)
+    return response
+  } catch (error: any) {
+    throw new Error(error?.message || 'Error al añadir favorito')
+  }
+}
+
+// PUT /api/movies/rating/:userId - set rating only
+export const setRating = async (userId: string, payload: { movieId: string; rating: number }) => {
+  if (!userId) throw new Error('userId es requerido')
+  if (!payload || !payload.movieId) throw new Error('movieId es requerido')
+  const n = Number(payload.rating)
+  if (Number.isNaN(n) || n < 1 || n > 5) throw new Error('El rating debe estar entre 1 y 5')
+  try {
+    const endpoint = `/movies/rating/${encodeURIComponent(userId)}`
+    const response = await httpClient.put(endpoint, payload)
+    return response
+  } catch (error: any) {
+    throw new Error(error?.message || 'Error al guardar rating')
+  }
+}
+
+// DELETE /api/movies/favorites/:userId/:movieId
+export const deleteFavorite = async (userId: string, movieId: string) => {
+  if (!userId) throw new Error('userId es requerido')
+  if (!movieId) throw new Error('movieId es requerido')
+  try {
+    const endpoint = API_ENDPOINTS.MOVIES_FAVORITES.replace(':userId', encodeURIComponent(userId))
+    // endpoint currently is '/movies/favorites/:userId' - backend expects /movies/favorites/:userId/:movieId for delete
+    const full = `${endpoint}/${encodeURIComponent(movieId)}`
+    const response = await httpClient.delete(full)
+    return response
+  } catch (error: any) {
+    throw new Error(error?.message || 'Error al eliminar favorito')
+  }
+}
+
+// POST /api/movies/addUserMovieComment/:userId
+export const addUserMovieComment = async (userId: string, payload: { movieId: string; text: string }) => {
+  if (!userId) throw new Error('userId es requerido')
+  if (!payload || !payload.movieId) throw new Error('movieId es requerido')
+  try {
+    const endpoint = `/movies/addUserMovieComment/${encodeURIComponent(userId)}`
+    const response = await httpClient.post(endpoint, payload)
+    return response
+  } catch (error: any) {
+    throw new Error(error?.message || 'Error al añadir comentario')
+  }
+}
+
 /**
  * Helper function to construct a full movie image URL.
  * Returns a placeholder if the image path is missing.

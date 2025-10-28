@@ -124,7 +124,7 @@ const ForgotPassword: React.FC = (): JSX.Element => {
               <input
                 type="email"
                 id="email"
-                placeholder="tu@gmail.com"
+                placeholder="tu@email.com"
                 className="input"
                 value={email}
                 onChange={handleChange}
@@ -134,15 +134,31 @@ const ForgotPassword: React.FC = (): JSX.Element => {
                 aria-invalid={emailError ? "true" : "false"}
               />
               {emailError && (
-                <span className="error-message" role="alert">{emailError}</span>
+                <span className="error-message" role="alert">
+                  {emailError}
+                </span>
               )}
 
-              <button type="submit" className="button" disabled={loading} aria-label={loading ? "Enviando enlace de recuperación" : "Enviar enlace de recuperación"}>
+              <button
+                type="submit"
+                className="button"
+                disabled={loading}
+                aria-label={
+                  loading
+                    ? "Enviando enlace de recuperación"
+                    : "Enviar enlace de recuperación"
+                }
+              >
                 {loading ? "Enviando..." : "Enviar enlace de recuperación"}
               </button>
 
               {formError && (
-                <div className="error-message" style={{ marginTop: 8 }} role="alert" aria-live="polite">
+                <div
+                  className="error-message"
+                  style={{ marginTop: 8 }}
+                  role="alert"
+                  aria-live="polite"
+                >
                   {formError}
                 </div>
               )}
