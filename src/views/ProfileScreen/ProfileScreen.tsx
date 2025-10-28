@@ -95,7 +95,7 @@ export function ProfileScreen() {
           <button
             className="back-button"
             onClick={handleBackToCatalog}
-            aria-label="Return to catalog"
+            aria-label="Volver al catálogo"
           >
             <IoArrowBack />
             <span>Volver al Catálogo</span>
@@ -103,9 +103,9 @@ export function ProfileScreen() {
           <button
             className="edit-button"
             onClick={handleEditProfile}
-            aria-label="Edit profile"
+            aria-label="Editar perfil"
           >
-            <AiFillSetting />
+            <AiFillSetting aria-hidden="true" />
             <span>Editar Perfil</span>
           </button>
         </div>
@@ -115,7 +115,7 @@ export function ProfileScreen() {
           {/* Profile Info Card */}
           <div className="profile-info-card">
             <div className="profile-avatar">
-              <FaFilm />
+              <FaFilm aria-hidden="true" />
             </div>
 
             <div className="profile-details">
@@ -138,7 +138,7 @@ export function ProfileScreen() {
                 </div>
 
                 <div className="stat-item">
-                  <AiFillClockCircle />
+                  <AiFillClockCircle aria-hidden="true" />
                   <div className="stat-content">
                     <span
                       className="stat-number"
@@ -151,7 +151,7 @@ export function ProfileScreen() {
                 </div>
 
                 <div className="stat-item stat-rating">
-                  <CiStar />
+                  <CiStar aria-hidden="true" />
                   <div className="stat-content">
                     <span
                       className="stat-number"
@@ -164,7 +164,7 @@ export function ProfileScreen() {
                 </div>
 
                 <div className="stat-item stat-favorites">
-                  <CiHeart />
+                  <CiHeart aria-hidden="true" />
                   <div className="stat-content">
                     <span
                       className="stat-number"
@@ -177,7 +177,7 @@ export function ProfileScreen() {
                 </div>
 
                 <div className="stat-item favorite-genre">
-                  <AiFillTrophy />
+                  <AiFillTrophy aria-hidden="true" />
                   <div className="stat-content">
                     <span
                       className="stat-number"
@@ -235,7 +235,7 @@ export function ProfileScreen() {
               {activeTab === "favoritos" && (
                 <div className="favorites-section">
                   <div className="section-header">
-                    <CiHeart className="section-icon" />
+                    <CiHeart className="section-icon" aria-hidden="true" />
                     <div>
                       <h2>Mis Películas Favoritas</h2>
                       <p>Películas que has marcado como favoritas</p>
@@ -253,7 +253,7 @@ export function ProfileScreen() {
                           <div className="movie-poster">
                             <img
                               src={movie.poster}
-                              alt={movie.title}
+                              alt={`Póster de la película ${movie.title}`}
                               onError={(e) => {
                                 (e.currentTarget as HTMLImageElement).src =
                                   "https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?q=80&w=800&auto=format&fit=crop";
@@ -266,6 +266,7 @@ export function ProfileScreen() {
                                   className={
                                     i < movie.rating ? "filled" : "empty"
                                   }
+                                  aria-hidden="true"
                                 />
                               ))}
                             </div>
@@ -275,7 +276,7 @@ export function ProfileScreen() {
                             <span className="movie-genre">{movie.genre}</span>
                             <div className="movie-meta">
                               <span className="movie-duration">
-                                <AiFillClockCircle />
+                                <AiFillClockCircle aria-hidden="true" />
                                 {movie.duration}
                               </span>
                             </div>
@@ -296,7 +297,7 @@ export function ProfileScreen() {
 
               {activeTab === "historial" && (
                 <div className="empty-state">
-                  <AiFillClockCircle />
+                  <AiFillClockCircle aria-hidden="true" />
                   <h3>Historial de Visualización</h3>
                   <p>
                     Aquí aparecerán las películas que hayas visto recientemente
@@ -306,7 +307,7 @@ export function ProfileScreen() {
 
               {activeTab === "valoraciones" && (
                 <div className="empty-state">
-                  <CiStar />
+                  <CiStar aria-hidden="true" />
                   <h3>Tus Valoraciones</h3>
                   <p>Aquí aparecerán todas las películas que hayas valorado</p>
                 </div>
@@ -314,7 +315,7 @@ export function ProfileScreen() {
 
               {activeTab === "logros" && (
                 <div className="empty-state">
-                  <AiFillTrophy />
+                  <AiFillTrophy aria-hidden="true" />
                   <h3>Logros Desbloqueados</h3>
                   <p>
                     Completa desafíos y obtén logros por tu actividad en la

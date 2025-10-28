@@ -3,7 +3,7 @@ import "./MovieScreen.scss";
 import NavBar from "../../components/NavBar/NavBar";
 import HelpButton from "../../components/HelpButton/HelpButton";
 import { AiFillStar, AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { FaPaperPlane, FaComment } from "react-icons/fa";
+import { FaPaperPlane, FaComment, FaClosedCaptioning } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   insertFavoriteOrRating,
@@ -60,6 +60,7 @@ export function MovieScreen() {
     message: string;
     type: "success" | "error";
   } | null>(null);
+  const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
 
   // -------- Load user and favorites --------
   useEffect(() => {
@@ -117,9 +118,14 @@ export function MovieScreen() {
     try {
       const favs = await getFavorites(userId);
       const favoriteIdSet = new Set(
-        favs.map((fav: any) => (fav.movies ? fav.movies.id : fav.movie_id))
+        favs.map((fav: any) => {
+          const id = fav.movies ? fav.movies.id : fav.movie_id;
+          // Normalizar a string para comparación consistente
+          return String(id);
+        })
       );
       setFavoriteIds(favoriteIdSet);
+      console.log("Favoritos cargados:", Array.from(favoriteIdSet));
     } catch (error) {
       console.error("Error loading favorites:", error);
     }
@@ -131,6 +137,19 @@ export function MovieScreen() {
   ) => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 2500);
+  };
+
+  const toggleSubtitles = () => {
+    setSubtitlesEnabled(!subtitlesEnabled);
+    const video = videoRef.current;
+    if (video && video.textTracks.length > 0) {
+      const track = video.textTracks[0];
+      track.mode = !subtitlesEnabled ? "showing" : "hidden";
+    }
+    showToast(
+      !subtitlesEnabled ? "Subtítulos activados" : "Subtítulos desactivados",
+      "success"
+    );
   };
 
   // -------- Movie data --------
@@ -332,12 +351,21 @@ export function MovieScreen() {
       return;
     }
 
-    const isCurrentlyFavorite = favoriteIds.has(movie.id);
+    // Normalizar movie.id a string para comparación consistente
+    const movieIdStr = String(movie.id);
+    const isCurrentlyFavorite = favoriteIds.has(movieIdStr);
 
+    console.log("Movie ID:", movieIdStr, "Is favorite:", isCurrentlyFavorite);
+    console.log("Favorites set:", Array.from(favoriteIds));
+
+    // Actualización optimista del UI
     setFavoriteIds((prev) => {
       const newSet = new Set(prev);
-      if (isCurrentlyFavorite) newSet.delete(movie.id);
-      else newSet.add(movie.id);
+      if (isCurrentlyFavorite) {
+        newSet.delete(movieIdStr);
+      } else {
+        newSet.add(movieIdStr);
+      }
       return newSet;
     });
 
@@ -363,10 +391,14 @@ export function MovieScreen() {
     } catch (error) {
       console.error("Error modificando favoritos:", error);
 
+      // Revertir cambio optimista en caso de error
       setFavoriteIds((prev) => {
         const newSet = new Set(prev);
-        if (isCurrentlyFavorite) newSet.add(movie.id);
-        else newSet.delete(movie.id);
+        if (isCurrentlyFavorite) {
+          newSet.add(movieIdStr);
+        } else {
+          newSet.delete(movieIdStr);
+        }
         return newSet;
       });
 
@@ -393,6 +425,18 @@ export function MovieScreen() {
                 )}
                 Tu navegador no soporta el video.
               </video>
+              
+              {/* Botón de subtítulos */}
+              <div className="subtitle-control">
+                <button
+                  className={`subtitle-btn ${subtitlesEnabled ? "active" : ""}`}
+                  onClick={toggleSubtitles}
+                  aria-label={subtitlesEnabled ? "Desactivar subtítulos" : "Activar subtítulos"}
+                  aria-pressed={subtitlesEnabled ? "true" : "false"}
+                >
+                  <FaClosedCaptioning />
+                </button>
+              </div>
             </div>
           </div>
 
@@ -403,20 +447,20 @@ export function MovieScreen() {
               <div className="movie-actions">
                 <button
                   className={`favorite-button ${
-                    favoriteIds.has(movie.id) ? "is-favorite" : ""
+                    favoriteIds.has(String(movie.id)) ? "is-favorite" : ""
                   }`}
                   onClick={handleAddToFavorites}
                   aria-label={
-                    favoriteIds.has(movie.id)
+                    favoriteIds.has(String(movie.id))
                       ? `Eliminar ${movie.title} de favoritos`
                       : `Añadir ${movie.title} a favoritos`
                   }
-                  aria-pressed={favoriteIds.has(movie.id) ? "true" : "false"}
+                  aria-pressed={favoriteIds.has(String(movie.id)) ? "true" : "false"}
                 >
-                  {favoriteIds.has(movie.id) ? (
+                  {favoriteIds.has(String(movie.id)) ? (
                     <AiFillHeart color="red" aria-hidden="true" />
                   ) : (
-                    <AiOutlineHeart color="white" aria-hidden="true" />
+                    <AiOutlineHeart color="gray" aria-hidden="true" />
                   )}
                 </button>
                 <div className="movie-rating-badge" aria-label={`Calificación de la película: ${displayRating} estrellas`}>

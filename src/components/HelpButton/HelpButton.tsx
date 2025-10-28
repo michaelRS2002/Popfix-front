@@ -50,7 +50,7 @@ const HelpButton: React.FC = () => {
       aria-label="Help - Site map"
       title="Site map"
     >
-      <FaQuestion />
+      <FaQuestion aria-hidden="true" />
     </button>
   );
 };

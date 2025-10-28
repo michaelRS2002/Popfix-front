@@ -1,12 +1,14 @@
 @use "sass:color";
 
-$color-bg: #ffffff;
-$color-box: #000000;
-$color-input: #2a2a2a;
-$color-input-text: #ffffff;
-$color-label: #ffffff;
-$color-text: #e5e5e5;
-$color-accent: #e50914;
+// Paleta de colores clara
+$color-bg: #FEFEFE;
+$color-box: #FEFEFE;
+$color-input: #F4F4F4;
+$color-input-text: #222130;
+$color-label: #222130;
+$color-text: #222130;
+$color-border: #D9D9D9;
+$color-accent: #FF0000;
 
 .MovieScreen {
   min-height: 100vh;
@@ -57,8 +59,7 @@ $color-accent: #e50914;
 }
 
 .movie-container {
-  background-image: url("/static/img/wallpaper.jpeg");
-  background-size: cover;
+  background-color: $color-bg;
   margin: 0 auto;
   padding: 2rem;
   display: grid;
@@ -75,10 +76,10 @@ $color-accent: #e50914;
   background: $color-box;
   border-radius: 16px;
   padding: 2rem;
-  border: 1px solid $color-input;
+  border: 1px solid $color-border;
   grid-column: 1;
   grid-row: 2;
-  box-shadow: 0 2px 8px rgba(34, 33, 48, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 // Video Section
@@ -89,13 +90,15 @@ $color-accent: #e50914;
   position: relative;
   grid-column: 1;
   grid-row: 1;
+  border: 1px solid $color-border;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .video-player {
   position: relative;
   width: 100%;
   padding-top: 56.25%;
-  background: $color-input;
+  background: #000000;
 
   video {
     position: absolute;
@@ -128,7 +131,7 @@ $color-accent: #e50914;
 }
 
 .play-button-overlay {
-  background: rgba(254, 254, 254, 0.9);
+  background: rgba(254, 254, 254, 0.95);
   border: none;
   border-radius: 50%;
   width: 100px;
@@ -136,12 +139,12 @@ $color-accent: #e50914;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $color-box;
+  color: #222130;
   cursor: pointer;
   transition: all 0.3s;
 
   &:hover {
-    background: #fefefe;
+    background: #FEFEFE;
     transform: scale(1.1);
   }
 }
@@ -155,21 +158,64 @@ $color-accent: #e50914;
   z-index: 10;
 }
 
-.control-btn {
-  background: rgba(0, 0, 0, 0.7);
+// Subtitle Control
+.subtitle-control {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+}
+
+.subtitle-btn {
+  background: rgba(254, 254, 254, 0.9);
   border: none;
   border-radius: 8px;
-  color: $color-input-text;
+  color: #222130;
   padding: 0.75rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 
   &:hover {
-    background: rgba(0, 0, 0, 0.9);
-    transform: scale(1.1);
+    background: #FEFEFE;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  &.active {
+    background: $color-accent;
+    color: #FEFEFE;
+
+    &:hover {
+      background: #cc0000;
+    }
+  }
+
+  svg {
+    font-size: 1.25rem;
+  }
+}
+
+.control-btn {
+  background: rgba(254, 254, 254, 0.9);
+  border: none;
+  border-radius: 8px;
+  color: #222130;
+  padding: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    background: #FEFEFE;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 
   svg {
@@ -182,13 +228,13 @@ $color-accent: #e50914;
   background: $color-box;
   border-radius: 16px;
   padding: 2rem;
-  border: 1px solid $color-input;
+  border: 1px solid $color-border;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   grid-column: 2;
   grid-row: 1 / span 2;
-  box-shadow: 0 2px 8px rgba(34, 33, 48, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .movie-header {
@@ -263,7 +309,7 @@ $color-accent: #e50914;
 
 // User Rating
 .user-rating {
-  border-top: 1px solid $color-input;
+  border-top: 1px solid $color-border;
   padding-top: 1.5rem;
 
   label {
@@ -283,8 +329,8 @@ $color-accent: #e50914;
     border: none;
     cursor: pointer;
     padding: 0.25rem;
-    transition: all 0.2s;
-    color: $color-text;
+    transition: all 0.3s ease;
+    color: $color-border;
 
     svg {
       font-size: 1.75rem;
@@ -295,7 +341,8 @@ $color-accent: #e50914;
     }
 
     &:hover {
-      transform: scale(1.2);
+      transform: scale(1.15);
+      color: $color-accent;
     }
   }
 }
@@ -331,7 +378,7 @@ $color-accent: #e50914;
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1rem;
-  border: 1px solid $color-input;
+  border: 1px solid $color-border;
 
   textarea {
     width: 100%;
@@ -344,14 +391,14 @@ $color-accent: #e50914;
     color: $color-input-text;
 
     &::placeholder {
-      color: $color-text;
+      color: #999999;
     }
   }
 }
 
 .comment-submit-btn {
   background: $color-accent;
-  color: $color-input-text;
+  color: #FEFEFE;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -360,13 +407,15 @@ $color-accent: #e50914;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   margin-bottom: 1.5rem;
   margin-left: auto;
+  box-shadow: 0 2px 8px rgba(255, 0, 0, 0.2);
 
   &:hover:not(:disabled) {
-    background: color.adjust($color-accent, $lightness: -10%);
+    background: #cc0000;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
   }
 
   &:disabled {
@@ -394,7 +443,7 @@ $color-accent: #e50914;
   padding: 1rem;
   background: $color-input;
   border-radius: 12px;
-  border: 1px solid $color-input;
+  border: 1px solid $color-border;
 }
 
 .comment-avatar {
@@ -429,7 +478,7 @@ $color-accent: #e50914;
 
 .comment-date {
   font-size: 0.875rem;
-  color: $color-text;
+  color: #999999;
 }
 
 .comment-text {
@@ -445,16 +494,16 @@ $color-accent: #e50914;
 }
 
 .favorite-button {
-  background: none;
+  background: transparent;
   border: none;
   cursor: pointer;
   font-size: 1.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease, color 0.2s ease;
+  transition: all 0.3s ease;
   line-height: 1;
-  padding: 0;
+  padding: 0.5rem;
   margin: 0;
   outline: none;
 
@@ -463,16 +512,53 @@ $color-accent: #e50914;
   }
 
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.15);
   }
 
   svg {
     width: 28px;
     height: 28px;
+    color: $color-text;
   }
 
-  &.is-favorite svg {
-    color: red;
-    fill: red;
+  &.is-favorite {
+    svg {
+      color: $color-accent;
+      fill: $color-accent;
+    }
+  }
+}
+
+// Toast Notification
+.toast {
+  position: fixed;
+  top: 100px;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  z-index: 1000;
+  animation: slideInRight 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  &.toast-success {
+    background: #10b981;
+    color: #ffffff;
+  }
+
+  &.toast-error {
+    background: $color-accent;
+    color: #ffffff;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }

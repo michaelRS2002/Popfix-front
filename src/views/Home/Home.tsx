@@ -394,7 +394,7 @@ export function Home() {
                   <div className="movie-poster">
                     <img
                       src={movie.poster}
-                      alt={movie.title}
+                      alt={`Póster de la película ${movie.title}`}
                       onError={(e) => {
                         (e.currentTarget as HTMLImageElement).src =
                           "https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?q=80&w=800&auto=format&fit=crop";
