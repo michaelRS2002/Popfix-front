@@ -3,12 +3,15 @@ import "./MovieScreen.scss";
 import NavBar from "../../components/NavBar/NavBar";
 import HelpButton from "../../components/HelpButton/HelpButton";
 import { AiFillStar, AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { FaPaperPlane, FaComment } from "react-icons/fa";
+import { FaPaperPlane, FaComment, FaClosedCaptioning } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   insertFavoriteOrRating,
-  updateUserMovie,
   getFavorites,
+  deleteFavorite,
+  addUserMovieComment,
+  addFavorite,
+  setRating as apiSetRating,
 } from "../../utils/moviesApi";
 
 /**
@@ -34,6 +37,7 @@ export function MovieScreen() {
   const passedMovie = (location?.state as any) || null;
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [rating, setRating] = useState(0);
+  const [displayRating, setDisplayRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState<Comment[]>([
@@ -54,6 +58,7 @@ export function MovieScreen() {
     message: string;
     type: "success" | "error";
   } | null>(null);
+  const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
 
   // -------- Load user and favorites --------
   useEffect(() => {
@@ -75,9 +80,14 @@ export function MovieScreen() {
     try {
       const favs = await getFavorites(userId);
       const favoriteIdSet = new Set(
-        favs.map((fav: any) => (fav.movies ? fav.movies.id : fav.movie_id))
+        favs.map((fav: any) => {
+          const id = fav.movies ? fav.movies.id : fav.movie_id;
+          // Normalizar a string para comparación consistente
+          return String(id);
+        })
       );
       setFavoriteIds(favoriteIdSet);
+      console.log("Favoritos cargados:", Array.from(favoriteIdSet));
     } catch (error) {
       console.error("Error loading favorites:", error);
     }
@@ -89,6 +99,19 @@ export function MovieScreen() {
   ) => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 2500);
+  };
+
+  const toggleSubtitles = () => {
+    setSubtitlesEnabled(!subtitlesEnabled);
+    const video = videoRef.current;
+    if (video && video.textTracks.length > 0) {
+      const track = video.textTracks[0];
+      track.mode = !subtitlesEnabled ? "showing" : "hidden";
+    }
+    showToast(
+      !subtitlesEnabled ? "Subtítulos activados" : "Subtítulos desactivados",
+      "success"
+    );
   };
 
   // -------- Movie data --------
@@ -128,15 +151,42 @@ export function MovieScreen() {
   }, [passedMovie]);
 
   useEffect(() => {
+    setDisplayRating(movie.rating || 0);
     if (videoRef.current && movie.videoUrl) {
       const v = videoRef.current;
       v.muted = true;
       v.play().catch(() => {});
     }
-  }, [movie.videoUrl]);
+  }, [movie]);
 
-  const handleRatingClick = (rate: number): void => {
+  const handleRatingClick = async (rate: number): Promise<void> => {
     setRating(rate);
+    // Send rating to backend (upsert). If user not logged, keep local only.
+    if (!userId) {
+      showToast("Inicia sesión para guardar tu valoración", "error");
+      return;
+    }
+    try {
+      const resp = await apiSetRating(userId, {
+        movieId: String(movie.id),
+        rating: rate,
+      });
+      // If backend returns suggestedRating, update display
+      const suggested = resp?.suggestedRating ?? resp?.suggestedRating === 0 ? resp.suggestedRating : undefined;
+      if (typeof suggested === "number") setDisplayRating(suggested);
+      else setDisplayRating(rate);
+      // Notify other views (Home) that this movie's rating changed
+      try {
+        const detail = { movieId: String(movie.id), rating: typeof suggested === "number" ? suggested : rate };
+        window.dispatchEvent(new CustomEvent("movie:rating-updated", { detail } as any));
+      } catch (e) {
+        // ignore
+      }
+      showToast("Valoración guardada", "success");
+    } catch (err) {
+      console.error("Error guardando valoración:", err);
+      showToast("No se pudo guardar la valoración", "error");
+    }
   };
 
   const getGenreDescription = (genre: string): string => {
@@ -153,17 +203,39 @@ export function MovieScreen() {
     return descriptions[genre] || `Una fascinante película de ${genre}.`;
   };
 
-  const handleCommentSubmit = () => {
-    if (comment.trim()) {
+  const handleCommentSubmit = async () => {
+    if (!comment.trim()) return;
+    if (!userId) {
+      showToast("Inicia sesión para comentar", "error");
+      return;
+    }
+
+    try {
+      const resp = await addUserMovieComment(userId, {
+        movieId: String(movie.id),
+        text: comment.trim(),
+      });
+      // Backend returns comment with author_name, author_surname and avatar
+      const created = resp?.comment ?? null;
+      const authorName = created?.author_name || "Usuario";
+      const authorSurname = created?.author_surname || "";
+      const authorFull = `${authorName} ${authorSurname}`.trim();
+      const avatar = created?.avatar || (authorFull ? authorFull.substring(0,2).toUpperCase() : "UA");
+
       const newComment: Comment = {
-        id: comments.length + 1,
-        author: "Usuario Actual",
-        text: comment,
+        id: created?.id || comments.length + 1,
+        author: authorFull || "Usuario Actual",
+        text: created?.content || comment.trim(),
         date: "Justo ahora",
-        avatar: "UA",
+        avatar: avatar,
       };
+
       setComments([newComment, ...comments]);
       setComment("");
+      showToast("Comentario publicado", "success");
+    } catch (err) {
+      console.error("Error publicando comentario:", err);
+      showToast("No se pudo publicar el comentario", "error");
     }
   };
 
@@ -177,24 +249,32 @@ export function MovieScreen() {
       return;
     }
 
-    const isCurrentlyFavorite = favoriteIds.has(movie.id);
+    // Normalizar movie.id a string para comparación consistente
+    const movieIdStr = String(movie.id);
+    const isCurrentlyFavorite = favoriteIds.has(movieIdStr);
 
+    console.log("Movie ID:", movieIdStr, "Is favorite:", isCurrentlyFavorite);
+    console.log("Favorites set:", Array.from(favoriteIds));
+
+    // Actualización optimista del UI
     setFavoriteIds((prev) => {
       const newSet = new Set(prev);
-      if (isCurrentlyFavorite) newSet.delete(movie.id);
-      else newSet.add(movie.id);
+      if (isCurrentlyFavorite) {
+        newSet.delete(movieIdStr);
+      } else {
+        newSet.add(movieIdStr);
+      }
       return newSet;
     });
 
     try {
       if (isCurrentlyFavorite) {
-        await updateUserMovie(userId, {
-          movieId: String(movie.id),
-          is_favorite: false,
-        });
+        // Use DELETE favorites endpoint
+        await deleteFavorite(userId, String(movie.id));
         showToast(`"${movie.title}" eliminada de favoritos`, "success");
+        try { window.dispatchEvent(new CustomEvent('movie:favorite-changed', { detail: { movieId: String(movie.id), isFavorite: false } } as any)); } catch(e){}
       } else {
-        await insertFavoriteOrRating(userId, {
+        await addFavorite(userId, {
           movieId: String(movie.id),
           favorite: true,
           title: movie.title,
@@ -204,14 +284,19 @@ export function MovieScreen() {
           duration_seconds: 300,
         });
         showToast(`"${movie.title}" añadida a favoritos`, "success");
+        try { window.dispatchEvent(new CustomEvent('movie:favorite-changed', { detail: { movieId: String(movie.id), isFavorite: true } } as any)); } catch(e){}
       }
     } catch (error) {
       console.error("Error modificando favoritos:", error);
 
+      // Revertir cambio optimista en caso de error
       setFavoriteIds((prev) => {
         const newSet = new Set(prev);
-        if (isCurrentlyFavorite) newSet.add(movie.id);
-        else newSet.delete(movie.id);
+        if (isCurrentlyFavorite) {
+          newSet.add(movieIdStr);
+        } else {
+          newSet.delete(movieIdStr);
+        }
         return newSet;
       });
 
@@ -224,7 +309,7 @@ export function MovieScreen() {
       <NavBar />
 
       {toast && (
-        <div className={`toast toast-${toast.type}`}>{toast.message}</div>
+        <div className={`toast toast-${toast.type}`} role="alert" aria-live="polite">{toast.message}</div>
       )}
 
       <div className="movie-container">
@@ -232,12 +317,24 @@ export function MovieScreen() {
           {/* ----------------------- Video ----------------------- */}
           <div className="video-section">
             <div className="video-player">
-              <video ref={videoRef} controls playsInline>
+              <video ref={videoRef} controls playsInline aria-label={`Reproduciendo ${movie.title}`}>
                 {movie.videoUrl && (
                   <source src={movie.videoUrl} type="video/mp4" />
                 )}
                 Tu navegador no soporta el video.
               </video>
+              
+              {/* Botón de subtítulos */}
+              <div className="subtitle-control">
+                <button
+                  className={`subtitle-btn ${subtitlesEnabled ? "active" : ""}`}
+                  onClick={toggleSubtitles}
+                  aria-label={subtitlesEnabled ? "Desactivar subtítulos" : "Activar subtítulos"}
+                  aria-pressed={subtitlesEnabled ? "true" : "false"}
+                >
+                  <FaClosedCaptioning />
+                </button>
+              </div>
             </div>
           </div>
 
@@ -248,29 +345,25 @@ export function MovieScreen() {
               <div className="movie-actions">
                 <button
                   className={`favorite-button ${
-                    favoriteIds.has(movie.id) ? "is-favorite" : ""
+                    favoriteIds.has(String(movie.id)) ? "is-favorite" : ""
                   }`}
                   onClick={handleAddToFavorites}
                   aria-label={
-                    favoriteIds.has(movie.id)
-                      ? "Eliminar de favoritos"
-                      : "Añadir a favoritos"
+                    favoriteIds.has(String(movie.id))
+                      ? `Eliminar ${movie.title} de favoritos`
+                      : `Añadir ${movie.title} a favoritos`
                   }
-                  title={
-                    favoriteIds.has(movie.id)
-                      ? "Eliminar de favoritos"
-                      : "Añadir a favoritos"
-                  }
+                  aria-pressed={favoriteIds.has(String(movie.id)) ? "true" : "false"}
                 >
-                  {favoriteIds.has(movie.id) ? (
-                    <AiFillHeart color="red" />
+                  {favoriteIds.has(String(movie.id)) ? (
+                    <AiFillHeart color="red" aria-hidden="true" />
                   ) : (
-                    <AiOutlineHeart color="white" />
+                    <AiOutlineHeart color="gray" aria-hidden="true" />
                   )}
                 </button>
-                <div className="movie-rating-badge">
-                  <AiFillStar />
-                  <span>{movie.rating}</span>
+                <div className="movie-rating-badge" aria-label={`Calificación de la película: ${displayRating} estrellas`}>
+                  <AiFillStar aria-hidden="true" />
+                  <span>{displayRating}</span>
                 </div>
               </div>
             </div>
@@ -295,7 +388,7 @@ export function MovieScreen() {
             {/* ----------------------- User Rating ----------------------- */}
             <div className="user-rating">
               <label>Tu valoración:</label>
-              <div className="rating-stars">
+              <div className="rating-stars" role="group" aria-label="Calificar película">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
@@ -305,8 +398,10 @@ export function MovieScreen() {
                     onClick={() => handleRatingClick(star)}
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
+                    aria-label={`Calificar con ${star} estrella${star > 1 ? 's' : ''}`}
+                    aria-pressed={star <= rating ? "true" : "false"}
                   >
-                    <AiFillStar />
+                    <AiFillStar aria-hidden="true" />
                   </button>
                 ))}
               </div>
@@ -318,7 +413,7 @@ export function MovieScreen() {
         <div className="comments-section">
           <div className="comments-header">
             <h2>
-              <FaComment /> Comentarios
+              <FaComment aria-hidden="true" /> Comentarios
             </h2>
           </div>
 
@@ -328,6 +423,7 @@ export function MovieScreen() {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               rows={3}
+              aria-label="Escribe tu comentario sobre la película"
             />
           </div>
 
@@ -335,17 +431,18 @@ export function MovieScreen() {
             className="comment-submit-btn"
             onClick={handleCommentSubmit}
             disabled={!comment.trim()}
+            aria-label="Publicar comentario"
           >
-            <FaPaperPlane />
+            <FaPaperPlane aria-hidden="true" />
             Comentar
           </button>
 
           <div className="comment-separator"></div>
 
-          <div className="comments-list">
+          <div className="comments-list" role="list" aria-label="Lista de comentarios">
             {comments.map((comm) => (
-              <div key={comm.id} className="comment-item">
-                <div className="comment-avatar">
+              <div key={comm.id} className="comment-item" role="listitem">
+                <div className="comment-avatar" aria-hidden="true">
                   {comm.avatar || comm.author.substring(0, 2).toUpperCase()}
                 </div>
                 <div className="comment-content">

@@ -112,7 +112,7 @@ const Landing: React.FC = () => {
           <p>Únete a miles de usuarios disfrutando del mejor entretenimiento</p>
           <div className="cta-buttons">
             <button 
-              className="btn btn-primary"
+              className="btn btn-secondary"
               onClick={() => navigate('/register')}
             >
               Registrarse Ahora

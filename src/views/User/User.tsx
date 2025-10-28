@@ -101,7 +101,7 @@ const User: React.FC = () => {
             <div className="user-box">
               <p className="error-message">{error}</p>
               <Link to="/home" className="login-link">
-                Return to Home
+                Volver al Inicio
               </Link>
             </div>
           </div>
@@ -123,13 +123,13 @@ const User: React.FC = () => {
             <Link
               to="/home"
               className="back-arrow-user"
-              aria-label="Return to home"
+              aria-label="Volver al inicio"
             >
               ←
             </Link>
             <img
               src="/static/img/film-icon.jpg"
-              alt="PopFix logo"
+              alt="Logotipo de PopFix - ícono de carrete de película"
               className="icon"
             />
             <h2>User Profile</h2>
@@ -165,17 +165,25 @@ const User: React.FC = () => {
             </div>
 
             <div className="user-actions">
-              <Link to="/edit-user" className="btn-edit">
-                Edit Profile
+              <Link
+                to="/edit-user"
+                className="btn-edit"
+                aria-label="Editar información de tu perfil"
+              >
+                Editar Perfil
               </Link>
-              <Link to="/delete-user" className="btn-delete">
-                Delete Account
+              <Link
+                to="/delete-user"
+                className="btn-delete"
+                aria-label="Eliminar permanentemente tu cuenta"
+              >
+                Eliminar Cuenta
               </Link>
             </div>
 
             <label className="login-redirect">
               <Link to="/home" className="login-link">
-                Return to Home
+                Volver al Inicio
               </Link>
             </label>
           </div>

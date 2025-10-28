@@ -147,7 +147,7 @@ const ChangePassword: React.FC = () => {
             </Link>
             <img
               src="/static/img/film-icon.jpg"
-              alt="PopFix logo"
+              alt="Logotipo de PopFix - ícono de carrete de película"
               className="icon"
             />
             <h2>Cambiar Contraseña</h2>

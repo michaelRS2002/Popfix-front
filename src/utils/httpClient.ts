@@ -68,7 +68,15 @@ class HttpClient {
                   (Array.isArray(data.errors) ? data.errors[0]?.msg : ""))) ||
               "";
           } else {
-            backendMessage = await response.text();
+            // avoid surfacing the whole HTML to the user. Try to read text
+            // and if it looks like HTML, replace with a generic message.
+            const rawText = await response.text();
+            const looksLikeHtml = rawText && rawText.trim().startsWith("<");
+            if (looksLikeHtml) {
+              backendMessage = `HTTP Error: ${response.status}`;
+            } else {
+              backendMessage = rawText;
+            }
           }
         } catch (_) {
           // Ignore JSON parsing errors

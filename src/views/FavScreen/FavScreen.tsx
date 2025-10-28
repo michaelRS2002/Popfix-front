@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import './FavScreen.scss';
 import { IoArrowBack, IoSearchOutline } from 'react-icons/io5';
 import { CiHeart } from "react-icons/ci";
-import { MdFilterList, MdCalendarToday, MdDelete } from 'react-icons/md';
+import { MdFilterList, MdCalendarToday } from 'react-icons/md';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { BiPlay } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
-import { getFavorites, updateUserMovie } from '../../utils/moviesApi';
+import { getFavorites, deleteFavorite, setRating } from '../../utils/moviesApi';
 import NavBar from '../../components/NavBar/NavBar';
 import HelpButton from '../../components/HelpButton/HelpButton';
 
@@ -24,6 +25,7 @@ interface Movie {
 const FavScreen: React.FC = () => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
+    const [navSearchQuery, setNavSearchQuery] = useState('');
     const [genreFilter, setGenreFilter] = useState('Todos los gen');
     const [isGenreOpen, setIsGenreOpen] = useState(false);
     const [movies, setMovies] = useState<Movie[]>([]);
@@ -151,8 +153,9 @@ const FavScreen: React.FC = () => {
 
     // Filtrado: por búsqueda y por género
     const filteredMovies = movies.filter(m => {
-      const matchesSearch = !searchQuery.trim() || 
-        m.title.toLowerCase().includes(searchQuery.trim().toLowerCase());
+      const searchTerm = navSearchQuery || searchQuery;
+      const matchesSearch = !searchTerm.trim() || 
+        m.title.toLowerCase().includes(searchTerm.trim().toLowerCase());
       const matchesGenre = genreFilter === 'Todos los gen' || 
         m.genre.toLowerCase() === genreFilter.toLowerCase();
       return matchesSearch && matchesGenre;
@@ -160,6 +163,11 @@ const FavScreen: React.FC = () => {
 
     const handleBack = () => {
         navigate('/home');
+    };
+
+    const handleNavSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        // La búsqueda se aplica automáticamente a través del filtrado
     };
 
     const handleRemoveFavorite = async (movieId: string | number) => {
@@ -172,10 +180,7 @@ const FavScreen: React.FC = () => {
             setMovies(prevMovies => prevMovies.filter(movie => movie.id !== movieId));
         
             // Llamar al backend para eliminar
-            await updateUserMovie(userId, {
-              movieId: String(movieId),
-              is_favorite: false
-            });
+      await deleteFavorite(userId, String(movieId));
             
             showToast(`"${movie?.title}" eliminada de favoritos`, 'success');
         
@@ -208,11 +213,8 @@ const FavScreen: React.FC = () => {
                 )
             );
             
-            // Enviar al backend
-            await updateUserMovie(userId, {
-                movieId: String(movieId),
-                rating: newRating
-            });
+      // Enviar al backend (usa endpoint separado de rating)
+      await setRating(userId, { movieId: String(movieId), rating: newRating });
             
             showToast(`Calificación actualizada a ${newRating} ⭐`, 'success');
         } catch (error) {
@@ -256,7 +258,11 @@ const FavScreen: React.FC = () => {
 
   return (
     <div className="fav-screen">
-      <NavBar searchQuery="" onSearchChange={() => {}} />
+      <NavBar 
+        searchQuery={navSearchQuery}
+        onSearchChange={setNavSearchQuery}
+        onSearchSubmit={handleNavSearch}
+      />
       
       {/* Toast Notification */}
       {toast && (
@@ -282,7 +288,7 @@ const FavScreen: React.FC = () => {
             <p className="subtitle">Gestiona tu colección personal de películas favoritas</p>
           </div>
           <div className="favorites-count">
-            <CiHeart className="heart-icon" />
+            <CiHeart className="heart-icon" aria-hidden="true" />
             <span>{movies.length} películas favoritas</span>
           </div>
         </div>
@@ -442,17 +448,18 @@ const FavScreen: React.FC = () => {
               aria-label={`${movie.title}, género ${movie.genre}, calificación ${movie.rating}`}
             >
               <div className="movie-image-container">
-                <img src={movie.poster} alt={movie.title} className="movie-image" />
+                <img src={movie.poster} alt={`Póster de la película ${movie.title}`} className="movie-image" />
                 <div className="movie-rating" aria-label={`Calificación ${movie.rating} estrellas`}>
                   <span aria-hidden="true">⭐</span>
                   <span>{movie.rating}</span>
                 </div>
-                <button 
-                  className="delete-button"
+                <button
+                  className={`favorite-button is-favorite`}
                   onClick={() => handleRemoveFavorite(movie.id)}
-                  aria-label={`Eliminar ${movie.title} de favoritos`}
+                  aria-label={`Quitar ${movie.title} de favoritos`}
+                  title={`Quitar ${movie.title} de favoritos`}
                 >
-                  <MdDelete aria-hidden="true" />
+                  <AiFillHeart aria-hidden="true" />
                 </button>
                 <div className="movie-overlay">
                   <button 

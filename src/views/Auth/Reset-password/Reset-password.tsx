@@ -110,19 +110,19 @@ const ResetPassword: React.FC = (): JSX.Element => {
   return (
     <>
       <NavBar />
-      <div className="app-container-reset">
-        <div className="main-content-reset">
+      <div className="app-container-reset" role="main">
+        <div className="main-content-reset" role="presentation" aria-label="Fondo decorativo de películas">
           <div className="reset-box">
             <Link
               to="/login"
               className="back-arrow-reset"
-              aria-label="Volver al login"
+              aria-label="Volver a la página de inicio de sesión"
             >
-              ←
+              <span aria-hidden="true">←</span>
             </Link>
             <img
               src="/static/img/film-icon.jpg"
-              alt="PopFix logo"
+              alt="Logotipo de PopFix - ícono de carrete de película"
               className="icon"
             />
             <h2>Restablecer contraseña</h2>
@@ -142,6 +142,8 @@ const ResetPassword: React.FC = (): JSX.Element => {
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="new-password"
                 required
+                aria-label="Ingresa tu nueva contraseña"
+                aria-required="true"
               />
               <label htmlFor="confirmPassword">Confirmar contraseña</label>
               <input
@@ -152,10 +154,12 @@ const ResetPassword: React.FC = (): JSX.Element => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 autoComplete="new-password"
                 required
+                aria-label="Confirma tu nueva contraseña"
+                aria-required="true"
               />
-              {error && <div className="error-message">{error}</div>}
+              {error && <div className="error-message" role="alert" aria-live="polite">{error}</div>}
 
-              <button type="submit" className="button" disabled={loading}>
+              <button type="submit" className="button" disabled={loading} aria-label={loading ? "Restableciendo contraseña" : "Restablecer contraseña"}>
                 {loading ? "Restableciendo..." : "Restablecer contraseña"}
               </button>
             </form>

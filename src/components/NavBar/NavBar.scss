@@ -1,14 +1,13 @@
-// Colores actualizados para tema oscuro
-$navbar-bg: #000000;
-$navbar-text: #ffffff;
-$navbar-border: #222222;
-$navbar-shadow: rgba(255, 255, 255, 0.08);
-$navbar-shadow-light: #333333;
-$navbar-link-hover: #333333;
-$navbar-link-active: #2a2a2a;
-$navbar-btn-bg: #000000;
-$navbar-btn-border: #333333;
-$navbar-btn-border-hover: #555555;
+$navbar-bg: #ffffff;
+$navbar-text: #000000;
+$navbar-border: #e5e5e5;
+$navbar-shadow: rgba(0, 0, 0, 0.08);
+$navbar-shadow-light: #f5f5f5;
+$navbar-link-hover: #f5f5f5;
+$navbar-link-active: #e5e5e5;
+$navbar-btn-bg: #ffffff;
+$navbar-btn-border: #e5e5e5;
+$navbar-btn-border-hover: #cccccc;
 
 .navbar {
   display: flex;
@@ -47,7 +46,7 @@ $navbar-btn-border-hover: #555555;
   font-size: 1.75rem;
   font-weight: 700;
   letter-spacing: 1px;
-  color: #FF0000;
+  color: #ff0000;
   cursor: pointer;
   transition: opacity 0.2s;
   white-space: nowrap;
@@ -62,8 +61,39 @@ $navbar-btn-border-hover: #555555;
 .navbar-desktop {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  justify-content: space-between;
   flex: 1;
+  width: 100%;
+
+  .navbar-links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .navbar-search {
+    margin-left: auto;
+    
+    // Cuando hay search, el actions necesita menos margen
+    ~ .navbar-actions {
+      margin-left: 1rem;
+      margin-right: 3.7rem;
+    }
+  }
+
+  .navbar-actions {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-left: auto;
+    margin-right: 3.7rem;
+  }
 
   @media (max-width: 768px) {
     display: none;
@@ -91,7 +121,7 @@ $navbar-btn-border-hover: #555555;
 
     &:hover {
       background: $navbar-link-hover;
-      color: #FF0000;
+      color: #ff0000;
     }
   }
 }
@@ -110,7 +140,7 @@ $navbar-btn-border-hover: #555555;
   transition: all 0.2s;
 
   &:focus-within {
-    border-color: #FF0000;
+    border-color: #ff0000;
     box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
   }
 
@@ -141,7 +171,7 @@ $navbar-btn-border-hover: #555555;
     order: -1;
 
     &:hover {
-      color: #FF0000;
+      color: #ff0000;
     }
   }
 }
@@ -169,7 +199,7 @@ $navbar-btn-border-hover: #555555;
   &:hover {
     background: $navbar-link-hover;
     border-color: $navbar-btn-border-hover;
-    color: #FF0000;
+    color: #ff0000;
   }
 }
 
@@ -211,7 +241,7 @@ $navbar-btn-border-hover: #555555;
 
   &:hover {
     background: $navbar-link-hover;
-    color: #FF0000;
+    color: #ff0000;
   }
 
   &.logout-item {
@@ -222,7 +252,7 @@ $navbar-btn-border-hover: #555555;
 
     &:hover {
       background: rgba(220, 38, 38, 0.1);
-      color: #FF0000;
+      color: #ff0000;
     }
   }
 }
@@ -245,7 +275,7 @@ $navbar-btn-border-hover: #555555;
     order: 2;
 
     &:hover {
-      color: #FF0000;
+      color: #ff0000;
     }
   }
 }
@@ -289,7 +319,7 @@ $navbar-btn-border-hover: #555555;
 
       &:hover {
         background: $navbar-link-hover;
-        color: #FF0000;
+        color: #ff0000;
       }
     }
   }
@@ -304,7 +334,7 @@ $navbar-btn-border-hover: #555555;
     gap: 0.5rem;
 
     &:focus-within {
-      border-color: #FF0000;
+      border-color: #ff0000;
       box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
     }
   }
@@ -335,7 +365,7 @@ $navbar-btn-border-hover: #555555;
     order: -1;
 
     &:hover {
-      color: #FF0000;
+      color: #ff0000;
     }
   }
 
@@ -370,7 +400,7 @@ $navbar-btn-border-hover: #555555;
 
       &:hover {
         background: $navbar-link-hover;
-        color: #FF0000;
+        color: #ff0000;
       }
 
       &.logout-item {
@@ -378,7 +408,7 @@ $navbar-btn-border-hover: #555555;
 
         &:hover {
           background: rgba(220, 38, 38, 0.1);
-          color: #FF0000;
+          color: #ff0000;
         }
       }
     }
@@ -395,4 +425,3 @@ $navbar-btn-border-hover: #555555;
     transform: translateY(0);
   }
 }
-

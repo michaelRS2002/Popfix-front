@@ -1,7 +1,17 @@
+@use "sass:color";
+
+$color-bg: #ffffff;
+$color-box: #000000;
+$color-input: #2a2a2a;
+$color-input-text: #ffffff;
+$color-label: #ffffff;
+$color-text: #e5e5e5;
+$color-accent: #e50914;
+
 .landing-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #222130 0%, #1a191f 100%);
-  color: #fefefe;
+  background: $color-bg;
+  color: $color-box;
   display: flex;
   flex-direction: column;
 
@@ -32,7 +42,7 @@
           font-size: clamp(2.5rem, 8vw, 4.5rem);
           font-weight: 800;
           margin-bottom: 15px;
-          background: linear-gradient(120deg, #fefefe, #D9D9D9);
+          background: linear-gradient(120deg, $color-accent, color.adjust($color-text, $lightness: 40%));
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -62,7 +72,7 @@
           animation: fadeInUp 0.8s ease-out 0.6s backwards;
 
           @media (max-width: 600px) {
-            flex-direction: column;
+            flex-direction: row;
           }
         }
       }
@@ -72,7 +82,7 @@
           width: 100%;
           aspect-ratio: 1;
           background: url('/static/img/film-icon.jpg') center / cover no-repeat;
-          border: 3px solid #D9D9D9;
+          border: 3px solid color.adjust($color-text, $lightness: 40%);
           border-radius: 20px;
           display: flex;
           align-items: center;
@@ -105,14 +115,14 @@
     text-decoration: none;
 
     &.btn-primary {
-      background: #FF0000;
-      color: #fefefe;
-      box-shadow: 0 8px 20px rgba(255, 0, 0, 0.25);
+  background: $color-accent;
+  color: $color-input-text;
+  box-shadow: 0 8px 20px rgba(229, 9, 20, 0.25);
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 12px 30px rgba(255, 0, 0, 0.35);
-        background: #E01E1E;
+  box-shadow: 0 12px 30px rgba(229, 9, 20, 0.35);
+  background: color.adjust($color-accent, $lightness: -10%);
       }
 
       &:active {
@@ -121,21 +131,22 @@
     }
 
     &.btn-secondary {
-      background: transparent;
-      color: #fefefe;
-      border: 2px solid #D9D9D9;
+      background: $color-box;
+  color: $color-text;
+  border: 2px solid color.adjust($color-text, $lightness: 40%);
 
       &:hover {
-        background: rgba(217, 217, 217, 0.15);
-        transform: translateY(-2px);
-        border-color: #fefefe;
+        background: $color-text;
+        color: $color-input;
+        transform: translateY(-1px);
+        border-color: $color-bg;
       }
     }
 
     &.btn-outline {
       background: transparent;
-      color: #fefefe;
-      border: 2px solid #fefefe;
+  color: $color-input-text;
+  border: 2px solid $color-input-text;
 
       &:hover {
         background: rgba(254, 254, 254, 0.1);
@@ -150,15 +161,15 @@
 
   // Features Section
   .features-section {
-    padding: 50px 20px;
-    background: #000000;
+  padding: 50px 20px;
+  background: $color-accent;
 
     h2 {
       text-align: center;
       font-size: clamp(2rem, 5vw, 3rem);
       margin-bottom: 40px;
       font-weight: 700;
-      color: #fefefe;
+  color: $color-input-text;
     }
 
     .features-grid {
@@ -176,12 +187,12 @@
         text-align: center;
         backdrop-filter: blur(10px);
         transition: all 0.3s ease;
-        color: #fefefe;
+    color: $color-input-text;
 
         &:hover {
           transform: translateY(-8px);
           background: rgba(255, 255, 255, 0.08);
-          border-color: #FF0000;
+          border-color: $color-accent;
         }
 
         .feature-icon {
@@ -206,8 +217,9 @@
 
   // About Section
   .about-section {
-    padding: 50px 20px;
-    background: #222130;
+  padding: 50px 20px;
+  background: $color-bg;
+  
 
     .about-content {
       max-width: 900px;
@@ -218,7 +230,7 @@
         font-size: clamp(2rem, 5vw, 3rem);
         margin-bottom: 30px;
         font-weight: 700;
-        color: #fefefe;
+        color: $color-box;
       }
 
       .about-text {
@@ -229,7 +241,7 @@
           line-height: 1.8;
           margin-bottom: 15px;
           opacity: 0.9;
-          color: #fefefe;
+          color: $color-box;
 
           &:last-child {
             margin-bottom: 0;
@@ -241,8 +253,8 @@
 
   // CTA Section
   .cta-section {
-    padding: 50px 20px;
-    background: #000000;
+  padding: 50px 20px;
+  background: $color-accent;
     text-align: center;
 
     .cta-content {
@@ -253,14 +265,14 @@
         font-size: clamp(2rem, 5vw, 3rem);
         margin-bottom: 15px;
         font-weight: 700;
-        color: #fefefe;
+        color: $color-input-text;
       }
 
       p {
         font-size: 1.1rem;
         margin-bottom: 30px;
         opacity: 0.9;
-        color: #fefefe;
+  color: $color-input-text;
       }
 
       .cta-buttons {
@@ -270,7 +282,7 @@
         flex-wrap: wrap;
 
         @media (max-width: 600px) {
-          flex-direction: column;
+          flex-direction: row;
         }
       }
     }
@@ -278,7 +290,7 @@
 
   // Footer
   .landing-footer {
-    background: #222130;
+    background: $color-bg;
     padding: 25px 20px;
     text-align: center;
     border-top: 1px solid rgba(217, 217, 217, 0.2);
@@ -291,7 +303,7 @@
         font-size: 0.9rem;
         opacity: 0.8;
         margin-bottom: 10px;
-        color: #fefefe;
+        color: $color-box;
       }
 
       .footer-links {
@@ -301,7 +313,7 @@
         flex-wrap: wrap;
 
         a {
-          color: #fefefe;
+    color: $color-input-text;
           text-decoration: none;
           font-size: 0.9rem;
           opacity: 0.8;
