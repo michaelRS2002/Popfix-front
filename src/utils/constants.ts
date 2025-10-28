@@ -5,7 +5,7 @@
  * Replace this value with your backend URL if needed.
  * @constant {string}
  */
-export const API_BASE_URL = "http://localhost:5100/api";
+export const API_BASE_URL = "https://popfix-back.onrender.com/api";
 
 /**
  * API endpoint definitions for different functionalities.
@@ -41,6 +41,7 @@ export const API_ENDPOINTS = {
   MOVIES_FAVORITES: '/movies/favorites/:userId',
   MOVIES_INSERT_FAVORITE_RATING: '/movies/insertFavoriteRating/:userId',
   MOVIES_UPDATE: '/movies/update/:userId',
+  MOVIES_RATINGS: '/movies/ratings/:userId',
   
   // Usuario
   USER_PROFILE: '/user/profile',
