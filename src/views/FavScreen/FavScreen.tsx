@@ -6,7 +6,7 @@ import { MdFilterList, MdCalendarToday } from 'react-icons/md';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { BiPlay } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
-import { getFavorites, deleteFavorite, setRating } from '../../utils/moviesApi';
+import { getFavorites, deleteFavorite } from '../../utils/moviesApi';
 import NavBar from '../../components/NavBar/NavBar';
 import HelpButton from '../../components/HelpButton/HelpButton';
 
@@ -56,6 +56,57 @@ const FavScreen: React.FC = () => {
       }
     }, [navigate]);
 
+    // Listen for rating/favorite changes from other views (MovieScreen/Home)
+    useEffect(() => {
+      const onRatingUpdated = (e: any) => {
+        try {
+          const { movieId, rating, userRating } = e.detail || {};
+          if (!movieId) return;
+
+          // Defensive: ignore invalid/placeholder updates (0) coming from other views
+          const validUserRating = typeof userRating === 'number' && userRating >= 1 && userRating <= 5 ? userRating : undefined;
+          const validAvgRating = typeof rating === 'number' && rating > 0 ? rating : undefined;
+
+          // If both are undefined / invalid, do nothing
+          if (validUserRating === undefined && validAvgRating === undefined) return;
+
+          setMovies((prev) => prev.map((m) => {
+            if (String(m.id) !== String(movieId)) return m;
+            return {
+              ...m,
+              // update user's rating only when valid numeric (1..5)
+              userRating: validUserRating !== undefined ? validUserRating : m.userRating,
+              // update average rating only when valid (>0)
+              rating: validAvgRating !== undefined ? validAvgRating : m.rating,
+            };
+          }));
+        } catch (err) {
+          // ignore
+        }
+      };
+
+      const onFavoriteChanged = (e: any) => {
+        try {
+          const { movieId, isFavorite } = e.detail || {};
+          if (!movieId) return;
+          if (!isFavorite) {
+            // remove from list
+            setMovies((prev) => prev.filter(m => String(m.id) !== String(movieId)));
+          } else {
+            // if added favorite elsewhere, reload favorites to fetch full data
+            if (userId) loadFavorites(userId);
+          }
+        } catch (err) {}
+      };
+
+      window.addEventListener('movie:rating-updated', onRatingUpdated as EventListener);
+      window.addEventListener('movie:favorite-changed', onFavoriteChanged as EventListener);
+      return () => {
+        window.removeEventListener('movie:rating-updated', onRatingUpdated as EventListener);
+        window.removeEventListener('movie:favorite-changed', onFavoriteChanged as EventListener);
+      };
+    }, [userId]);
+
     // Función para formatear segundos a "Xm Ys"
     const formatDurationFromSeconds = (durationValue: any): string => {
       // Si ya está formateado (string con m/h/s), devolverlo
@@ -94,12 +145,38 @@ const FavScreen: React.FC = () => {
           const movieData = fav.movies || fav;
           
           // Buscar rating en múltiples lugares
-          let movieRating = 0;
-          if (fav.rating !== undefined && fav.rating !== null) {
-            movieRating = fav.rating; // Rating a nivel user_movie
-          } else if (movieData.rating !== undefined && movieData.rating !== null) {
-            movieRating = movieData.rating; // Rating a nivel movies
+          // user_movie rating (the user's own vote) takes precedence for the stars
+          // Try several likely places the user's rating may be returned from the backend
+          let userRating: number | null = null;
+          const candidates = [
+            fav.rating,
+            fav.user_rating,
+            fav.userMovieRating,
+            fav.user_movie_rating,
+            fav.user_movies?.rating,
+            fav.user_movies?.user_movie?.rating,
+            fav.user_movies_rating,
+          ];
+          for (const c of candidates) {
+            const n = Number(c);
+            // Accept only valid user ratings in the 1..5 range. Ignore 0 or other invalid values.
+            if (Number.isFinite(n) && !Number.isNaN(n) && n >= 1 && n <= 5) {
+              userRating = n;
+              break;
+            }
+            // Debug: log ignored candidate so we can trace cases where backend returns 0
+            if (c !== undefined && c !== null) {
+              console.debug('[FavScreen] ignored userRating candidate (not valid 1..5):', { candidate: c, asNumber: n, movieId: fav.movie_id || fav.movies?.id });
+            }
           }
+          // movie table average rating (prefer persisted movie.rating)
+          const dbRating = movieData.rating !== undefined && movieData.rating !== null ? Number(movieData.rating) : null;
+          // fallback: some endpoints may include suggestedRating or updatedMovie with rating
+          const suggestedFromFav = fav.suggestedRating ?? fav.suggested_rating ?? fav.updatedMovie?.rating ?? fav.updated_movie?.rating;
+          const suggestedNum = typeof suggestedFromFav === 'number' ? suggestedFromFav : (typeof suggestedFromFav === 'string' && suggestedFromFav.trim() !== '' ? Number(suggestedFromFav) : null);
+          // final average rating to display (prefer DB movie.rating, then suggestedRating, then deterministic/movieRating)
+          const avgRating = dbRating ?? (Number.isFinite(suggestedNum) ? suggestedNum : null);
+          const movieRating = userRating ?? avgRating ?? 0;
           
           // Usar duration: primero intenta backend, luego localStorage, luego default
           // Formatear si viene en segundos
@@ -111,7 +188,9 @@ const FavScreen: React.FC = () => {
           
           console.log(`📺 Película: "${movieData.title}"`, {
             id: movieData.id,
-            userMovieRating: fav.rating,
+            // show all possible rating sources for debugging
+            favRaw: fav,
+            userMovieRating: userRating,
             movieTableRating: movieData.rating,
             finalRating: movieRating,
             source: movieData.source,
@@ -126,17 +205,41 @@ const FavScreen: React.FC = () => {
             id: movieData.id,
             title: movieData.title || 'Sin título',
             poster: movieData.thumbnail_url || movieData.poster || 'https://via.placeholder.com/300x450',
-            rating: Number(movieRating) || 0,
+            // numeric average rating (for display)
+            rating: Number(avgRating) || 0,
+            // user's own rating (if any)
+            userRating: typeof userRating === 'number' ? userRating : undefined,
             duration: duration || '5m',
             genre: movieData.genre || 'Video',
             addedDate: new Date().toLocaleDateString('es-ES'),
-            userRating: 0,
             source: movieData.source || movieData.video_url || movieData.url || ''
           };
         });
         
         console.log('✅ Películas mapeadas finales:', flatMovies);
         setMovies(flatMovies);
+
+        // If we missed a recent rating update (dispatched before this component mounted),
+        // check sessionStorage for a short-lived update and apply it to the loaded favorites.
+        try {
+          const pending = sessionStorage.getItem('movieRatingUpdate');
+          if (pending) {
+            const parsed = JSON.parse(pending);
+            if (parsed && parsed.movieId) {
+              const mid = String(parsed.movieId);
+              const userRatingVal = typeof parsed.userRating === 'number' && parsed.userRating >= 1 && parsed.userRating <= 5 ? parsed.userRating : undefined;
+              const avgVal = typeof parsed.rating === 'number' && parsed.rating > 0 ? parsed.rating : undefined;
+              if (userRatingVal !== undefined || avgVal !== undefined) {
+                setMovies(prev => prev.map(m => String(m.id) === mid ? { ...m, userRating: userRatingVal !== undefined ? userRatingVal : m.userRating, rating: avgVal !== undefined ? avgVal : m.rating } : m));
+                // remove the pending update after applying
+                sessionStorage.removeItem('movieRatingUpdate');
+                console.debug('[FavScreen] Applied pending movieRatingUpdate from sessionStorage', parsed);
+              }
+            }
+          }
+        } catch (e) {
+          // ignore storage/json errors
+        }
       } catch (error) {
         console.error('Error loading favorites:', error);
         showToast('Error al cargar favoritos', 'error');
@@ -202,46 +305,15 @@ const FavScreen: React.FC = () => {
         navigate(`/movie/${movie.id}`, { state: movie });
     };
 
-    const handleRatingChange = async (movieId: string | number, newRating: number) => {
-        if (!userId) return;
-        
-        try {
-            // Actualizar localmente primero para mejor UX
-            setMovies(prevMovies => 
-                prevMovies.map(m => 
-                    m.id === movieId ? { ...m, rating: newRating } : m
-                )
-            );
-            
-      // Enviar al backend (usa endpoint separado de rating)
-      await setRating(userId, { movieId: String(movieId), rating: newRating });
-            
-            showToast(`Calificación actualizada a ${newRating} ⭐`, 'success');
-        } catch (error) {
-            console.error('Error al actualizar rating:', error);
-            showToast('No se pudo actualizar la calificación', 'error');
-            // Recargar favoritos si falla
-            loadFavorites(userId);
-        }
-    };
+  // Voting removed from FavScreen per design; ratings are shown but not editable here.
 
     const renderStars = (rating: number, movieId?: string | number, isClickable: boolean = false) => {
         return [...Array(5)].map((_, index) => {
-            const starProps = isClickable ? {
-                role: 'button' as const,
-                tabIndex: 0,
-                'aria-label': `Calificar con ${index + 1} estrella${index > 0 ? 's' : ''}`,
-                onClick: () => movieId !== undefined && handleRatingChange(movieId, index + 1),
-                onKeyDown: (e: React.KeyboardEvent) => {
-                    if (movieId !== undefined && (e.key === 'Enter' || e.key === ' ')) {
-                        e.preventDefault();
-                        handleRatingChange(movieId, index + 1);
-                    }
-                }
-            } : {
-                onClick: () => {},
-                onKeyDown: () => {}
-            };
+      // FavScreen does not allow voting here; stars are purely visual.
+      const starProps = {
+        role: 'img' as const,
+        'aria-label': `Estrella ${index + 1}`,
+      };
 
             return (
                 <span 
@@ -480,13 +552,7 @@ const FavScreen: React.FC = () => {
                 <div className="movie-genre">
                   <span className="genre-tag">{movie.genre}</span>
                 </div>
-                <div className="movie-rating-section">
-                  <span className="rating-label">Puntuación:</span>
-                  <div className="stars">
-                    {renderStars(Math.round(movie.rating || 0), movie.id, true)}
-                  </div>
-                  <span className="rating-value">{movie.rating?.toFixed(1) || '0'}</span>
-                </div>
+                {/* Lower rating section removed — top badge shows the global rating (movie.rating) */}
                 <div className="movie-date">
                   Añadido: {movie.addedDate}
                 </div>

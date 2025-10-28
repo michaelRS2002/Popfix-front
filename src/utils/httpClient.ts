@@ -51,6 +51,24 @@ class HttpClient {
     }
 
     try {
+      // Defensive check: prevent sending invalid rating values (0 or out-of-range)
+      try {
+        if (config.body && typeof config.body === 'string' && config.headers && (config.headers as any)['Content-Type']?.includes('application/json')) {
+          const parsed = JSON.parse(config.body as string);
+          if (parsed && typeof parsed.rating !== 'undefined') {
+            const rn = Number(parsed.rating);
+            if (!Number.isFinite(rn) || rn < 1 || rn > 5) {
+              const err = new Error(`Client prevented sending invalid rating: ${parsed.rating}`);
+              (err as any).code = 'INVALID_RATING_CLIENT';
+              console.error('[HTTP CLIENT] blocked invalid rating in request body:', parsed);
+              throw err;
+            }
+          }
+        }
+      } catch (e) {
+        // If JSON parsing failed, ignore and proceed
+      }
+
       const response = await fetch(url, config);
       const contentType = response.headers.get("content-type") || "";
 

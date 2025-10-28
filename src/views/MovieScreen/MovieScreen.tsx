@@ -12,7 +12,9 @@ import {
   addUserMovieComment,
   addFavorite,
   setRating as apiSetRating,
+  getMovieDetailsWithUser,
 } from "../../utils/moviesApi";
+import { formatRelativeTime } from "../../utils/time";
 
 /**
  * Represents a single user comment.
@@ -69,6 +71,42 @@ export function MovieScreen() {
         if (user.id) {
           setUserId(user.id);
           loadUserFavorites(user.id);
+          // Load user's existing rating for this movie (if any)
+          (async () => {
+            try {
+              const details = await getMovieDetailsWithUser(String(movie.id), user.id);
+              const userRatingFromApi = details?.userRating;
+              if (typeof userRatingFromApi === "number") {
+                setRating(userRatingFromApi);
+                setDisplayRating(
+                  typeof details?.movie?.rating === "number"
+                    ? details.movie.rating
+                    : userRatingFromApi
+                );
+              }
+              // Load comments returned by the backend (if any)
+                if (Array.isArray(details?.comments)) {
+                const mapped = details.comments.map((c: any) => {
+                    // sanitize backend placeholders like 'N/A'
+                    const name = c.author_name && c.author_name !== 'N/A' ? c.author_name : '';
+                    const surname = c.author_surname && c.author_surname !== 'N/A' ? c.author_surname : '';
+                    const full = (name || surname) ? `${name} ${surname}`.trim() : 'Usuario';
+                    const avatarInitials = c.avatar || (name ? (name[0] + (surname ? surname[0] : '')).toUpperCase() : undefined);
+                    return {
+                      id: c.id,
+                      author: full,
+                      text: c.content || c.text || '',
+                      // Format relative time in Spanish (Bogotá reference)
+                      date: formatRelativeTime(c.created_at || c.inserted_at || c.createdAt || c.created_at),
+                      avatar: avatarInitials,
+                    };
+                  });
+                setComments(mapped);
+              }
+            } catch (err) {
+              // ignore
+            }
+          })();
         }
       } catch (e) {
         console.error("Error parsing user:", e);
@@ -160,6 +198,12 @@ export function MovieScreen() {
   }, [movie]);
 
   const handleRatingClick = async (rate: number): Promise<void> => {
+    // Guard: only accept valid ratings 1..5 (prevent sending placeholder 0)
+    if (typeof rate !== 'number' || Number.isNaN(rate) || rate < 1 || rate > 5) {
+      showToast("Selecciona una valoración válida (1-5)", "error");
+      return;
+    }
+
     setRating(rate);
     // Send rating to backend (upsert). If user not logged, keep local only.
     if (!userId) {
@@ -171,18 +215,26 @@ export function MovieScreen() {
         movieId: String(movie.id),
         rating: rate,
       });
-      // If backend returns suggestedRating, update display
-      const suggested = resp?.suggestedRating ?? resp?.suggestedRating === 0 ? resp.suggestedRating : undefined;
-      if (typeof suggested === "number") setDisplayRating(suggested);
-      else setDisplayRating(rate);
+      // If backend returns suggestedRating, update display (round to 1 decimal)
+      const suggested = resp?.suggestedRating;
+      const finalRating = typeof suggested === 'number'
+        ? Math.round(Number(suggested) * 10) / 10
+        : Math.round(Number(rate) * 10) / 10;
+      setDisplayRating(finalRating);
       // Notify other views (Home) that this movie's rating changed
       try {
-        const detail = { movieId: String(movie.id), rating: typeof suggested === "number" ? suggested : rate };
+        const detail = { movieId: String(movie.id), rating: finalRating, userRating: rate };
         window.dispatchEvent(new CustomEvent("movie:rating-updated", { detail } as any));
+        // Persist short-lived update so views that mount after this dispatch can still pick it up
+        try {
+          sessionStorage.setItem('movieRatingUpdate', JSON.stringify(detail));
+        } catch (e) {
+          // ignore storage errors
+        }
       } catch (e) {
         // ignore
       }
-      showToast("Valoración guardada", "success");
+      showToast("Listo, tu valoración ha sido guardada", "success");
     } catch (err) {
       console.error("Error guardando valoración:", err);
       showToast("No se pudo guardar la valoración", "error");
@@ -217,27 +269,77 @@ export function MovieScreen() {
       });
       // Backend returns comment with author_name, author_surname and avatar
       const created = resp?.comment ?? null;
-      const authorName = created?.author_name || "Usuario";
-      const authorSurname = created?.author_surname || "";
-      const authorFull = `${authorName} ${authorSurname}`.trim();
-      const avatar = created?.avatar || (authorFull ? authorFull.substring(0,2).toUpperCase() : "UA");
-
-      const newComment: Comment = {
-        id: created?.id || comments.length + 1,
-        author: authorFull || "Usuario Actual",
-        text: created?.content || comment.trim(),
-        date: "Justo ahora",
-        avatar: avatar,
-      };
-
-      setComments([newComment, ...comments]);
+      // Refresh comments from server to ensure everyone sees persisted comments
+        try {
+        const details = await getMovieDetailsWithUser(String(movie.id), userId);
+        if (Array.isArray(details?.comments)) {
+          const mapped = details.comments.map((c: any) => {
+            const name = c.author_name && c.author_name !== 'N/A' ? c.author_name : '';
+            const surname = c.author_surname && c.author_surname !== 'N/A' ? c.author_surname : '';
+            const full = (name || surname) ? `${name} ${surname}`.trim() : 'Usuario';
+            const avatarInitials = c.avatar || (name ? (name[0] + (surname ? surname[0] : '')).toUpperCase() : undefined);
+            return {
+              id: c.id,
+              author: full,
+              text: c.content || c.text || '',
+              date: formatRelativeTime(c.created_at || c.inserted_at || c.createdAt || c.created_at),
+              avatar: avatarInitials,
+            };
+          });
+          setComments(mapped);
+        }
+      } catch (err) {
+        // fallback: prepend the created comment locally
+        const authorNameRaw = created?.author_name || '';
+        const authorSurnameRaw = created?.author_surname || '';
+        const authorName = authorNameRaw && authorNameRaw !== 'N/A' ? authorNameRaw : '';
+        const authorSurname = authorSurnameRaw && authorSurnameRaw !== 'N/A' ? authorSurnameRaw : '';
+        const authorFull = `${authorName || ''} ${authorSurname || ''}`.trim() || 'Usuario';
+        const avatar = created?.avatar || (authorFull ? authorFull.substring(0,2).toUpperCase() : 'UA');
+        const newComment: Comment = {
+          id: created?.id || comments.length + 1,
+          author: authorFull || "Usuario Actual",
+          text: created?.content || comment.trim(),
+          date: "Justo ahora",
+          avatar: avatar,
+        };
+        setComments([newComment, ...comments]);
+      }
       setComment("");
+      // Notify other views that a new comment was added for this movie (in-page)
+      try {
+        const detail = { movieId: String(movie.id), comment: created };
+        window.dispatchEvent(new CustomEvent("movie:comment-added", { detail } as any));
+      } catch (e) {
+        // ignore
+      }
       showToast("Comentario publicado", "success");
     } catch (err) {
       console.error("Error publicando comentario:", err);
       showToast("No se pudo publicar el comentario", "error");
     }
   };
+
+  // Listen for remote comments added on the same movie (real-time-ish)
+  useEffect(() => {
+    const onCommentAdded = (e: any) => {
+      try {
+        const { movieId, comment: incoming } = e.detail || {};
+        if (!movieId || String(movieId) !== String(movie.id)) return;
+        if (!incoming) return;
+        // Prepend incoming comment if it's not already in the list
+        setComments((prev) => {
+          if (prev.some((c) => c.id === incoming.id)) return prev;
+          return [incoming, ...prev];
+        });
+      } catch (err) {
+        // ignore
+      }
+    };
+
+    window.addEventListener("movie:comment-added", onCommentAdded as EventListener);
+    return () => window.removeEventListener("movie:comment-added", onCommentAdded as EventListener);
+  }, [movie.id]);
 
   // -------- FAVORITES HANDLER --------
   const handleAddToFavorites = async (e: React.MouseEvent) => {
