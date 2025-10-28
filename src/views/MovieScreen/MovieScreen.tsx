@@ -102,17 +102,19 @@ export function MovieScreen() {
   };
 
   const toggleSubtitles = () => {
-    setSubtitlesEnabled(!subtitlesEnabled);
     const video = videoRef.current;
     if (video && video.textTracks.length > 0) {
-      const track = video.textTracks[0];
-      track.mode = !subtitlesEnabled ? "showing" : "hidden";
+      for (const track of video.textTracks) {
+        track.mode = !subtitlesEnabled ? "showing" : "hidden";
+      }
     }
+    setSubtitlesEnabled(!subtitlesEnabled);
     showToast(
       !subtitlesEnabled ? "Subtítulos activados" : "Subtítulos desactivados",
       "success"
     );
   };
+
 
   // -------- Movie data --------
   const movie = useMemo(() => {
@@ -321,6 +323,20 @@ export function MovieScreen() {
                 {movie.videoUrl && (
                   <source src={movie.videoUrl} type="video/mp4" />
                 )}
+                  <track
+                  kind="subtitles"
+                  src={`/subtitles/${movie.id}-es.vtt`}
+                  srcLang="es"
+                  label="Español"
+                  default
+                />
+
+                <track
+                  kind="subtitles"
+                  src={`/subtitles/${movie.id}-en.vtt`}
+                  srcLang="en"
+                  label="English"
+                />
                 Tu navegador no soporta el video.
               </video>
               
