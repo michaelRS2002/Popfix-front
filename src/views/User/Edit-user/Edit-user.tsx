@@ -9,10 +9,9 @@ import {
 import "./Edit-user.scss";
 
 /**
- * Displays a success popup message at the top of the screen.
+ * Muestra un mensaje emergente de éxito en la parte superior de la pantalla.
  *
- * @param {string} message - The success message to display.
- * @returns {void}
+ * @param {string} message - Mensaje de éxito a mostrar.
  */
 function showSuccess(message: string) {
   let popup = document.getElementById("popup-message");
@@ -32,11 +31,11 @@ function showSuccess(message: string) {
 }
 
 /**
- * React component for editing the user's profile information.
- * Fetches the current user's data on mount and allows updating name, age, and email.
+ * Componente React para editar la información del usuario.
+ * Carga los datos del usuario al montar el componente y permite actualizar nombre, edad y correo.
  *
  * @component
- * @returns {JSX.Element} The EditUser page component.
+ * @returns {JSX.Element} Componente de la página de edición de perfil.
  */
 const EditUser: React.FC = () => {
   const navigate = useNavigate();
@@ -62,7 +61,7 @@ const EditUser: React.FC = () => {
           setEdad(freshUser.age || freshUser.edad || "");
           setCorreo(freshUser.email || "");
         } catch (err: any) {
-          setError("Failed to load user data.");
+          setError("Error al cargar los datos del usuario.");
         }
       }
     };
@@ -83,16 +82,16 @@ const EditUser: React.FC = () => {
     setLoading(true);
     try {
       const localUser = getCurrentUser();
-      if (!localUser || !localUser.id) throw new Error("User not found");
+      if (!localUser || !localUser.id) throw new Error("Usuario no encontrado");
       await updateUserById(localUser.id, {
         name: nombres,
         age: Number(edad),
         email: correo,
       });
-      showSuccess("Profile updated successfully!");
+      showSuccess("¡Perfil actualizado con éxito!");
       setTimeout(() => navigate("/user"), 2000);
     } catch (err: any) {
-      setError(err?.message || "Error updating profile.");
+      setError(err?.message || "Error al actualizar el perfil.");
     } finally {
       setLoading(false);
     }
@@ -120,7 +119,7 @@ const EditUser: React.FC = () => {
             <p>Actualiza tu información personal</p>
 
             <form className="edit-form" onSubmit={handleSubmit} noValidate>
-              <label htmlFor="nombres">Name</label>
+              <label htmlFor="nombres">Nombre(s)</label>
               <input
                 id="nombres"
                 type="text"
@@ -130,7 +129,7 @@ const EditUser: React.FC = () => {
                 required
               />
 
-              <label htmlFor="edad">Age</label>
+              <label htmlFor="edad">Edad</label>
               <input
                 id="edad"
                 type="number"
@@ -142,7 +141,7 @@ const EditUser: React.FC = () => {
                 required
               />
 
-              <label htmlFor="correo">Email</label>
+              <label htmlFor="correo">Correo electrónico</label>
               <input
                 id="correo"
                 type="email"
@@ -155,19 +154,19 @@ const EditUser: React.FC = () => {
               {error && <div className="error-message">{error}</div>}
 
               <button type="submit" className="button" disabled={loading}>
-                {loading ? "Updating..." : "Update Profile"}
+                {loading ? "Actualizando..." : "Actualizar perfil"}
               </button>
             </form>
 
             <div className="additional-links">
               <label className="login-redirect">
                 <Link to="/change-password" className="login-link">
-                  Change password
+                  Cambiar contraseña
                 </Link>
               </label>
               <label className="login-redirect">
                 <Link to="/user" className="login-link">
-                  Cancel and return
+                  Cancelar y regresar
                 </Link>
               </label>
             </div>

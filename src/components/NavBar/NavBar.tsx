@@ -4,6 +4,27 @@ import { FaUserCircle, FaUser, FaHeart, FaEdit, FaSignOutAlt, FaSearch, FaBars, 
 import { useNavigate, useLocation } from 'react-router-dom';
 import { logoutUser } from '../../utils/authApi';
 
+/**
+ * Muestra un popup consistente con otras partes de la app.
+ * Reutiliza el mismo enfoque DOM que se usa en `Edit-user.tsx`.
+ */
+function showPopup(message: string, type: 'success' | 'error' = 'success') {
+  let popup = document.getElementById("popup-message");
+  if (!popup) {
+    popup = document.createElement("div");
+    popup.id = "popup-message";
+    document.body.appendChild(popup);
+  }
+  popup.className = `popup-message popup-${type} popup-show`;
+  popup.textContent = message;
+  // @ts-ignore
+  clearTimeout((popup as any)._timeout);
+  // @ts-ignore
+  (popup as any)._timeout = setTimeout(() => {
+    popup?.classList.remove("popup-show");
+  }, 3000);
+}
+
 interface NavBarProps {
   searchQuery?: string;
   onSearchChange?: (value: string) => void;
@@ -52,13 +73,13 @@ const NavBar: React.FC<NavBarProps> = ({
     try {
       const res = await logoutUser();
       if (res && res.message) {
-        alert(res.message);
+        showPopup("Sesión cerrada correctamente", 'success');
       } else {
-        alert("Sesión cerrada correctamente");
+        showPopup("Sesión cerrada correctamente", 'success');
       }
     } catch (err: any) {
       console.error("Logout error:", err);
-      alert("Sesión cerrada");
+      showPopup("Error al cerrar sesión", 'error');
     } finally {
       localStorage.removeItem("authToken");
       localStorage.removeItem("user");
@@ -147,7 +168,7 @@ const NavBar: React.FC<NavBarProps> = ({
               <div className="user-menu">
                 <button 
                   className="user-menu-item"
-                  onClick={() => handleNavigate('/perfil')}
+                  onClick={() => handleNavigate('/user')}
                 >
                   <FaUser aria-hidden="true" />
                   <span>Mi perfil</span>
@@ -158,6 +179,13 @@ const NavBar: React.FC<NavBarProps> = ({
                 >
                   <FaEdit aria-hidden="true" />
                   <span>Editar perfil</span>
+                </button>
+                <button 
+                  className="user-menu-item"
+                  onClick={() => handleNavigate('/mapa-del-sitio')}
+                >
+                  <FaBars aria-hidden="true" />
+                  <span>Mapa del sitio</span>
                 </button>
                 <button 
                   className="user-menu-item logout-item"
@@ -225,10 +253,17 @@ const NavBar: React.FC<NavBarProps> = ({
           <div className="mobile-profile">
             <button 
               className="mobile-profile-item"
-              onClick={() => handleNavigate('/perfil')}
+              onClick={() => handleNavigate('/user')}
             >
               <FaUser aria-hidden="true" />
               <span>Mi perfil</span>
+            </button>
+            <button 
+              className="mobile-profile-item"
+              onClick={() => handleNavigate('/mapa-del-sitio')}
+            >
+              <FaBars aria-hidden="true" />
+              <span>Mapa del sitio</span>
             </button>
             <button 
               className="mobile-profile-item"

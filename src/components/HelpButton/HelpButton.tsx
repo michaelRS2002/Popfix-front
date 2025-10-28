@@ -8,6 +8,7 @@
 
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { MANUAL_URL } from "../../utils/constants";
 import { FaQuestion } from "react-icons/fa";
 import "./HelpButton.scss";
 
@@ -28,7 +29,8 @@ const HelpButton: React.FC = () => {
    *
    * @returns {null | JSX.Element} Returns `null` if the path is '/mapa-del-sitio', otherwise renders the button.
    */
-  if (location.pathname === "/mapa-del-sitio") {
+  // Oculta el botón cuando ya estemos en la página de destino del manual
+  if (location.pathname === MANUAL_URL) {
     return null;
   }
 
@@ -40,7 +42,19 @@ const HelpButton: React.FC = () => {
    * @returns {void}
    */
   const handleClick = (): void => {
-    navigate("/mapa-del-sitio");
+    try {
+      // Abrir en nueva pestaña si es una URL absoluta o si el usuario prefiere
+      if (MANUAL_URL.startsWith("http") || MANUAL_URL.startsWith("/")) {
+        // Si es ruta interna, abrimos en la misma app en nueva pestaña para no perder el estado
+        window.open(MANUAL_URL, "_blank");
+      } else {
+        // Fallback a navegación interna
+        navigate(MANUAL_URL);
+      }
+    } catch (err) {
+      // En caso de error, navegar internamente
+      navigate(MANUAL_URL);
+    }
   };
 
   return (

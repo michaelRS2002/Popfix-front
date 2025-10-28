@@ -44,7 +44,7 @@ const User: React.FC = () => {
       try {
         const localUser = getCurrentUser();
         if (!localUser || !localUser.id) {
-          setError("User information not found");
+          setError("Información del usuario no encontrada");
           setLoading(false);
           return;
         }
@@ -53,8 +53,8 @@ const User: React.FC = () => {
         const freshUserData = await getUserById(localUser.id);
         setUser(freshUserData);
       } catch (err: any) {
-        console.error("Error loading user data:", err);
-        setError(err.message || "Error loading user information");
+        console.error("Error cargando la información del usuario:", err);
+        setError(err.message || "Error cargando la información del usuario");
 
         // Fallback to locally stored data
         const localUser = getCurrentUser();
@@ -81,7 +81,7 @@ const User: React.FC = () => {
         <div className="app-container-user">
           <div className="main-content-user">
             <div className="user-box">
-              <p>Loading...</p>
+              <p>Cargando...</p>
             </div>
           </div>
         </div>
@@ -101,7 +101,7 @@ const User: React.FC = () => {
             <div className="user-box">
               <p className="error-message">{error}</p>
               <Link to="/home" className="login-link">
-                Volver al Inicio
+                Volver al inicio
               </Link>
             </div>
           </div>
@@ -132,26 +132,26 @@ const User: React.FC = () => {
               alt="Logotipo de PopFix - ícono de carrete de película"
               className="icon"
             />
-            <h2>User Profile</h2>
-            <p>Account Information</p>
+            <h2>Perfil de usuario</h2>
+            <p>Información de la cuenta</p>
 
             <div className="user-info">
               <div className="info-group">
-                <label>Full Name</label>
+                <label>Nombre completo</label>
                 <div className="info-value">
-                  {user?.name || user?.nombres || "Not available"}
+                  {user?.name || user?.nombres || "No disponible"}
                 </div>
               </div>
               <div className="info-group">
-                <label>Age</label>
+                <label>Edad</label>
                 <div className="info-value">
-                  {user?.age || user?.edad || "Not available"}
+                  {user?.age || user?.edad || "No disponible"}
                 </div>
               </div>
               <div className="info-group">
-                <label>Email</label>
+                <label>Correo electrónico</label>
                 <div className="info-value">
-                  {user?.email || "Not available"}
+                  {user?.email || "No disponible"}
                 </div>
               </div>
               {error && (
@@ -159,7 +159,7 @@ const User: React.FC = () => {
                   className="error-message"
                   style={{ marginTop: 8, fontSize: "0.85rem" }}
                 >
-                  ⚠️ Showing cached data
+                  ⚠️ Mostrando datos en caché
                 </p>
               )}
             </div>

@@ -288,6 +288,7 @@ $color-accent: #FF0000;
       border-radius: 0px; // remove the pill-shaped rounding
       font-size: 1rem;
       color: $color-input-text;
+      margin-inline-end: auto;
       border: none; // remove border so it looks like a label
       font-weight: 400; // normal weight for label-like appearance
       box-shadow: none;

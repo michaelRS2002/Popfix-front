@@ -42,15 +42,7 @@ export function MovieScreen() {
   const [displayRating, setDisplayRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
-  const [comments, setComments] = useState<Comment[]>([
-    {
-      id: 1,
-      author: "María García",
-      text: "¡Excelente película! Los efectos visuales son impresionantes.",
-      date: "Hace 2 horas",
-      avatar: "MG",
-    },
-  ]);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   const [userId, setUserId] = useState<string | null>(null);
   const [favoriteIds, setFavoriteIds] = useState<Set<string | number>>(
