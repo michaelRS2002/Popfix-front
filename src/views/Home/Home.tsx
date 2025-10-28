@@ -75,8 +75,7 @@ export function Home() {
    * @effect
    */
   useEffect(() => {
-    loadMovies();
-    // Obtener userId del localStorage - viene dentro del objeto 'user'
+    // Primero intentar leer user desde localStorage para poder pasar userId al loadMovies
     const userStr = localStorage.getItem("user");
     if (userStr) {
       try {
@@ -85,11 +84,16 @@ export function Home() {
           setUserId(user.id);
           // Cargar favoritos del usuario para saber cuáles marcar
           loadUserFavorites(user.id);
+          // Cargar películas incluyendo info del usuario (userRating) cuando esté disponible
+          loadMovies(user.id);
+          return;
         }
       } catch (e) {
         console.error("Error parsing user:", e);
       }
     }
+    // Si no hay usuario, carga películas sin userId (solo averages globales)
+    loadMovies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -99,12 +103,22 @@ export function Home() {
       try {
         const { movieId, rating, userRating } = e.detail || {};
         if (!movieId) return;
+
+        // Defensive: ignore placeholder or invalid updates (rating 0)
+        const validUserRating = typeof userRating === 'number' && userRating >= 1 && userRating <= 5 ? userRating : undefined;
+        const validAvgRating = typeof rating === 'number' && rating > 0 ? rating : undefined;
+
+        if (validUserRating === undefined && validAvgRating === undefined) return;
+
         setMovies((prev) =>
-          prev.map((m) =>
-            String(m.id) === String(movieId)
-              ? { ...m, rating: typeof rating === 'number' ? rating : m.rating, userRating: typeof userRating === 'number' ? userRating : m.userRating }
-              : m
-          )
+          prev.map((m) => {
+            if (String(m.id) !== String(movieId)) return m;
+            // Cast to any when adding userRating to avoid TypeScript errors for the local shape
+            const updated: any = { ...(m as any) };
+            if (validAvgRating !== undefined) updated.rating = validAvgRating;
+            if (validUserRating !== undefined) updated.userRating = validUserRating;
+            return updated as Movie;
+          })
         );
       } catch (err) {
         // ignore
@@ -166,11 +180,12 @@ export function Home() {
     return matchesSearch && matchesCategory;
   });
 
-  const loadMovies = async () => {
+  const loadMovies = async (forUserId?: string) => {
     setLoading(true);
     try {
       // Popular de Pexels ya mapeado al shape de Home
-      const items = await getPexelsPopularForHome(1);
+      // If forUserId is provided, backend may include user's own rating in the response
+      const items = await getPexelsPopularForHome(1, forUserId || undefined);
       setMovies(items);
     } catch (error) {
       console.error("Error loading movies:", error);
@@ -435,7 +450,14 @@ export function Home() {
                       <h3>{movie.title}</h3>
                       <div className="movie-rating">
                         <AiFillStar />
-                        <span>{((movie as any).userRating ?? movie.rating)?.toFixed ? ((movie as any).userRating ?? movie.rating).toFixed(1) : ((movie as any).userRating ?? movie.rating)}</span>
+                        {/* Mostrar siempre la media global (movie.rating) como principal */}
+                        <span>{(Number(movie.rating) || 0).toFixed(1)}</span>
+                        {/* Si el usuario ya votó, mostrar su voto como badge secundario */}
+                        {(movie as any).userRating !== undefined && (typeof (movie as any).userRating === 'number') && (
+                          <span className="user-badge" aria-label={`Tu valoración: ${(movie as any).userRating}`}>
+                            Tu: {(movie as any).userRating.toFixed ? (movie as any).userRating.toFixed(1) : (movie as any).userRating}
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="movie-genre">
