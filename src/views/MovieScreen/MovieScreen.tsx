@@ -141,17 +141,29 @@ export function MovieScreen() {
 
   const toggleSubtitles = () => {
     const video = videoRef.current;
-    if (video && video.textTracks.length > 0) {
-      for (const track of video.textTracks) {
-        track.mode = !subtitlesEnabled ? "showing" : "hidden";
+    if (!video) return;
+
+    const tracks = Array.from(video.textTracks);
+    const hasVisible = tracks.some((track) => track.mode === "showing");
+
+    // Si ya hay subtítulos visibles → ocultar todos
+    if (hasVisible) {
+      tracks.forEach((track) => (track.mode = "hidden"));
+      setSubtitlesEnabled(false);
+      showToast("Subtítulos desactivados", "success");
+    } else {
+      // Si no hay ninguno visible → mostrar solo el español
+      const esTrack = tracks.find((track) => track.language === "es");
+      if (esTrack) {
+        esTrack.mode = "showing";
+        setSubtitlesEnabled(true);
+        showToast("Subtítulos activados (Español)", "success");
+      } else {
+        showToast("No hay subtítulos en español disponibles", "error");
       }
     }
-    setSubtitlesEnabled(!subtitlesEnabled);
-    showToast(
-      !subtitlesEnabled ? "Subtítulos activados" : "Subtítulos desactivados",
-      "success"
-    );
   };
+
 
 
   // -------- Movie data --------
@@ -430,7 +442,6 @@ export function MovieScreen() {
                   src={`/subtitles/${movie.id}-es.vtt`}
                   srcLang="es"
                   label="Español"
-                  default
                 />
 
                 <track
