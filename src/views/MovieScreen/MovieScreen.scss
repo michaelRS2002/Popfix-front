@@ -234,18 +234,20 @@ $color-accent: #e50914;
   }
 }
 
-.movie-genre {
-  .genre-badge {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    background: $color-input;
-    border-radius: 20px;
-    font-size: 0.875rem;
-    color: $color-input-text;
-    border: 1px solid $color-input;
-    font-weight: 500;
+  .movie-genre {
+    .genre-badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem; // smaller padding to read as a label
+      background: $color-box; // keep contrast on dark backgrounds
+      border-radius: 0px; // remove the pill-shaped rounding
+      font-size: 1rem;
+      color: $color-input-text;
+      border: none; // remove border so it looks like a label
+      font-weight: 400; // normal weight for label-like appearance
+      box-shadow: none;
+      cursor: default;
+    }
   }
-}
 
 .movie-director {
   color: $color-text;

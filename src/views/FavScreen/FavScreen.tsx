@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import './FavScreen.scss';
 import { IoArrowBack, IoSearchOutline } from 'react-icons/io5';
 import { CiHeart } from "react-icons/ci";
-import { MdFilterList, MdCalendarToday, MdDelete } from 'react-icons/md';
+import { MdFilterList, MdCalendarToday } from 'react-icons/md';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { BiPlay } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
-import { getFavorites, updateUserMovie } from '../../utils/moviesApi';
+import { getFavorites, deleteFavorite, setRating } from '../../utils/moviesApi';
 import NavBar from '../../components/NavBar/NavBar';
 import HelpButton from '../../components/HelpButton/HelpButton';
 
@@ -179,10 +180,7 @@ const FavScreen: React.FC = () => {
             setMovies(prevMovies => prevMovies.filter(movie => movie.id !== movieId));
         
             // Llamar al backend para eliminar
-            await updateUserMovie(userId, {
-              movieId: String(movieId),
-              is_favorite: false
-            });
+      await deleteFavorite(userId, String(movieId));
             
             showToast(`"${movie?.title}" eliminada de favoritos`, 'success');
         
@@ -215,11 +213,8 @@ const FavScreen: React.FC = () => {
                 )
             );
             
-            // Enviar al backend
-            await updateUserMovie(userId, {
-                movieId: String(movieId),
-                rating: newRating
-            });
+      // Enviar al backend (usa endpoint separado de rating)
+      await setRating(userId, { movieId: String(movieId), rating: newRating });
             
             showToast(`Calificación actualizada a ${newRating} ⭐`, 'success');
         } catch (error) {
@@ -458,12 +453,13 @@ const FavScreen: React.FC = () => {
                   <span aria-hidden="true">⭐</span>
                   <span>{movie.rating}</span>
                 </div>
-                <button 
-                  className="delete-button"
+                <button
+                  className={`favorite-button is-favorite`}
                   onClick={() => handleRemoveFavorite(movie.id)}
-                  aria-label={`Eliminar ${movie.title} de favoritos`}
+                  aria-label={`Quitar ${movie.title} de favoritos`}
+                  title={`Quitar ${movie.title} de favoritos`}
                 >
-                  <MdDelete aria-hidden="true" />
+                  <AiFillHeart aria-hidden="true" />
                 </button>
                 <div className="movie-overlay">
                   <button 

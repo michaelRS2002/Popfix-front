@@ -111,7 +111,7 @@ const Register: React.FC = () => {
         password: formData.password,
       });
 
-      showSuccess("Registration successful! Redirecting to login...");
+      showSuccess("¡Registro exitoso! Redirigiendo a inicio de sesión...");
       setTimeout(() => {
         navigate("/login");
       }, 1500);

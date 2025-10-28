@@ -338,6 +338,32 @@ $red: #FF0000;
             }
           }
 
+          .favorite-button {
+            position: absolute;
+            top: 1rem;
+            right: 0.75rem;
+            background-color: rgba(0, 0, 0, 0.95);
+            color: $red;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+            z-index: 2;
+
+            &:hover {
+              transform: scale(1.08);
+            }
+
+            svg {
+              font-size: 1.15rem;
+            }
+          }
+
           .movie-overlay {
             position: absolute;
             top: 0;

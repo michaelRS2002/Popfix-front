@@ -62,12 +62,12 @@ const Login: React.FC = () => {
     setLoading(true);
     try {
       await loginUser(formData);
-      showSuccess("Login successful! Redirecting...");
+      showSuccess("¡Inicio de sesión exitoso! Redirigiendo...");
       setTimeout(() => {
         window.location.href = "/home";
       }, 1500);
     } catch (error: any) {
-      setFormError(error.message || "Failed to log in");
+      setFormError(error.message || "Error al iniciar sesión");
     } finally {
       setLoading(false);
     }
@@ -146,7 +146,7 @@ const Login: React.FC = () => {
               <input
                 type="password"
                 id="password"
-                placeholder="********"
+                placeholder="*********"
                 className="input"
                 value={formData.password}
                 onChange={handleChange}
