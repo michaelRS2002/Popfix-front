@@ -213,3 +213,17 @@ $color-button: #000000;
     font-size: 1.6rem;
   }
 }
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid #222130;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(34, 33, 48, 0.1);
+}
+
+.btn-delete:focus-visible {
+  outline: 3px solid #222130;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(34, 33, 48, 0.1);
+  background-color: #b92a2a;
+}

@@ -1,12 +1,50 @@
 @use "sass:color";
 
-$color-bg: #ffffff;
-$color-box: #000000;
-$color-input: #2a2a2a;
-$color-input-text: #ffffff;
-$color-label: #ffffff;
-$color-text: #e5e5e5;
-$color-accent: #e50914;
+// ======== 🎨 Tema claro (basado en Edit-user.scss) =========
+$color-bg: #ffffff; // Fondo general
+$color-box: #e7e7e7; // Fondo caja
+$color-input: #d9d9d9; // Fondo campos input
+$color-input-text: #000000; // Texto dentro de input
+$color-label: #000000; // Color de labels
+$color-text: #000000; // Texto general
+$color-accent: #000000; // Color principal (botones, acentos)
+$color-button: #000000;
+// ============================================================
+
+// Focus Visible - WCAG (AA)
+*:focus-visible {
+  outline: 3px solid #222130;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(34, 33, 48, 0.1);
+}
+
+input:focus-visible {
+  outline: 3px solid #222130;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(34, 33, 48, 0.1);
+}
+
+button:focus-visible,
+.button:focus-visible {
+  outline: 3px solid #222130;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(34, 33, 48, 0.1);
+}
+
+.back-arrow-login:focus-visible {
+  outline: 3px solid #222130;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(34, 33, 48, 0.1);
+}
+
+a:focus-visible,
+.forgot:focus-visible,
+.register-link:focus-visible {
+  outline: 3px solid #222130;
+  outline-offset: 2px;
+  background-color: rgba(34, 33, 48, 0.05);
+}
+// =====================================================
 
 .back-arrow-login {
   display: inline-block;
@@ -41,6 +79,7 @@ $color-accent: #e50914;
   align-items: center;
   font-family: "Poppins", sans-serif;
   color: $color-text;
+  background-color: $color-bg;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -52,7 +91,7 @@ $color-accent: #e50914;
   text-align: center;
 
   .title-logo {
-    color: $color-accent;
+    color: #e50914;
     font-size: 5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
@@ -86,13 +125,13 @@ $color-accent: #e50914;
 
   h2 {
     margin-bottom: 0.5rem;
-    color: $color-accent;
+    color: $color-text;
   }
 
   p {
     margin-bottom: 1.5rem;
     font-size: 0.9rem;
-    color: $color-text;
+    color: #555;
   }
 }
 
@@ -110,17 +149,27 @@ $color-accent: #e50914;
   }
 
   .input {
-    background-color: $color-input;
+    background-color: $color-input !important;
+    color: $color-input-text;
     border: none;
     border-radius: 10px;
     padding: 0.8rem;
     font-size: 0.9rem;
     outline: none;
     margin-bottom: 1rem;
+
+    &:focus {
+      background-color: #d0d0d0;
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
   }
 
   .button {
-    background-color: $color-accent !important;
+    background-color: $color-button;
     color: white;
     border: none;
     border-radius: 8px;
@@ -128,11 +177,20 @@ $color-accent: #e50914;
     font-size: 1rem;
     cursor: pointer;
     margin-top: 0.5rem;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.1s;
 
-    &:hover {
-      background-color: color.adjust($color-accent, $lightness: -10%);
-      transform: scale(1.03);
+    &:hover:not(:disabled) {
+      background-color: #333;
+      transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
     }
   }
 }
@@ -146,7 +204,7 @@ $color-accent: #e50914;
   color: $color-accent;
 
   &:hover {
-    color: color.adjust($color-accent, $lightness: -10%);
+    color: #333;
     text-decoration: underline;
   }
 }
@@ -154,6 +212,7 @@ $color-accent: #e50914;
 .register-text {
   margin-top: 0.5rem;
   font-size: 0.9rem;
+  color: #666;
 
   .register-link {
     font-weight: 600;
@@ -161,7 +220,7 @@ $color-accent: #e50914;
     color: $color-accent;
 
     &:hover {
-      color: color.adjust($color-accent, $lightness: -10%);
+      color: #333;
       text-decoration: underline;
     }
   }

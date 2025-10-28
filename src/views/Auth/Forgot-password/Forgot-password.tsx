@@ -101,19 +101,19 @@ const ForgotPassword: React.FC = (): JSX.Element => {
 
   return (
     <>
-      <div className="app-container-forgot">
-        <div className="main-content-forgot">
+      <div className="app-container-forgot" role="main">
+        <div className="main-content-forgot" role="presentation" aria-label="Fondo decorativo de películas">
           <div className="forgot-box">
             <Link
               to="/login"
               className="back-arrow-forgot"
-              aria-label="Volver al login"
+              aria-label="Volver a la página de inicio de sesión"
             >
-              ←
+              <span aria-hidden="true">←</span>
             </Link>
             <img
               src="/static/img/film-icon.jpg"
-              alt="PopFix logo"
+              alt="Logotipo de PopFix - ícono de carrete de película"
               className="icon"
             />
             <h2>Recuperar contraseña</h2>
@@ -124,22 +124,41 @@ const ForgotPassword: React.FC = (): JSX.Element => {
               <input
                 type="email"
                 id="email"
-                placeholder="tu@gmail.com"
+                placeholder="tu@email.com"
                 className="input"
                 value={email}
                 onChange={handleChange}
                 disabled={loading}
+                aria-label="Ingresa tu correo electrónico"
+                aria-required="true"
+                aria-invalid={emailError ? "true" : "false"}
               />
               {emailError && (
-                <span className="error-message">{emailError}</span>
+                <span className="error-message" role="alert">
+                  {emailError}
+                </span>
               )}
 
-              <button type="submit" className="button" disabled={loading}>
+              <button
+                type="submit"
+                className="button"
+                disabled={loading}
+                aria-label={
+                  loading
+                    ? "Enviando enlace de recuperación"
+                    : "Enviar enlace de recuperación"
+                }
+              >
                 {loading ? "Enviando..." : "Enviar enlace de recuperación"}
               </button>
 
               {formError && (
-                <div className="error-message" style={{ marginTop: 8 }}>
+                <div
+                  className="error-message"
+                  style={{ marginTop: 8 }}
+                  role="alert"
+                  aria-live="polite"
+                >
                   {formError}
                 </div>
               )}
