@@ -240,7 +240,8 @@ $color-accent: #FF0000;
 .movie-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  /* Align title and actions vertically centered so the rating badge sits at the right of the header */
+  align-items: center;
   gap: 1rem;
 
   h1 {
@@ -358,6 +359,14 @@ $color-accent: #FF0000;
 
 .comments-header {
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: nowrap; // prevent the badge from wrapping below the title
+  /* Ensure positioned children are placed relative to this header and
+     appear above other absolute elements (video overlays, etc.). */
+  position: relative;
 
   h2 {
     display: flex;
@@ -371,6 +380,24 @@ $color-accent: #FF0000;
     svg {
       color: $color-accent;
     }
+  }
+
+  .movie-rating-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: $color-accent;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    background: transparent;
+    svg { color: $color-accent; }
+    margin-left: auto;
+    flex-shrink: 0; // ensure it doesn't shrink and drop to next line
+    /* Keep badge above absolute-positioned overlays and ensure it participates in layout */
+    position: relative;
+    z-index: 50;
   }
 }
 
@@ -492,6 +519,19 @@ $color-accent: #FF0000;
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+/* Ensure the rating badge stays to the right of the header and doesn't overlap other sections */
+
+
+@media (max-width: 900px) {
+  /* On narrower screens make sure header elements wrap nicely and rating stays visible on the right */
+  .movie-header {
+    align-items: center;
+  }
+  .movie-actions {
+    gap: 0.5rem;
+  }
 }
 
 .favorite-button {
