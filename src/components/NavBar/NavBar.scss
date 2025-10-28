@@ -28,6 +28,13 @@ $navbar-btn-border-hover: #cccccc;
   }
 }
 
+/* make navbar sticky on top for better mobile UX */
+.navbar--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+}
+
 .navbar-container {
   display: flex;
   align-items: center;
@@ -54,6 +61,12 @@ $navbar-btn-border-hover: #cccccc;
 
   &:hover {
     opacity: 0.8;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-logo {
+    font-size: 1.25rem;
   }
 }
 
@@ -97,6 +110,16 @@ $navbar-btn-border-hover: #cccccc;
 
   @media (max-width: 768px) {
     display: none;
+  }
+}
+
+/* At medium widths, avoid absolute centering which can overlap with other elements */
+@media (max-width: 1024px) {
+  .navbar-desktop .navbar-links {
+    position: static;
+    transform: none;
+    margin-left: 0.5rem;
+    justify-content: flex-start;
   }
 }
 
@@ -173,6 +196,15 @@ $navbar-btn-border-hover: #cccccc;
     &:hover {
       color: #ff0000;
     }
+  }
+}
+
+/* hide desktop search on small screens to avoid duplication with mobile search */
+@media (max-width: 768px) {
+  .navbar-search {
+    display: none;
+    max-width: none;
+    flex: none;
   }
 }
 
@@ -277,6 +309,62 @@ $navbar-btn-border-hover: #cccccc;
     &:hover {
       color: #ff0000;
     }
+  }
+}
+
+/* increase hit area for mobile toggle and ensure it sits at the right */
+@media (max-width: 480px) {
+  .navbar-mobile-toggle {
+    padding: 0.6rem;
+    font-size: 1.35rem;
+  }
+}
+
+/* Make sure the mobile toggle is always on top and visible */
+@media (max-width: 768px) {
+  .navbar-mobile-toggle {
+    position: relative;
+    z-index: 1100; /* sit above other navbar elements */
+    flex: none;
+    color: $navbar-text;
+  }
+
+  /* ensure logo doesn't push the toggle out of view */
+  .navbar-logo {
+    flex: 0 0 auto;
+    margin-right: 0.5rem;
+  }
+
+  /* container should allow items to wrap without hiding the toggle */
+  .navbar-container {
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* Fix potential overflow on the right on small screens by removing large margins
+   and ensuring the toggle is pushed inside the container */
+@media (max-width: 768px) {
+  .navbar {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    box-sizing: border-box;
+  }
+
+  .navbar-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* Remove desktop-specific side margins that can push content out */
+  .navbar-actions {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Make the toggle align to the right within the flex container */
+  .navbar-mobile-toggle {
+    margin-left: auto;
   }
 }
 

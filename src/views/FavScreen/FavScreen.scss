@@ -427,23 +427,13 @@ $red: #FF0000;
               margin-left: 0.5rem;
             }
           }
-
-          .movie-genre {
-            margin-bottom: 0.75rem;
-            background: transparent;
-            border: none;
-            padding: 0;
-
-            .genre-tag {
-              display: inline-block;
-              background-color: transparent;
-              color: $dark;
-              padding: 0.35rem 0.75rem;
-              border-radius: 16px;
-              font-size: 0.85rem;
-              font-weight: 500;
-              border: 1px solid $medium-gray;
-            }
+          .genre-tag {
+            display: inline-block;
+            background-color: $white;
+            color: $dark;
+            padding: 0.35rem 0.75rem;
+            font-size: 1rem;
+            font-weight: 500;
           }
 
           .movie-rating-section {

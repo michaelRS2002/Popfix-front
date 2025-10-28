@@ -63,3 +63,10 @@ export const APP_CONFIG = {
   MOVIES_PER_PAGE: 20,
   IMAGE_BASE_URL: "https://image.tmdb.org/t/p/w500", // For movie images
 };
+
+/**
+ * URL del manual de usuario. Puede ser una ruta interna (p. ej. '/manual-de-usuario')
+ * o una URL externa (p. ej. 'https://example.com/manual.pdf').
+ * Cambia este valor según dónde hospedes la documentación del usuario.
+ */
+export const MANUAL_URL = "https://www.canva.com/design/DAG3Fl4M-hE/cQ1XIs0pvyvJgbnFsiou9Q/edit";
