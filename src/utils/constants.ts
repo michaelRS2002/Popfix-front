@@ -41,6 +41,7 @@ export const API_ENDPOINTS = {
   MOVIES_FAVORITES: '/movies/favorites/:userId',
   MOVIES_INSERT_FAVORITE_RATING: '/movies/insertFavoriteRating/:userId',
   MOVIES_UPDATE: '/movies/update/:userId',
+  MOVIES_RATINGS: '/movies/ratings/:userId',
   
   // Usuario
   USER_PROFILE: '/user/profile',

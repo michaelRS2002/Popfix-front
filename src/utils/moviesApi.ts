@@ -76,11 +76,23 @@ export const searchMovies = async (query: string, page: number = 1) => {
  */
 export const getMovieDetails = async (movieId: string) => {
   try {
-    const endpoint = API_ENDPOINTS.MOVIE_DETAILS.replace(':id', encodeURIComponent(movieId))
+    const endpoint = `/movies/details/${encodeURIComponent(movieId)}`
     const response = await httpClient.get(endpoint)
     return response
   } catch (error: any) {
     throw new Error('Error al obtener detalles de la película: ' + (error?.message || ''))
+  }
+};
+
+// Fetch movie details with optional userId to get user's rating and comments
+export const getMovieDetailsWithUser = async (movieId: string, userId?: string) => {
+  try {
+    const q = userId ? `?userId=${encodeURIComponent(userId)}` : '';
+    const endpoint = `/movies/details/${encodeURIComponent(movieId)}${q}`;
+    const response = await httpClient.get(endpoint);
+    return response;
+  } catch (error: any) {
+    throw new Error('Error al obtener detalles de la película: ' + (error?.message || ''));
   }
 };
 
@@ -340,11 +352,26 @@ const mapPexelsToHomeMovies = (data: PexelsResponse): HomeMovie[] => {
   });
 };
 
+// GET /api/movies/ratings/:userId - fetch all ratings for a user
+export const getUserRatings = async (userId: string) => {
+  if (!userId) throw new Error('userId es requerido')
+  try {
+    const endpoint = API_ENDPOINTS.MOVIES_RATINGS.replace(':userId', encodeURIComponent(userId))
+    const response = await httpClient.get(endpoint)
+    // response shape: { ratings: [{ movie_id, rating }, ...] }
+    return response as { ratings: Array<{ movie_id: string; rating: number }> }
+  } catch (error: any) {
+    throw new Error(error?.message || 'Error al obtener ratings del usuario')
+  }
+}
+
 // Devuelve películas para Home usando endpoints /pexels
-export const getPexelsPopularForHome = async (page: number = 1): Promise<HomeMovie[]> => {
-  const res = await httpClient.get(`${API_ENDPOINTS.POPULAR_MOVIES}?perPage=30`)
+export const getPexelsPopularForHome = async (page: number = 1, userId?: string): Promise<HomeMovie[]> => {
+  // Include userId when available so backend can merge user-specific data (userRating) into results
+  const q = `?perPage=30${userId ? `&userId=${encodeURIComponent(userId)}` : ''}`;
+  const res = await httpClient.get(`${API_ENDPOINTS.POPULAR_MOVIES}${q}`)
   const movies = mapPexelsToHomeMovies(res as PexelsResponse)
-  // Si backend ya mapeó el genre, no lo sobrescribimos
+  // If backend already mapped genre or included user-specific fields, keep them.
   return movies.map(m => m.genre === 'Video' && Array.isArray(res) ? { ...m, genre: 'Popular' } : m)
 }
 
