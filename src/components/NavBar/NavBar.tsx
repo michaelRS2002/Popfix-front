@@ -121,7 +121,7 @@ const NavBar: React.FC<NavBarProps> = ({
           {showSearch && (
             <form onSubmit={handleSubmit} className="navbar-search">
               <button type="submit" className="navbar-search-icon" aria-label="Buscar">
-                <FaSearch />
+                <FaSearch aria-hidden="true" />
               </button>
               <input
                 type="text"
@@ -140,7 +140,7 @@ const NavBar: React.FC<NavBarProps> = ({
               aria-label="Perfil de usuario"
               onClick={toggleMenu}
             >
-              <FaUserCircle size={28} />
+              <FaUserCircle size={28} aria-hidden="true" />
             </button>
             
             {isMenuOpen && (
@@ -149,21 +149,21 @@ const NavBar: React.FC<NavBarProps> = ({
                   className="user-menu-item"
                   onClick={() => handleNavigate('/perfil')}
                 >
-                  <FaUser />
+                  <FaUser aria-hidden="true" />
                   <span>Mi perfil</span>
                 </button>
                 <button 
                   className="user-menu-item"
                   onClick={() => handleNavigate('/edit-user')}
                 >
-                  <FaEdit />
+                  <FaEdit aria-hidden="true" />
                   <span>Editar perfil</span>
                 </button>
                 <button 
                   className="user-menu-item logout-item"
                   onClick={handleLogout}
                 >
-                  <FaSignOutAlt />
+                  <FaSignOutAlt aria-hidden="true" />
                   <span>Cerrar sesión</span>
                 </button>
               </div>
@@ -177,7 +177,7 @@ const NavBar: React.FC<NavBarProps> = ({
           onClick={toggleMobileMenu}
           aria-label="Menú móvil"
         >
-          {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          {isMobileMenuOpen ? <FaTimes size={24} aria-hidden="true" /> : <FaBars size={24} aria-hidden="true" />}
         </button>
       </div>
 
@@ -209,7 +209,7 @@ const NavBar: React.FC<NavBarProps> = ({
           {showSearch && (
             <form onSubmit={handleSubmit} className="mobile-search">
               <button type="submit" className="mobile-search-icon" aria-label="Buscar">
-                <FaSearch />
+                <FaSearch aria-hidden="true" />
               </button>
               <input
                 type="text"
@@ -227,21 +227,21 @@ const NavBar: React.FC<NavBarProps> = ({
               className="mobile-profile-item"
               onClick={() => handleNavigate('/perfil')}
             >
-              <FaUser />
+              <FaUser aria-hidden="true" />
               <span>Mi perfil</span>
             </button>
             <button 
               className="mobile-profile-item"
               onClick={() => handleNavigate('/edit-user')}
             >
-              <FaEdit />
+              <FaEdit aria-hidden="true" />
               <span>Editar perfil</span>
             </button>
             <button 
               className="mobile-profile-item logout-item"
               onClick={handleLogout}
             >
-              <FaSignOutAlt />
+              <FaSignOutAlt aria-hidden="true" />
               <span>Cerrar sesión</span>
             </button>
           </div>

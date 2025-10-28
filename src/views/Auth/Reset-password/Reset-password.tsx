@@ -110,8 +110,8 @@ const ResetPassword: React.FC = (): JSX.Element => {
   return (
     <>
       <NavBar />
-      <div className="app-container-reset">
-        <div className="main-content-reset">
+      <div className="app-container-reset" role="main">
+        <div className="main-content-reset" role="presentation" aria-label="Fondo decorativo de películas">
           <div className="reset-box">
             <Link
               to="/login"
@@ -122,7 +122,7 @@ const ResetPassword: React.FC = (): JSX.Element => {
             </Link>
             <img
               src="/static/img/film-icon.jpg"
-              alt="PopFix logo"
+              alt="Logotipo de PopFix - ícono de carrete de película"
               className="icon"
             />
             <h2>Restablecer contraseña</h2>
