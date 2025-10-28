@@ -76,11 +76,23 @@ export const searchMovies = async (query: string, page: number = 1) => {
  */
 export const getMovieDetails = async (movieId: string) => {
   try {
-    const endpoint = API_ENDPOINTS.MOVIE_DETAILS.replace(':id', encodeURIComponent(movieId))
+    const endpoint = `/movies/details/${encodeURIComponent(movieId)}`
     const response = await httpClient.get(endpoint)
     return response
   } catch (error: any) {
     throw new Error('Error al obtener detalles de la película: ' + (error?.message || ''))
+  }
+};
+
+// Fetch movie details with optional userId to get user's rating and comments
+export const getMovieDetailsWithUser = async (movieId: string, userId?: string) => {
+  try {
+    const q = userId ? `?userId=${encodeURIComponent(userId)}` : '';
+    const endpoint = `/movies/details/${encodeURIComponent(movieId)}${q}`;
+    const response = await httpClient.get(endpoint);
+    return response;
+  } catch (error: any) {
+    throw new Error('Error al obtener detalles de la película: ' + (error?.message || ''));
   }
 };
 

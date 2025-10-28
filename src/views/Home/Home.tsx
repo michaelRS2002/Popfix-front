@@ -97,10 +97,14 @@ export function Home() {
   useEffect(() => {
     const onRatingUpdated = (e: any) => {
       try {
-        const { movieId, rating } = e.detail || {};
+        const { movieId, rating, userRating } = e.detail || {};
         if (!movieId) return;
         setMovies((prev) =>
-          prev.map((m) => (String(m.id) === String(movieId) ? { ...m, rating } : m))
+          prev.map((m) =>
+            String(m.id) === String(movieId)
+              ? { ...m, rating: typeof rating === 'number' ? rating : m.rating, userRating: typeof userRating === 'number' ? userRating : m.userRating }
+              : m
+          )
         );
       } catch (err) {
         // ignore
@@ -431,7 +435,7 @@ export function Home() {
                       <h3>{movie.title}</h3>
                       <div className="movie-rating">
                         <AiFillStar />
-                        <span>{movie.rating}</span>
+                        <span>{((movie as any).userRating ?? movie.rating)?.toFixed ? ((movie as any).userRating ?? movie.rating).toFixed(1) : ((movie as any).userRating ?? movie.rating)}</span>
                       </div>
                     </div>
                     <div className="movie-genre">

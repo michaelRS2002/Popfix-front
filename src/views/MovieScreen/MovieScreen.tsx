@@ -12,6 +12,7 @@ import {
   addUserMovieComment,
   addFavorite,
   setRating as apiSetRating,
+  getMovieDetailsWithUser,
 } from "../../utils/moviesApi";
 
 /**
@@ -68,6 +69,19 @@ export function MovieScreen() {
         if (user.id) {
           setUserId(user.id);
           loadUserFavorites(user.id);
+          // Load user's existing rating for this movie (if any)
+          (async () => {
+            try {
+              const details = await getMovieDetailsWithUser(String(movie.id), user.id);
+              const userRatingFromApi = details?.userRating;
+              if (typeof userRatingFromApi === 'number') {
+                setRating(userRatingFromApi);
+                setDisplayRating(typeof details?.movie?.rating === 'number' ? details.movie.rating : userRatingFromApi);
+              }
+            } catch (err) {
+              // ignore
+            }
+          })();
         }
       } catch (e) {
         console.error("Error parsing user:", e);
@@ -152,18 +166,20 @@ export function MovieScreen() {
         movieId: String(movie.id),
         rating: rate,
       });
-      // If backend returns suggestedRating, update display
-      const suggested = resp?.suggestedRating ?? resp?.suggestedRating === 0 ? resp.suggestedRating : undefined;
-      if (typeof suggested === "number") setDisplayRating(suggested);
-      else setDisplayRating(rate);
+      // If backend returns suggestedRating, update display (round to 1 decimal)
+      const suggested = resp?.suggestedRating;
+      const finalRating = typeof suggested === 'number'
+        ? Math.round(Number(suggested) * 10) / 10
+        : Math.round(Number(rate) * 10) / 10;
+      setDisplayRating(finalRating);
       // Notify other views (Home) that this movie's rating changed
       try {
-        const detail = { movieId: String(movie.id), rating: typeof suggested === "number" ? suggested : rate };
+        const detail = { movieId: String(movie.id), rating: finalRating, userRating: rate };
         window.dispatchEvent(new CustomEvent("movie:rating-updated", { detail } as any));
       } catch (e) {
         // ignore
       }
-      showToast("Valoración guardada", "success");
+      showToast("Listo, tu valoración ha sido guardada", "success");
     } catch (err) {
       console.error("Error guardando valoración:", err);
       showToast("No se pudo guardar la valoración", "error");
